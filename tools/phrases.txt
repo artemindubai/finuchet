@@ -1,0 +1,12 @@
+# Фразы приёмки ТЗ 11.1: шесть из ответа Артёма №13 плюс обмен и возврат в семейный.
+# Формат строки: фраза | поле=значение поле=значение …  (ожидаемый разбор, проверяется автоматически)
+# Строки с # — комментарии. Прогон: python -X utf8 tools\offline_check.py
+
+Сходил в кафе, поел на 43 дирхама | kind=expense amount=4300 currency=AED from_account=mashreq_personal category=exp_cafe
+Взял с семейного счёта 500 дирхам, заморозь эквивалент в рублях на моём счёте | kind=family_withdrawal amount=50000 currency=AED from_account=mashreq_family to_account=mashreq_personal freeze=true
+Получил зарплату 2 тысячи дирхам | kind=income amount=200000 currency=AED to_account=mashreq_personal income_source=inc_uae_job
+Дал в долг Маше 300 дирхам | kind=loan_given amount=30000 currency=AED from_account=mashreq_personal counterparty=Маша
+Купил лампу, швабру, мышку для ноутбука на Noon за 300 дирхам | kind=expense amount=30000 currency=AED from_account=mashreq_personal category=exp_home operations=1
+Отдал на благотворительность 200 дирхам | kind=expense amount=20000 currency=AED category=exp_charity
+Перевёл 50 тысяч рублей на Bybit, вышло 500 USDT | kind=exchange amount=5000000 currency=RUB from_account=tbank amount_to=50000 currency_to=USDT to_account=bybit
+Вернул 200 дирхам в семейный | kind=family_repayment amount=20000 currency=AED from_account=mashreq_personal to_account=mashreq_family
