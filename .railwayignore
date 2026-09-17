@@ -1,0 +1,19 @@
+# Секреты и личные финансовые данные — не пускать ни в git, ни в билд-образ Railway.
+ACCESS.env
+.env
+data/
+*.db
+*.sqlite*
+*.session
+*.session-journal
+*.pdf
+__pycache__/
+*.pyc
+node_modules/
+.venv/
+reports/
+docs/
+design/refs/
+.git/
+*.md
+tools/create_bot.py
