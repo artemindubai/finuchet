@@ -73,6 +73,22 @@ def account_view(conn: sqlite3.Connection, account, *, currency_view: str = "RUB
     return out
 
 
+def balances_by_currency(conn: sqlite3.Connection, row: sqlite3.Row,
+                         bmap: dict | None = None) -> list[dict] | None:
+    """Остаток мультивалютного счёта вектором по валютам, натуральный знак (§5.5, журнал 21).
+
+    Одновалютному счёту вектор не нужен — его остаток целиком в `balance`, поэтому None."""
+    if row["currency"]:
+        return None
+    bmap = bmap if bmap is not None else balance_map(conn)
+    sign = natural_sign(row["type"])
+    out = []
+    for (acc, cur), amount in sorted(bmap.items(), key=lambda kv: kv[0][1]):
+        if acc == int(row["id"]) and amount:
+            out.append(money_dict(amount * sign, cur))
+    return out
+
+
 def net_worth(conn: sqlite3.Connection, *, currency_view: str = "RUB",
               as_of: str | None = None, snapshot: dict | None = None,
               bmap: dict | None = None) -> int:
@@ -325,8 +341,14 @@ def debts(conn: sqlite3.Connection, *, currency_view: str = "RUB") -> dict:
         family_block["frozen_rub"] = money_dict(0, "RUB")
         family_block["today_repay_rub"] = None
         family_block["tranches"] = []
+    receivable = account_row(conn, "receivable")
+    payable = account_row(conn, "payable")
     return {"owed_to_me": owed, "i_owe": i_owe, "tax": tax, "credit_card": credit,
-            "family": family_block, "total_in_view": money_dict(total, currency_view)}
+            "family": family_block, "total_in_view": money_dict(total, currency_view),
+            "owed_to_me_by_currency":
+                balances_by_currency(conn, receivable, bmap) if receivable is not None else [],
+            "i_owe_by_currency":
+                balances_by_currency(conn, payable, bmap) if payable is not None else []}
 
 
 def effects(conn: sqlite3.Connection, *, account_ids: list[int], currency_view: str = "RUB",
@@ -346,10 +368,19 @@ def effects(conn: sqlite3.Connection, *, account_ids: list[int], currency_view: 
             continue
         view = account_view(conn, row, currency_view=currency_view, snapshot=snapshot,
                             bmap=bmap, frozen=frozen)
+        by_currency = balances_by_currency(conn, row, bmap)
+        by_counterparty = None
+        if by_currency is not None and row["needs_counterparty"]:
+            # долговые счета мультивалютные: карточке бота нужен итог именно по этому человеку
+            by_counterparty = [{"counterparty_id": p["counterparty_id"], "name": p["name"],
+                                "amounts": p["amounts"], "in_view": p["in_view"]}
+                               for p in _people_debts(conn, row["slug"], currency_view, snapshot)]
         accounts.append({"id": view["id"], "slug": view["slug"], "name": view["name"],
                          "role": view["role"], "balance": view["balance"],
                          "natural": view["natural"], "in_view": view["in_view"],
-                         "frozen": view["frozen"]})
+                         "frozen": view["frozen"],
+                         "balances_by_currency": by_currency,
+                         "by_counterparty": by_counterparty})
     debt = family_debt(conn, snapshot=snapshot, bmap=bmap)
     free = free_rub(conn, bmap=bmap)
     return {

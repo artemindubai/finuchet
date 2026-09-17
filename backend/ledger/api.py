@@ -256,6 +256,8 @@ def entry_full(conn: sqlite3.Connection, entry_id: int, *, currency_view: str = 
     short.update({
         "replaces_entry_id": entry["replaces_entry_id"],
         "replaced_by_entry_id": entry["replaced_by_entry_id"],
+        "voided_at": iso_utc(int(entry["voided_at"])) if entry["voided_at"] else None,
+        "void_reason": entry["void_reason"],
         "due_date": entry["due_date"],
         "raw_input": entry["raw_input"],
         "confidence": entry["confidence"],

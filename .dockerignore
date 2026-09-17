@@ -1,0 +1,26 @@
+# Локальной сборке образа (.railwayignore действует только на загрузку в Railway).
+ACCESS.env
+.env
+data/
+*.db
+*.db-wal
+*.db-shm
+*.sqlite*
+*.session
+*.session-journal
+frontend/node_modules/
+frontend/dist/
+design/
+docs/
+reports/
+tests/
+tests_bot/
+__pycache__/
+**/__pycache__/
+*.pyc
+.pytest_cache/
+.venv/
+.venv_check/
+.git/
+.gitignore
+*.log

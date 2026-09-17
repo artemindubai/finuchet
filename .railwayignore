@@ -15,5 +15,12 @@ reports/
 docs/
 design/refs/
 .git/
-*.md
 tools/create_bot.py
+# Документы проекта — поимённо. Слепое «*.md» уносило backend/prompts/system_parse.md
+# и system_vision.md, без которых разбор фразы на проде мёртв.
+ARCHITECTURE.md
+ТЗ.md
+CLAUDE.md
+BACKLOG.md
+ЖУРНАЛ_НАХОДОК.md
+frontend/dist/

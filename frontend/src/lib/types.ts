@@ -92,6 +92,8 @@ export interface EntryFull extends Omit<EntryShort, 'icon' | 'color'> {
   color?: string;
   replaces_entry_id: number | null;
   replaced_by_entry_id: number | null;
+  voided_at?: string | null;
+  void_reason?: string | null;
   due_date: string | null;
   raw_input: string | null;
   confidence: number | null;

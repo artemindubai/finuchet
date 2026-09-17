@@ -497,6 +497,20 @@ def _card_paid_for_family(result: dict) -> list[str]:
     return lines
 
 
+def _debt_of_person(debt_acc: dict, who: str, currency: str | None) -> dict | None:
+    """Итог по этому человеку в валюте операции — из `by_counterparty` ядра (журнал 21)."""
+    if not who or not currency:
+        return None
+    for person in debt_acc.get("by_counterparty") or []:
+        if (person.get("name") or "").strip().lower() != who.strip().lower():
+            continue
+        for amount in person.get("amounts") or []:
+            if amount.get("currency") == currency:
+                return amount
+        return None
+    return None
+
+
 def _card_loan(result: dict) -> list[str]:
     kind = result.get("kind")
     who = result.get("counterparty") or ""
@@ -513,10 +527,12 @@ def _card_loan(result: dict) -> list[str]:
     label = "Мне должны" if debt_slug == "receivable" else "Я должен"
     debt_line = ""
     if debt_acc:
-        money = debt_acc.get("natural") or debt_acc.get("balance")
-        # счета долгов мультивалютные: если ядро отдало итог в другой валюте, показываем сумму операции
-        if (money or {}).get("currency") != (result.get("amount") or {}).get("currency"):
-            money = result.get("amount")
+        money = _debt_of_person(debt_acc, who, (result.get("amount") or {}).get("currency"))
+        if money is None:
+            money = debt_acc.get("natural") or debt_acc.get("balance")
+            # мультивалютный счёт без разбивки: чужую валюту не печатаем, берём сумму операции
+            if (money or {}).get("currency") != (result.get("amount") or {}).get("currency"):
+                money = result.get("amount")
         debt_line = f"{label}: {who} {format_amount(money)}".replace(":  ", ": ")
     lines = [heads.get(kind, ""), f"Счёт: {acc['name']}" if acc else "", debt_line]
     if result.get("due_date"):

@@ -86,6 +86,17 @@ app.include_router(reports_router)
 app.include_router(refs_router)          # последним: у него общий путь /api/{ref}
 
 
+def _bot_alive() -> bool:
+    """`bot` в /healthz — не «задачу создали», а «поллинг действительно крутится»."""
+    if not _bot_started:
+        return False
+    try:
+        from backend.bot import runner
+    except ImportError:
+        return True
+    return bool(runner.polling_alive())
+
+
 @app.get("/healthz")
 async def healthz():
     def _state() -> dict:
@@ -99,7 +110,7 @@ async def healthz():
                 rates_age = utc_now() - int(row["at"])
         except Exception:
             ok_db = False
-        return {"ok": ok_db, "db": ok_db, "bot": _bot_started, "rates_age_sec": rates_age,
+        return {"ok": ok_db, "db": ok_db, "bot": _bot_alive(), "rates_age_sec": rates_age,
                 "version": VERSION}
     return await asyncio.to_thread(_state)
 

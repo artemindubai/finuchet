@@ -9,6 +9,16 @@ export const USE_MOCKS = import.meta.env.VITE_USE_MOCKS === '1';
 const BASE = (import.meta.env.VITE_API_BASE as string | undefined) ?? '';
 const DEV_USER = import.meta.env.VITE_DEV_USER as string | undefined;
 
+// Локальная проверка без Телеграма: ?dev_user=<id> в адресе. Сервер этот заголовок принимает,
+// только когда у него задана переменная DEV_USER (на проде её нет) и id совпал с владельцем.
+const QUERY_DEV_USER = (() => {
+  try {
+    return new URLSearchParams(window.location.search).get('dev_user') || undefined;
+  } catch {
+    return undefined;
+  }
+})();
+
 export class RequestError extends Error {
   code: string;
   details?: Record<string, unknown>;
@@ -22,7 +32,8 @@ export class RequestError extends Error {
 function authHeaders(): Record<string, string> {
   const initData = (window as any).Telegram?.WebApp?.initData as string | undefined;
   if (initData) return { Authorization: `tma ${initData}` };
-  if (DEV_USER) return { 'X-Dev-User': DEV_USER };
+  const dev = QUERY_DEV_USER ?? DEV_USER;
+  if (dev) return { 'X-Dev-User': dev };
   return {};
 }
 

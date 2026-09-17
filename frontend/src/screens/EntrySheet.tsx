@@ -180,7 +180,9 @@ export function EntrySheet({ id, onClose }: { id: number; onClose: () => void })
       }
     >
       {isVoid ? (
-        <div className="pb-1 text-[13px] text-hint">Отменена {dateLong(entry.op_date)}</div>
+        <div className="pb-1 text-[13px] text-hint">
+          Отменена {dateLong((entry.voided_at ?? '').slice(0, 10) || entry.op_date)}
+        </div>
       ) : null}
 
       <div className="flex flex-col items-center py-2">

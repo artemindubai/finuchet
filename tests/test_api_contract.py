@@ -142,7 +142,71 @@ def test_effects_shape_is_single(client):
 
     for account in created["effects"]["accounts"]:
         assert set(account) == {"id", "slug", "name", "role", "balance", "natural", "in_view",
-                                "frozen"}
+                                "frozen", "balances_by_currency", "by_counterparty"}
+        # вектор по валютам — только у мультивалютных счетов (currency в БД пуст)
+        if account["slug"] == "mashreq_personal":
+            assert account["balances_by_currency"] is None
+
+
+def test_effects_debt_account_has_currencies_and_person(client):
+    """Журнал 21: карточка долга печатает итог по человеку в валюте операции, а не в рублях."""
+    prepare()
+    post(kind="loan_given", amount=30_000, currency="AED", from_account="mashreq_personal",
+         counterparty="Маша")
+    created = client.post("/api/entries", json={
+        "kind": "loan_given", "amount": 20_000, "currency": "AED",
+        "from_account": "mashreq_personal", "counterparty": "Маша"}).json()
+    debt = next(a for a in created["effects"]["accounts"] if a["slug"] == "receivable")
+    assert debt["balances_by_currency"] == [{"amount": 50_000, "currency": "AED"}]
+    masha = next(p for p in debt["by_counterparty"] if p["name"] == "Маша")
+    assert masha["amounts"] == [{"amount": 50_000, "currency": "AED"}]
+
+    from backend.bot.cards import card_for_entry
+    assert "Мне должны: Маша 500 AED" in card_for_entry(created)
+
+
+def test_entry_full_has_voided_at(client):
+    """Журнал 26: карточке отменённой операции нужна дата отмены, а не дата операции."""
+    prepare()
+    created = client.post("/api/entries", json={
+        "kind": "expense", "amount": 4_300, "currency": "AED",
+        "from_account": "mashreq_personal", "category": "exp_cafe"}).json()
+    assert created["voided_at"] is None and created["void_reason"] is None
+    voided = client.post(f"/api/entries/{created['id']}/void", json={"reason": "ошибся"}).json()
+    assert voided["voided_at"] and voided["voided_at"].endswith("Z")
+    assert voided["void_reason"] == "ошибся"
+    assert client.get(f"/api/entries/{created['id']}").json()["voided_at"] == voided["voided_at"]
+
+
+def test_debts_by_currency(client):
+    """Остаток мультивалютных receivable/payable вектором по валютам (§5.8, журнал 21)."""
+    prepare()
+    post(kind="loan_given", amount=30_000, currency="AED", from_account="mashreq_personal",
+         counterparty="Маша")
+    post(kind="loan_taken", amount=500_000, currency="RUB", to_account="tbank",
+         counterparty="Костя")
+    body = client.get("/api/debts").json()
+    assert body["owed_to_me_by_currency"] == [{"amount": 30_000, "currency": "AED"}]
+    assert body["i_owe_by_currency"] == [{"amount": 500_000, "currency": "RUB"}]
+
+
+def test_inbox_batch_bridge():
+    """Мост бота: кнопка «Занести новые» берёт id строк пачки через inbox_batch (просьба B №3)."""
+    from backend.contracts import ScreenBatch, ScreenRow
+    from backend.ledger import bot_bridge
+    import importlib
+    # в backend.ledger.__init__ имя reconcile занято функцией — модуль берём явно
+    reconcile_mod = importlib.import_module("backend.ledger.reconcile")
+    base_state()
+    batch = ScreenBatch(account="tbank", currency="RUB",
+                        rows=[ScreenRow(amount=-235_000, currency="RUB", op_date="2026-09-16",
+                                        raw_text="ЯНДЕКС ЕДА")])
+    batch_id = reconcile_mod.reconcile(batch)["batch_id"]
+    one = bot_bridge.inbox_batch(batch_id)
+    assert one is not None and one["batch_id"] == batch_id
+    assert [i["id"] for i in one["items"]] == [i["id"] for i in
+                                               reconcile_mod.inbox(batch_id)["batches"][0]["items"]]
+    assert bot_bridge.inbox_batch("нет такой пачки") is None
 
 
 def test_refs_and_settings_shape(client):
@@ -170,7 +234,8 @@ def test_debts_and_account_shape(client):
     post(kind="loan_given", amount=30_000, currency="AED", from_account="mashreq_personal",
          counterparty="Маша")
     debts = client.get("/api/debts").json()
-    assert set(debts) == {"owed_to_me", "i_owe", "tax", "credit_card", "family", "total_in_view"}
+    assert set(debts) == {"owed_to_me", "i_owe", "tax", "credit_card", "family", "total_in_view",
+                          "owed_to_me_by_currency", "i_owe_by_currency"}
     assert set(debts["owed_to_me"][0]) == {"counterparty_id", "name", "amounts", "in_view",
                                            "due_date", "since", "entry_ids"}
     assert set(debts["family"]) == {"debt", "direction", "frozen_rub", "today_repay_rub",

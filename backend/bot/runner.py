@@ -15,6 +15,13 @@ log = logging.getLogger("finuchet.runner")
 RESTART_SLEEP_SEC = 15
 
 _bot_instance = None
+_dispatcher = None
+_polling_ok = False
+
+
+def polling_alive() -> bool:
+    """Правда ли сейчас крутится поллинг (для /healthz). После падения — False до подъёма."""
+    return _polling_ok
 
 
 def bot_token() -> str:
@@ -42,6 +49,21 @@ def get_bot():
     return _bot_instance
 
 
+def get_dispatcher():
+    """Один Dispatcher на процесс: роутер aiogram нельзя включить во второй Dispatcher,
+    а вотчдог поднимает поллинг заново — второй раз include_router упал бы навсегда."""
+    global _dispatcher
+    if _dispatcher is not None:
+        return _dispatcher
+    from aiogram import Dispatcher
+
+    from backend.bot.handlers import router
+
+    _dispatcher = Dispatcher()
+    _dispatcher.include_router(router)
+    return _dispatcher
+
+
 async def run_bot_forever() -> None:
     """Вечный поллинг с вотчдогом: 409 при редеплое не должен убивать сервис насовсем."""
     if os.getenv("NO_BOT") == "1":
@@ -61,19 +83,17 @@ async def run_bot_forever() -> None:
 
 
 async def _polling_once() -> None:
-    from aiogram import Dispatcher
+    global _polling_ok
     from aiogram.types import MenuButtonWebApp, WebAppInfo
-
-    from backend.bot.handlers import router
 
     bot = get_bot()
     if bot is None:
         return
-    dispatcher = Dispatcher()
-    dispatcher.include_router(router)
+    dispatcher = get_dispatcher()
 
     public_url = (os.getenv("PUBLIC_URL") or "http://localhost:8080").rstrip("/")
     try:
+        # не по-https адрес Телеграм не примет — это повод для строки в логе, а не для падения
         await bot.set_chat_menu_button(
             menu_button=MenuButtonWebApp(text="Финучёт", web_app=WebAppInfo(url=public_url))
         )
@@ -81,8 +101,12 @@ async def _polling_once() -> None:
         log.warning("кнопку меню поставить не вышло: %s", exc)
 
     log.info("поллинг поднят")
-    # drop_pending_updates: после рестарта старые голосовые не должны записаться повторно (грабля 7)
-    await dispatcher.start_polling(bot, drop_pending_updates=True, handle_signals=False)
+    _polling_ok = True
+    try:
+        # drop_pending_updates: после рестарта старые голосовые не запишутся повторно (грабля 7)
+        await dispatcher.start_polling(bot, drop_pending_updates=True, handle_signals=False)
+    finally:
+        _polling_ok = False
 
 
 async def run_telethon_stt_forever() -> None:

@@ -71,6 +71,13 @@ def bot_hints() -> dict:
             "last_entry": last_entry, "freeze_account": freeze_account_slug(conn)}
 
 
+def inbox_batch(batch_id: str) -> dict | None:
+    """Одна пачка разбора скрина целиком (§5.13). Кнопке «Занести новые» нужны id строк пачки."""
+    from backend.ledger.reconcile import inbox
+    batches = (inbox(batch_id) or {}).get("batches") or []
+    return batches[0] if batches else None
+
+
 def pending_get(chat_id: int) -> dict | None:
     conn = _conn()
     row = conn.execute("SELECT * FROM bot_pending WHERE chat_id = ?", (int(chat_id),)).fetchone()
