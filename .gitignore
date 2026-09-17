@@ -1,0 +1,10 @@
+ACCESS.env
+.env
+*.session
+__pycache__/
+node_modules/
+dist/
+*.db
+*.sqlite*
+data/
+.venv/
