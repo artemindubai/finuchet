@@ -1,0 +1,62 @@
+{
+ "items": [
+  {
+   "id": 1,
+   "name": "Виза",
+   "target": {
+    "amount": 900000,
+    "currency": "AED"
+   },
+   "saved": {
+    "amount": 320000,
+    "currency": "AED"
+   },
+   "progress_bp": 3556,
+   "due_date": "2026-12-01",
+   "account_id": 1,
+   "allocations": [
+    {
+     "amount": {
+      "amount": 120000,
+      "currency": "AED"
+     },
+     "op_date": "2026-09-10",
+     "note": "отложил"
+    },
+    {
+     "amount": {
+      "amount": 200000,
+      "currency": "AED"
+     },
+     "op_date": "2026-08-20",
+     "note": "первый взнос"
+    }
+   ]
+  },
+  {
+   "id": 2,
+   "name": "Подушка",
+   "target": {
+    "amount": 30000000,
+    "currency": "RUB"
+   },
+   "saved": {
+    "amount": 4500000,
+    "currency": "RUB"
+   },
+   "progress_bp": 1500,
+   "due_date": null,
+   "account_id": 5,
+   "allocations": [
+    {
+     "amount": {
+      "amount": 4500000,
+      "currency": "RUB"
+     },
+     "op_date": "2026-09-05",
+     "note": "с проекта Альфа"
+    }
+   ]
+  }
+ ]
+}

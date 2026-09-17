@@ -1,0 +1,13 @@
+{
+ "default_currency_view": "RUB",
+ "family_block_visible": true,
+ "freeze_account": "tbank",
+ "rate_markup_rub_per_aed_e6": 2000000,
+ "tax_rate_default_bp": 600,
+ "remind_enabled": true,
+ "mashreq_pdf_password_set": true,
+ "stt_provider": "openai",
+ "version": "1.0.0",
+ "db_size_bytes": 1892352,
+ "last_backup_at": "2026-09-17T03:00:04Z"
+}

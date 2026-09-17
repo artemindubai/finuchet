@@ -1,0 +1,3606 @@
+{
+ "431": {
+  "id": 431,
+  "kind": "family_withdrawal",
+  "direction": "neutral",
+  "amount": {
+   "amount": 50000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 1172500,
+   "currency": "RUB"
+  },
+  "title": "Взял из семейного",
+  "subtitle": "Mashreq семейный → Mashreq личный",
+  "category_id": null,
+  "icon": "family",
+  "color": "#34B37E",
+  "version": 1,
+  "op_date": "2026-09-17",
+  "created_at": "2026-09-17T09:20:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "взял на расходы",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: взял на расходы",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "debit",
+    "amount": {
+     "amount": 50000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 7,
+    "account_slug": "mashreq_family",
+    "account_name": "Mashreq семейный",
+    "side": "credit",
+    "amount": {
+     "amount": 50000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": {
+   "pair": "AED/RUB",
+   "rate_e6": 24500000,
+   "source": "bybit_p2p",
+   "at": "2026-09-17T09:20:11Z"
+  },
+  "rates_snapshot": {
+   "at": "2026-09-17T09:20:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000,
+   "used_rate_e6": 24500000,
+   "used_pair": "AED/RUB",
+   "used_source": "bybit_p2p"
+  },
+  "tranche": {
+   "id": 3,
+   "aed_taken": {
+    "amount": 50000,
+    "currency": "AED"
+   },
+   "aed_left": {
+    "amount": 50000,
+    "currency": "AED"
+   },
+   "rub_frozen": {
+    "amount": 1225000,
+    "currency": "RUB"
+   },
+   "rub_left": {
+    "amount": 1225000,
+    "currency": "RUB"
+   },
+   "rate_e6": 24500000,
+   "rate_source": "bybit_p2p",
+   "op_date": "2026-09-17",
+   "account_id": 5,
+   "account_name": "Т-Банк",
+   "status": "open",
+   "label": "заблокировано в счёт взятых 17.09.2026 500 AED по курсу 24,50"
+  },
+  "versions": [
+   {
+    "id": 431,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-17T09:20:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "434": {
+  "id": 434,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 3400,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 79730,
+   "currency": "RUB"
+  },
+  "title": "Подарки",
+  "subtitle": "Наличные AED",
+  "category_id": 31,
+  "icon": "gift",
+  "color": "#FF9F1C",
+  "version": 2,
+  "op_date": "2026-09-16",
+  "created_at": "2026-09-16T16:40:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "цветы маме Маши",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": 433,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: цветы маме Маши",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 31,
+    "account_slug": "exp_gifts",
+    "account_name": "Подарки",
+    "side": "debit",
+    "amount": {
+     "amount": 3400,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 2,
+    "account_slug": "cash_aed",
+    "account_name": "Наличные AED",
+    "side": "credit",
+    "amount": {
+     "amount": 3400,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-16T16:40:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 433,
+    "version": 1,
+    "status": "void",
+    "created_at": "2026-09-16T16:38:02Z",
+    "changed": []
+   },
+   {
+    "id": 434,
+    "version": 2,
+    "status": "posted",
+    "created_at": "2026-09-16T16:40:11Z",
+    "changed": [
+     "сумма 43 → 34 AED"
+    ]
+   }
+  ],
+  "warnings": []
+ },
+ "428": {
+  "id": 428,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 3100,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 72695,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Наличные AED",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-09-16",
+  "created_at": "2026-09-16T09:10:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "шаурма и сок",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: шаурма и сок",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 3100,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 2,
+    "account_slug": "cash_aed",
+    "account_name": "Наличные AED",
+    "side": "credit",
+    "amount": {
+     "amount": 3100,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-16T09:10:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 428,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-16T09:10:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "427": {
+  "id": 427,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 6800,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 159460,
+   "currency": "RUB"
+  },
+  "title": "Продукты",
+  "subtitle": "Наличные AED",
+  "category_id": 19,
+  "icon": "groceries",
+  "color": "#EA4C55",
+  "version": 1,
+  "op_date": "2026-09-16",
+  "created_at": "2026-09-16T14:30:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "Union Coop",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Union Coop",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 19,
+    "account_slug": "exp_groceries",
+    "account_name": "Продукты",
+    "side": "debit",
+    "amount": {
+     "amount": 6800,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 2,
+    "account_slug": "cash_aed",
+    "account_name": "Наличные AED",
+    "side": "credit",
+    "amount": {
+     "amount": 6800,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-16T14:30:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 427,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-16T14:30:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "426": {
+  "id": 426,
+  "kind": "transfer",
+  "direction": "neutral",
+  "amount": {
+   "amount": 2000000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 2000000,
+   "currency": "RUB"
+  },
+  "title": "Перевод",
+  "subtitle": "Т-Банк → Сбер",
+  "category_id": null,
+  "icon": "swap",
+  "color": "#7B8794",
+  "version": 1,
+  "op_date": "2026-09-15",
+  "created_at": "2026-09-15T08:10:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "переложил на Сбер",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: переложил на Сбер",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 6,
+    "account_slug": "sber",
+    "account_name": "Сбер",
+    "side": "debit",
+    "amount": {
+     "amount": 2000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "credit",
+    "amount": {
+     "amount": 2000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-15T08:10:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 426,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-15T08:10:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "425": {
+  "id": 425,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 5120,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 120064,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-09-15",
+  "created_at": "2026-09-15T08:30:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "бизнес-ланч",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: бизнес-ланч",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 5120,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 5120,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-15T08:30:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 425,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-15T08:30:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "433": {
+  "id": 433,
+  "kind": "loan_given",
+  "direction": "out",
+  "amount": {
+   "amount": 30000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 703500,
+   "currency": "RUB"
+  },
+  "title": "Дал в долг · Маша",
+  "subtitle": "Mashreq личный",
+  "category_id": null,
+  "icon": "person",
+  "color": "#5B6CD9",
+  "version": 1,
+  "op_date": "2026-09-14",
+  "created_at": "2026-09-14T12:00:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "до конца месяца",
+  "counterparty": "Маша",
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": "2026-09-30",
+  "raw_input": "Расшифровка: до конца месяца",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 9,
+    "account_slug": "receivable",
+    "account_name": "Мне должны",
+    "side": "debit",
+    "amount": {
+     "amount": 30000,
+     "currency": "AED"
+    },
+    "counterparty": "Маша",
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 30000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-14T12:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 433,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-14T12:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "424": {
+  "id": 424,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 4200,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 98490,
+   "currency": "RUB"
+  },
+  "title": "Транспорт",
+  "subtitle": "Mashreq личный",
+  "category_id": 20,
+  "icon": "car",
+  "color": "#FFC531",
+  "version": 1,
+  "op_date": "2026-09-14",
+  "created_at": "2026-09-14T13:50:11Z",
+  "status": "posted",
+  "source": "screenshot",
+  "description": "бензин",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: бензин",
+  "confidence": null,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 20,
+    "account_slug": "exp_transport",
+    "account_name": "Транспорт",
+    "side": "debit",
+    "amount": {
+     "amount": 4200,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 4200,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-14T13:50:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 424,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-14T13:50:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "423": {
+  "id": 423,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 8700,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 204015,
+   "currency": "RUB"
+  },
+  "title": "Здоровье",
+  "subtitle": "Mashreq личный",
+  "category_id": 26,
+  "icon": "health",
+  "color": "#2FA8E8",
+  "version": 1,
+  "op_date": "2026-09-14",
+  "created_at": "2026-09-14T07:30:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "аптека Life",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: аптека Life",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 26,
+    "account_slug": "exp_health",
+    "account_name": "Здоровье",
+    "side": "debit",
+    "amount": {
+     "amount": 8700,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 8700,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-14T07:30:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 423,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-14T07:30:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "422": {
+  "id": 422,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 39900,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 39900,
+   "currency": "RUB"
+  },
+  "title": "Связь и подписки",
+  "subtitle": "Т-Банк",
+  "category_id": 23,
+  "icon": "wifi",
+  "color": "#5B6CD9",
+  "version": 1,
+  "op_date": "2026-09-13",
+  "created_at": "2026-09-13T06:00:11Z",
+  "status": "posted",
+  "source": "screenshot",
+  "description": "Яндекс Плюс",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Яндекс Плюс",
+  "confidence": null,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 23,
+    "account_slug": "exp_comm",
+    "account_name": "Связь и подписки",
+    "side": "debit",
+    "amount": {
+     "amount": 39900,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "credit",
+    "amount": {
+     "amount": 39900,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-13T06:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 422,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-13T06:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "421": {
+  "id": 421,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 9500,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 222775,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-09-13",
+  "created_at": "2026-09-13T17:00:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "ужин на набережной",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: ужин на набережной",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 9500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 9500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-13T17:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 421,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-13T17:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "435": {
+  "id": 435,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 284806,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 284806,
+   "currency": "RUB"
+  },
+  "title": "Прочее",
+  "subtitle": "Наличные ₽",
+  "category_id": 34,
+  "icon": "dots",
+  "color": "#A0A7B0",
+  "version": 1,
+  "op_date": "2026-09-12",
+  "created_at": "2026-09-12T16:00:11Z",
+  "status": "posted",
+  "source": "manual",
+  "description": "мелкие траты наличными",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: мелкие траты наличными",
+  "confidence": null,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 34,
+    "account_slug": "exp_other",
+    "account_name": "Прочее",
+    "side": "debit",
+    "amount": {
+     "amount": 284806,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 3,
+    "account_slug": "cash_rub",
+    "account_name": "Наличные ₽",
+    "side": "credit",
+    "amount": {
+     "amount": 284806,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-12T16:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 435,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-12T16:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "420": {
+  "id": 420,
+  "kind": "income",
+  "direction": "in",
+  "amount": {
+   "amount": 1712000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 1712000,
+   "currency": "RUB"
+  },
+  "title": "Проекты",
+  "subtitle": "Т-Банк",
+  "category_id": 14,
+  "icon": "briefcase",
+  "color": "#3E7BFA",
+  "version": 1,
+  "op_date": "2026-09-12",
+  "created_at": "2026-09-12T11:10:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "второй этап",
+  "counterparty": null,
+  "project": "Бета",
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: второй этап",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "debit",
+    "amount": {
+     "amount": 1712000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 14,
+    "account_slug": "inc_projects",
+    "account_name": "Проекты",
+    "side": "credit",
+    "amount": {
+     "amount": 1712000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": "Бета"
+   },
+   {
+    "seq": 3,
+    "account_id": 32,
+    "account_slug": "exp_taxes",
+    "account_name": "Налоги",
+    "side": "debit",
+    "amount": {
+     "amount": 102720,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 4,
+    "account_id": 13,
+    "account_slug": "tax_npd",
+    "account_name": "Налог НПД",
+    "side": "credit",
+    "amount": {
+     "amount": 102720,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-12T11:10:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 420,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-12T11:10:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "419": {
+  "id": 419,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 14300,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 335335,
+   "currency": "RUB"
+  },
+  "title": "Продукты",
+  "subtitle": "Mashreq личный",
+  "category_id": 19,
+  "icon": "groceries",
+  "color": "#EA4C55",
+  "version": 1,
+  "op_date": "2026-09-11",
+  "created_at": "2026-09-11T15:40:11Z",
+  "status": "posted",
+  "source": "screenshot",
+  "description": "Carrefour",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Carrefour",
+  "confidence": null,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 19,
+    "account_slug": "exp_groceries",
+    "account_name": "Продукты",
+    "side": "debit",
+    "amount": {
+     "amount": 14300,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 14300,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-11T15:40:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 419,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-11T15:40:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "418": {
+  "id": 418,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 6000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 140700,
+   "currency": "RUB"
+  },
+  "title": "Развлечения",
+  "subtitle": "Mashreq личный",
+  "category_id": 24,
+  "icon": "fun",
+  "color": "#8E7CE0",
+  "version": 1,
+  "op_date": "2026-09-11",
+  "created_at": "2026-09-11T17:30:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "кино в Mall of the Emirates",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: кино в Mall of the Emirates",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 24,
+    "account_slug": "exp_fun",
+    "account_name": "Развлечения",
+    "side": "debit",
+    "amount": {
+     "amount": 6000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 6000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-11T17:30:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 418,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-11T17:30:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "417": {
+  "id": 417,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 6200,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 145390,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-09-11",
+  "created_at": "2026-09-11T10:05:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "обед в Reem Al Bawadi",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: обед в Reem Al Bawadi",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 6200,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 6200,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-11T10:05:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 417,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-11T10:05:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "416": {
+  "id": 416,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 1500,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 35175,
+   "currency": "RUB"
+  },
+  "title": "Транспорт",
+  "subtitle": "Наличные AED",
+  "category_id": 20,
+  "icon": "car",
+  "color": "#FFC531",
+  "version": 1,
+  "op_date": "2026-09-10",
+  "created_at": "2026-09-10T04:20:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "метро",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: метро",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 20,
+    "account_slug": "exp_transport",
+    "account_name": "Транспорт",
+    "side": "debit",
+    "amount": {
+     "amount": 1500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 2,
+    "account_slug": "cash_aed",
+    "account_name": "Наличные AED",
+    "side": "credit",
+    "amount": {
+     "amount": 1500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-10T04:20:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 416,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-10T04:20:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "415": {
+  "id": 415,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 12000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 281400,
+   "currency": "RUB"
+  },
+  "title": "Дом и быт",
+  "subtitle": "Mashreq личный",
+  "category_id": 22,
+  "icon": "sofa",
+  "color": "#17B0A8",
+  "version": 1,
+  "op_date": "2026-09-10",
+  "created_at": "2026-09-10T12:30:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "Noon: лампа, швабра, мышка",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Noon: лампа, швабра, мышка",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 22,
+    "account_slug": "exp_home",
+    "account_name": "Дом и быт",
+    "side": "debit",
+    "amount": {
+     "amount": 12000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 12000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-10T12:30:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 415,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-10T12:30:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "414": {
+  "id": 414,
+  "kind": "income",
+  "direction": "in",
+  "amount": {
+   "amount": 40000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 938000,
+   "currency": "RUB"
+  },
+  "title": "Подработка ОАЭ",
+  "subtitle": "Mashreq личный",
+  "category_id": 16,
+  "icon": "sun",
+  "color": "#17B0A8",
+  "version": 1,
+  "op_date": "2026-09-10",
+  "created_at": "2026-09-10T09:20:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "подработка за сентябрь",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: подработка за сентябрь",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "debit",
+    "amount": {
+     "amount": 40000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 16,
+    "account_slug": "inc_uae_job",
+    "account_name": "Подработка ОАЭ",
+    "side": "credit",
+    "amount": {
+     "amount": 40000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-10T09:20:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 414,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-10T09:20:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "413": {
+  "id": 413,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 7300,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 171185,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-09-09",
+  "created_at": "2026-09-09T15:20:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "ужин с Машей",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: ужин с Машей",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 7300,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 7300,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-09T15:20:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 413,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-09T15:20:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "412": {
+  "id": 412,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 10500,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 246225,
+   "currency": "RUB"
+  },
+  "title": "Связь и подписки",
+  "subtitle": "Mashreq личный",
+  "category_id": 23,
+  "icon": "wifi",
+  "color": "#5B6CD9",
+  "version": 1,
+  "op_date": "2026-09-09",
+  "created_at": "2026-09-09T07:15:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "Etisalat, интернет и связь",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Etisalat, интернет и связь",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 23,
+    "account_slug": "exp_comm",
+    "account_name": "Связь и подписки",
+    "side": "debit",
+    "amount": {
+     "amount": 10500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 10500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-09T07:15:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 412,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-09T07:15:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "411": {
+  "id": 411,
+  "kind": "income",
+  "direction": "in",
+  "amount": {
+   "amount": 1000000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 1000000,
+   "currency": "RUB"
+  },
+  "title": "Родители",
+  "subtitle": "Т-Банк",
+  "category_id": 15,
+  "icon": "home",
+  "color": "#34B37E",
+  "version": 1,
+  "op_date": "2026-09-08",
+  "created_at": "2026-09-08T06:50:11Z",
+  "status": "posted",
+  "source": "text",
+  "description": "перевод от родителей",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: перевод от родителей",
+  "confidence": null,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "debit",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 15,
+    "account_slug": "inc_parents",
+    "account_name": "Родители",
+    "side": "credit",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-08T06:50:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 411,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-08T06:50:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "432": {
+  "id": 432,
+  "kind": "family_repayment",
+  "direction": "neutral",
+  "amount": {
+   "amount": 20000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 469000,
+   "currency": "RUB"
+  },
+  "title": "Вернул в семейный",
+  "subtitle": "Mashreq личный → Mashreq семейный",
+  "category_id": null,
+  "icon": "family",
+  "color": "#34B37E",
+  "version": 1,
+  "op_date": "2026-09-07",
+  "created_at": "2026-09-07T08:40:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "вернул, что брал",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: вернул, что брал",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 7,
+    "account_slug": "mashreq_family",
+    "account_name": "Mashreq семейный",
+    "side": "debit",
+    "amount": {
+     "amount": 20000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 20000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-07T08:40:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 432,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-07T08:40:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "410": {
+  "id": 410,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 9200,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 215740,
+   "currency": "RUB"
+  },
+  "title": "Продукты",
+  "subtitle": "Mashreq личный",
+  "category_id": 19,
+  "icon": "groceries",
+  "color": "#EA4C55",
+  "version": 1,
+  "op_date": "2026-09-07",
+  "created_at": "2026-09-07T14:00:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "Spinneys",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Spinneys",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 19,
+    "account_slug": "exp_groceries",
+    "account_name": "Продукты",
+    "side": "debit",
+    "amount": {
+     "amount": 9200,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 9200,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-07T14:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 410,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-07T14:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "409": {
+  "id": 409,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 2800,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 65660,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Наличные AED",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-09-07",
+  "created_at": "2026-09-07T05:30:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "кофе и круассан",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: кофе и круассан",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 2800,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 2,
+    "account_slug": "cash_aed",
+    "account_name": "Наличные AED",
+    "side": "credit",
+    "amount": {
+     "amount": 2800,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-07T05:30:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 409,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-07T05:30:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "429": {
+  "id": 429,
+  "kind": "exchange",
+  "direction": "neutral",
+  "amount": {
+   "amount": 5000000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 5000000,
+   "currency": "RUB"
+  },
+  "title": "Обмен 50 000 ₽ на 512,30 USDT",
+  "subtitle": "Т-Банк → Bybit",
+  "category_id": null,
+  "icon": "swap",
+  "color": "#00A88F",
+  "version": 1,
+  "op_date": "2026-09-06",
+  "created_at": "2026-09-06T10:20:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "перевёл на Bybit",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: перевёл на Bybit",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 4,
+    "account_slug": "bybit",
+    "account_name": "Bybit",
+    "side": "debit",
+    "amount": {
+     "amount": 51230,
+     "currency": "USDT"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 36,
+    "account_slug": "eq_exchange",
+    "account_name": "Обмен валют",
+    "side": "credit",
+    "amount": {
+     "amount": 51230,
+     "currency": "USDT"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 3,
+    "account_id": 36,
+    "account_slug": "eq_exchange",
+    "account_name": "Обмен валют",
+    "side": "debit",
+    "amount": {
+     "amount": 5000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 4,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "credit",
+    "amount": {
+     "amount": 5000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-06T10:20:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 429,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-06T10:20:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "408": {
+  "id": 408,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 3500,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 82075,
+   "currency": "RUB"
+  },
+  "title": "Транспорт",
+  "subtitle": "Mashreq личный",
+  "category_id": 20,
+  "icon": "car",
+  "color": "#FFC531",
+  "version": 1,
+  "op_date": "2026-09-06",
+  "created_at": "2026-09-06T05:10:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "такси в аэропорт",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: такси в аэропорт",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 20,
+    "account_slug": "exp_transport",
+    "account_name": "Транспорт",
+    "side": "debit",
+    "amount": {
+     "amount": 3500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 3500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-06T05:10:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 408,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-06T05:10:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "407": {
+  "id": 407,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 30000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 703500,
+   "currency": "RUB"
+  },
+  "title": "Жильё",
+  "subtitle": "Mashreq личный",
+  "category_id": 21,
+  "icon": "home",
+  "color": "#34B37E",
+  "version": 1,
+  "op_date": "2026-09-05",
+  "created_at": "2026-09-05T08:00:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "DEWA, вода и электричество",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: DEWA, вода и электричество",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 21,
+    "account_slug": "exp_housing",
+    "account_name": "Жильё",
+    "side": "debit",
+    "amount": {
+     "amount": 30000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 30000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-05T08:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 407,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-05T08:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "406": {
+  "id": 406,
+  "kind": "income",
+  "direction": "in",
+  "amount": {
+   "amount": 2500000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 2500000,
+   "currency": "RUB"
+  },
+  "title": "Проекты",
+  "subtitle": "Т-Банк",
+  "category_id": 14,
+  "icon": "briefcase",
+  "color": "#3E7BFA",
+  "version": 1,
+  "op_date": "2026-09-05",
+  "created_at": "2026-09-05T12:40:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "оплата за сентябрь",
+  "counterparty": null,
+  "project": "Альфа",
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: оплата за сентябрь",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "debit",
+    "amount": {
+     "amount": 2500000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 14,
+    "account_slug": "inc_projects",
+    "account_name": "Проекты",
+    "side": "credit",
+    "amount": {
+     "amount": 2500000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": "Альфа"
+   },
+   {
+    "seq": 3,
+    "account_id": 32,
+    "account_slug": "exp_taxes",
+    "account_name": "Налоги",
+    "side": "debit",
+    "amount": {
+     "amount": 150000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 4,
+    "account_id": 13,
+    "account_slug": "tax_npd",
+    "account_name": "Налог НПД",
+    "side": "credit",
+    "amount": {
+     "amount": 150000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-05T12:40:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 406,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-05T12:40:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "405": {
+  "id": 405,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 12000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 281400,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-09-04",
+  "created_at": "2026-09-04T16:15:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "ужин в Loca",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: ужин в Loca",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 12000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 12000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-04T16:15:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 405,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-04T16:15:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "430": {
+  "id": 430,
+  "kind": "family_withdrawal",
+  "direction": "neutral",
+  "amount": {
+   "amount": 20000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 469000,
+   "currency": "RUB"
+  },
+  "title": "Взял из семейного",
+  "subtitle": "Mashreq семейный → Mashreq личный",
+  "category_id": null,
+  "icon": "family",
+  "color": "#34B37E",
+  "version": 1,
+  "op_date": "2026-09-03",
+  "created_at": "2026-09-03T13:00:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "взял на продукты",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: взял на продукты",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "debit",
+    "amount": {
+     "amount": 20000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 7,
+    "account_slug": "mashreq_family",
+    "account_name": "Mashreq семейный",
+    "side": "credit",
+    "amount": {
+     "amount": 20000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": {
+   "pair": "AED/RUB",
+   "rate_e6": 23900000,
+   "source": "bybit_p2p",
+   "at": "2026-09-03T13:00:11Z"
+  },
+  "rates_snapshot": {
+   "at": "2026-09-03T13:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000,
+   "used_rate_e6": 23900000,
+   "used_pair": "AED/RUB",
+   "used_source": "bybit_p2p"
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 430,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-03T13:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "404": {
+  "id": 404,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 2000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 46900,
+   "currency": "RUB"
+  },
+  "title": "Транспорт",
+  "subtitle": "Mashreq личный",
+  "category_id": 20,
+  "icon": "car",
+  "color": "#FFC531",
+  "version": 1,
+  "op_date": "2026-09-03",
+  "created_at": "2026-09-03T04:40:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "Careem до Марины",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Careem до Марины",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 20,
+    "account_slug": "exp_transport",
+    "account_name": "Транспорт",
+    "side": "debit",
+    "amount": {
+     "amount": 2000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 2000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-03T04:40:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 404,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-03T04:40:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "403": {
+  "id": 403,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 18500,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 433825,
+   "currency": "RUB"
+  },
+  "title": "Продукты",
+  "subtitle": "Mashreq личный",
+  "category_id": 19,
+  "icon": "groceries",
+  "color": "#EA4C55",
+  "version": 1,
+  "op_date": "2026-09-03",
+  "created_at": "2026-09-03T14:20:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "Carrefour, большая закупка",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Carrefour, большая закупка",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 19,
+    "account_slug": "exp_groceries",
+    "account_name": "Продукты",
+    "side": "debit",
+    "amount": {
+     "amount": 18500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 18500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-03T14:20:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 403,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-03T14:20:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "402": {
+  "id": 402,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 4300,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 100835,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-09-02",
+  "created_at": "2026-09-02T09:40:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "обед в кафе",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: обед в кафе",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 4300,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 4300,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-02T09:40:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 402,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-02T09:40:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "401": {
+  "id": 401,
+  "kind": "income",
+  "direction": "in",
+  "amount": {
+   "amount": 1000000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 1000000,
+   "currency": "RUB"
+  },
+  "title": "Родители",
+  "subtitle": "Т-Банк",
+  "category_id": 15,
+  "icon": "home",
+  "color": "#34B37E",
+  "version": 1,
+  "op_date": "2026-09-01",
+  "created_at": "2026-09-01T07:05:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "перевод от родителей",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: перевод от родителей",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "debit",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 15,
+    "account_slug": "inc_parents",
+    "account_name": "Родители",
+    "side": "credit",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-01T07:05:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 401,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-01T07:05:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "400": {
+  "id": 400,
+  "kind": "tax_payment",
+  "direction": "out",
+  "amount": {
+   "amount": 500000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 500000,
+   "currency": "RUB"
+  },
+  "title": "Уплата налога НПД",
+  "subtitle": "Т-Банк",
+  "category_id": null,
+  "icon": "tax",
+  "color": "#6E7781",
+  "version": 1,
+  "op_date": "2026-09-01",
+  "created_at": "2026-09-01T05:00:11Z",
+  "status": "posted",
+  "source": "manual",
+  "description": "частичная уплата НПД",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: частичная уплата НПД",
+  "confidence": null,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 13,
+    "account_slug": "tax_npd",
+    "account_name": "Налог НПД",
+    "side": "debit",
+    "amount": {
+     "amount": 500000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "credit",
+    "amount": {
+     "amount": 500000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-09-01T05:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 400,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-09-01T05:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "399": {
+  "id": 399,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 8600,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 201670,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-08-31",
+  "created_at": "2026-08-31T15:10:11Z",
+  "status": "void",
+  "source": "voice",
+  "description": "ужин, записал дважды",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: ужин, записал дважды",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 8600,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 8600,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-08-31T15:10:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 399,
+    "version": 1,
+    "status": "void",
+    "created_at": "2026-08-31T15:10:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "398": {
+  "id": 398,
+  "kind": "balance_correction",
+  "direction": "neutral",
+  "amount": {
+   "amount": 235000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 235000,
+   "currency": "RUB"
+  },
+  "title": "Выровнял остаток",
+  "subtitle": "Т-Банк",
+  "category_id": null,
+  "icon": "adjust",
+  "color": "#A0A7B0",
+  "version": 1,
+  "op_date": "2026-08-31",
+  "created_at": "2026-08-31T05:20:11Z",
+  "status": "posted",
+  "source": "screenshot",
+  "description": "выровнял по скрину банка",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: выровнял по скрину банка",
+  "confidence": null,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "credit",
+    "amount": {
+     "amount": 235000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 37,
+    "account_slug": "eq_correction",
+    "account_name": "Корректировка остатков",
+    "side": "debit",
+    "amount": {
+     "amount": 235000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-08-31T05:20:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 398,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-08-31T05:20:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "397": {
+  "id": 397,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 4500,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 105525,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-08-30",
+  "created_at": "2026-08-30T09:00:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "завтрак",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: завтрак",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 4500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 4500,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-08-30T09:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 397,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-08-30T09:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "396": {
+  "id": 396,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 22000,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 515900,
+   "currency": "RUB"
+  },
+  "title": "Одежда",
+  "subtitle": "Mashreq личный",
+  "category_id": 25,
+  "icon": "shirt",
+  "color": "#B455C9",
+  "version": 1,
+  "op_date": "2026-08-29",
+  "created_at": "2026-08-29T12:10:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "кроссовки",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: кроссовки",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 25,
+    "account_slug": "exp_clothes",
+    "account_name": "Одежда",
+    "side": "debit",
+    "amount": {
+     "amount": 22000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 22000,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-08-29T12:10:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 396,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-08-29T12:10:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "395": {
+  "id": 395,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 2400,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 56280,
+   "currency": "RUB"
+  },
+  "title": "Транспорт",
+  "subtitle": "Наличные AED",
+  "category_id": 20,
+  "icon": "car",
+  "color": "#FFC531",
+  "version": 1,
+  "op_date": "2026-08-29",
+  "created_at": "2026-08-29T06:30:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "Careem",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Careem",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 20,
+    "account_slug": "exp_transport",
+    "account_name": "Транспорт",
+    "side": "debit",
+    "amount": {
+     "amount": 2400,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 2,
+    "account_slug": "cash_aed",
+    "account_name": "Наличные AED",
+    "side": "credit",
+    "amount": {
+     "amount": 2400,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-08-29T06:30:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 395,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-08-29T06:30:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "394": {
+  "id": 394,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 16200,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 379890,
+   "currency": "RUB"
+  },
+  "title": "Продукты",
+  "subtitle": "Mashreq личный",
+  "category_id": 19,
+  "icon": "groceries",
+  "color": "#EA4C55",
+  "version": 1,
+  "op_date": "2026-08-28",
+  "created_at": "2026-08-28T14:40:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "Carrefour",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: Carrefour",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 19,
+    "account_slug": "exp_groceries",
+    "account_name": "Продукты",
+    "side": "debit",
+    "amount": {
+     "amount": 16200,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 16200,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-08-28T14:40:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 394,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-08-28T14:40:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "393": {
+  "id": 393,
+  "kind": "income",
+  "direction": "in",
+  "amount": {
+   "amount": 1000000,
+   "currency": "RUB"
+  },
+  "amount_in_view": {
+   "amount": 1000000,
+   "currency": "RUB"
+  },
+  "title": "Родители",
+  "subtitle": "Т-Банк",
+  "category_id": 15,
+  "icon": "home",
+  "color": "#34B37E",
+  "version": 1,
+  "op_date": "2026-08-28",
+  "created_at": "2026-08-28T07:00:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "перевод от родителей",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: перевод от родителей",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 5,
+    "account_slug": "tbank",
+    "account_name": "Т-Банк",
+    "side": "debit",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 15,
+    "account_slug": "inc_parents",
+    "account_name": "Родители",
+    "side": "credit",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-08-28T07:00:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 393,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-08-28T07:00:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ },
+ "392": {
+  "id": 392,
+  "kind": "expense",
+  "direction": "out",
+  "amount": {
+   "amount": 5400,
+   "currency": "AED"
+  },
+  "amount_in_view": {
+   "amount": 126630,
+   "currency": "RUB"
+  },
+  "title": "Кафе и рестораны",
+  "subtitle": "Mashreq личный",
+  "category_id": 18,
+  "icon": "cafe",
+  "color": "#FF7A45",
+  "version": 1,
+  "op_date": "2026-08-27",
+  "created_at": "2026-08-27T08:20:11Z",
+  "status": "posted",
+  "source": "voice",
+  "description": "обед на Джумейре",
+  "counterparty": null,
+  "project": null,
+  "replaces_entry_id": null,
+  "replaced_by_entry_id": null,
+  "due_date": null,
+  "raw_input": "Расшифровка: обед на Джумейре",
+  "confidence": 0.94,
+  "postings": [
+   {
+    "seq": 1,
+    "account_id": 18,
+    "account_slug": "exp_cafe",
+    "account_name": "Кафе и рестораны",
+    "side": "debit",
+    "amount": {
+     "amount": 5400,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "seq": 2,
+    "account_id": 1,
+    "account_slug": "mashreq_personal",
+    "account_name": "Mashreq личный",
+    "side": "credit",
+    "amount": {
+     "amount": 5400,
+     "currency": "AED"
+    },
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "rate": null,
+  "rates_snapshot": {
+   "at": "2026-08-27T08:20:11Z",
+   "source": "bybit_p2p",
+   "rub_per_aed_e6": 23450000,
+   "rub_per_usd_e6": 84173200,
+   "rub_per_usdt_e6": 97150000,
+   "markup_rub_per_aed_e6": 2000000
+  },
+  "tranche": null,
+  "versions": [
+   {
+    "id": 392,
+    "version": 1,
+    "status": "posted",
+    "created_at": "2026-08-27T08:20:11Z",
+    "changed": []
+   }
+  ],
+  "warnings": []
+ }
+}

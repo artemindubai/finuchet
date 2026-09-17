@@ -1,0 +1,182 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Токены — DESIGN_SPEC 4.2.2. Цвета поверхностей и текста берутся у Телеграма, действия — свои. */
+:root {
+  --c-bg: var(--tg-theme-secondary-bg-color, #f2f3f5);
+  --c-card: var(--tg-theme-bg-color, #ffffff);
+  --c-inset: #f4f5f6;
+  --c-separator: #e6e8eb;
+
+  --c-text: var(--tg-theme-text-color, #17181a);
+  --c-hint: var(--tg-theme-hint-color, #8b9096);
+  --c-onbtn: #17181a;
+
+  --c-blue: #3e7bfa;
+  --c-blue-weak: #e8f0fe;
+  --c-yellow: #ffdd2d;
+  --c-yellow-press: #f2ce1a;
+
+  --c-income: #1fa855;
+  --c-danger: #e5484d;
+  --c-frozen: #6f7a87;
+  --c-frozen-bg: #edf1f5;
+
+  --gutter: 16px;
+  --nav-h: 56px;
+}
+
+:root[data-theme='dark'] {
+  --c-bg: var(--tg-theme-secondary-bg-color, #0e0f11);
+  --c-card: var(--tg-theme-bg-color, #1c1d20);
+  --c-inset: #2a2c30;
+  --c-separator: #2a2c30;
+  --c-text: var(--tg-theme-text-color, #ffffff);
+  --c-hint: var(--tg-theme-hint-color, #8e939a);
+  --c-blue: #6fa3ff;
+  --c-blue-weak: #1e2a44;
+  --c-income: #46c46a;
+  --c-danger: #ff6369;
+  --c-frozen: #9aa4b0;
+  --c-frozen-bg: #24282e;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--c-bg);
+  color: var(--c-text);
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 20px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+input,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+.nums {
+  font-variant-numeric: tabular-nums;
+}
+
+:focus-visible {
+  outline: 2px solid var(--c-blue);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+
+ /* Скелетон не появляется первые 150 мс: быстрый ответ не должен мигать (DESIGN_SPEC 4.3). */
+.skeleton-wrap {
+  opacity: 0;
+  animation: skeleton-appear 0s linear 150ms forwards;
+}
+
+@keyframes skeleton-appear {
+  to {
+    opacity: 1;
+  }
+}
+
+.skeleton {
+  background: var(--c-inset);
+  border-radius: 8px;
+  animation: pulse 1.4s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.55;
+  }
+}
+
+.sheet-enter {
+  animation: sheet-up 240ms cubic-bezier(0.32, 0.72, 0, 1);
+}
+
+@keyframes sheet-up {
+  from {
+    transform: translateY(100%);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.backdrop-enter {
+  animation: fade-in 180ms linear;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+
+   /* Скелетон не появляется первые 150 мс: быстрый ответ не должен мигать (DESIGN_SPEC 4.3). */
+.skeleton-wrap {
+  opacity: 0;
+  animation: skeleton-appear 0s linear 150ms forwards;
+}
+
+@keyframes skeleton-appear {
+  to {
+    opacity: 1;
+  }
+}
+
+.skeleton {
+    animation: none;
+    opacity: 0.8;
+  }
+}

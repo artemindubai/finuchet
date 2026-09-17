@@ -1,0 +1,328 @@
+{
+ "account": {
+  "id": 5,
+  "slug": "tbank",
+  "name": "Т-Банк",
+  "type": "asset_personal",
+  "role": "asset",
+  "currency": "RUB",
+  "icon": "card",
+  "balance": {
+   "amount": 13200000,
+   "currency": "RUB"
+  },
+  "natural": {
+   "amount": 13200000,
+   "currency": "RUB"
+  },
+  "in_view": {
+   "amount": 13200000,
+   "currency": "RUB"
+  },
+  "frozen": {
+   "amount": 1225000,
+   "currency": "RUB"
+  },
+  "archived": false,
+  "free": {
+   "amount": 11975000,
+   "currency": "RUB"
+  }
+ },
+ "tranches": [
+  {
+   "id": 3,
+   "op_date": "2026-09-17",
+   "aed_left": {
+    "amount": 50000,
+    "currency": "AED"
+   },
+   "rub_left": {
+    "amount": 1225000,
+    "currency": "RUB"
+   },
+   "rate_e6": 24500000,
+   "rate_source": "bybit_p2p",
+   "entry_id": 431,
+   "status": "open",
+   "label": "заблокировано в счёт взятых 17.09.2026 500 AED по курсу 24,50"
+  }
+ ],
+ "entries": {
+  "items": [
+   {
+    "id": 426,
+    "kind": "transfer",
+    "direction": "neutral",
+    "amount": {
+     "amount": 2000000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 2000000,
+     "currency": "RUB"
+    },
+    "title": "Перевод",
+    "subtitle": "Т-Банк → Сбер",
+    "category_id": null,
+    "icon": "swap",
+    "color": "#7B8794",
+    "version": 1,
+    "op_date": "2026-09-15",
+    "created_at": "2026-09-15T08:10:11Z",
+    "status": "posted",
+    "source": "voice",
+    "description": "переложил на Сбер",
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "id": 422,
+    "kind": "expense",
+    "direction": "out",
+    "amount": {
+     "amount": 39900,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 39900,
+     "currency": "RUB"
+    },
+    "title": "Связь и подписки",
+    "subtitle": "Т-Банк",
+    "category_id": 23,
+    "icon": "wifi",
+    "color": "#5B6CD9",
+    "version": 1,
+    "op_date": "2026-09-13",
+    "created_at": "2026-09-13T06:00:11Z",
+    "status": "posted",
+    "source": "screenshot",
+    "description": "Яндекс Плюс",
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "id": 420,
+    "kind": "income",
+    "direction": "in",
+    "amount": {
+     "amount": 1712000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 1712000,
+     "currency": "RUB"
+    },
+    "title": "Проекты",
+    "subtitle": "Т-Банк",
+    "category_id": 14,
+    "icon": "briefcase",
+    "color": "#3E7BFA",
+    "version": 1,
+    "op_date": "2026-09-12",
+    "created_at": "2026-09-12T11:10:11Z",
+    "status": "posted",
+    "source": "voice",
+    "description": "второй этап",
+    "counterparty": null,
+    "project": "Бета"
+   },
+   {
+    "id": 411,
+    "kind": "income",
+    "direction": "in",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "title": "Родители",
+    "subtitle": "Т-Банк",
+    "category_id": 15,
+    "icon": "home",
+    "color": "#34B37E",
+    "version": 1,
+    "op_date": "2026-09-08",
+    "created_at": "2026-09-08T06:50:11Z",
+    "status": "posted",
+    "source": "text",
+    "description": "перевод от родителей",
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "id": 429,
+    "kind": "exchange",
+    "direction": "neutral",
+    "amount": {
+     "amount": 5000000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 5000000,
+     "currency": "RUB"
+    },
+    "title": "Обмен 50 000 ₽ на 512,30 USDT",
+    "subtitle": "Т-Банк → Bybit",
+    "category_id": null,
+    "icon": "swap",
+    "color": "#00A88F",
+    "version": 1,
+    "op_date": "2026-09-06",
+    "created_at": "2026-09-06T10:20:11Z",
+    "status": "posted",
+    "source": "voice",
+    "description": "перевёл на Bybit",
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "id": 406,
+    "kind": "income",
+    "direction": "in",
+    "amount": {
+     "amount": 2500000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 2500000,
+     "currency": "RUB"
+    },
+    "title": "Проекты",
+    "subtitle": "Т-Банк",
+    "category_id": 14,
+    "icon": "briefcase",
+    "color": "#3E7BFA",
+    "version": 1,
+    "op_date": "2026-09-05",
+    "created_at": "2026-09-05T12:40:11Z",
+    "status": "posted",
+    "source": "voice",
+    "description": "оплата за сентябрь",
+    "counterparty": null,
+    "project": "Альфа"
+   },
+   {
+    "id": 401,
+    "kind": "income",
+    "direction": "in",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "title": "Родители",
+    "subtitle": "Т-Банк",
+    "category_id": 15,
+    "icon": "home",
+    "color": "#34B37E",
+    "version": 1,
+    "op_date": "2026-09-01",
+    "created_at": "2026-09-01T07:05:11Z",
+    "status": "posted",
+    "source": "voice",
+    "description": "перевод от родителей",
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "id": 400,
+    "kind": "tax_payment",
+    "direction": "out",
+    "amount": {
+     "amount": 500000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 500000,
+     "currency": "RUB"
+    },
+    "title": "Уплата налога НПД",
+    "subtitle": "Т-Банк",
+    "category_id": null,
+    "icon": "tax",
+    "color": "#6E7781",
+    "version": 1,
+    "op_date": "2026-09-01",
+    "created_at": "2026-09-01T05:00:11Z",
+    "status": "posted",
+    "source": "manual",
+    "description": "частичная уплата НПД",
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "id": 398,
+    "kind": "balance_correction",
+    "direction": "neutral",
+    "amount": {
+     "amount": 235000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 235000,
+     "currency": "RUB"
+    },
+    "title": "Выровнял остаток",
+    "subtitle": "Т-Банк",
+    "category_id": null,
+    "icon": "adjust",
+    "color": "#A0A7B0",
+    "version": 1,
+    "op_date": "2026-08-31",
+    "created_at": "2026-08-31T05:20:11Z",
+    "status": "posted",
+    "source": "screenshot",
+    "description": "выровнял по скрину банка",
+    "counterparty": null,
+    "project": null
+   },
+   {
+    "id": 393,
+    "kind": "income",
+    "direction": "in",
+    "amount": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "amount_in_view": {
+     "amount": 1000000,
+     "currency": "RUB"
+    },
+    "title": "Родители",
+    "subtitle": "Т-Банк",
+    "category_id": 15,
+    "icon": "home",
+    "color": "#34B37E",
+    "version": 1,
+    "op_date": "2026-08-28",
+    "created_at": "2026-08-28T07:00:11Z",
+    "status": "posted",
+    "source": "voice",
+    "description": "перевод от родителей",
+    "counterparty": null,
+    "project": null
+   }
+  ],
+  "days": [],
+  "next_cursor": null,
+  "has_more": false
+ },
+ "month": {
+  "in": {
+   "amount": 5212000,
+   "currency": "RUB"
+  },
+  "out": {
+   "amount": 2574900,
+   "currency": "RUB"
+  }
+ }
+}

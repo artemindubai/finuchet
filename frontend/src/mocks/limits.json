@@ -1,0 +1,18 @@
+{
+ "items": [
+  {
+   "category_id": 18,
+   "name": "Кафе и рестораны",
+   "limit": {
+    "amount": 1500000,
+    "currency": "RUB"
+   },
+   "spent": {
+    "amount": 1180004,
+    "currency": "RUB"
+   },
+   "used_bp": 7867,
+   "left_days": 13
+  }
+ ]
+}

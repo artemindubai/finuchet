@@ -1,0 +1,27 @@
+{
+ "at": "2026-09-17T09:05:00Z",
+ "rates": [
+  {
+   "pair": "AED/RUB",
+   "rate_e6": 23450000,
+   "source": "bybit_p2p",
+   "at": "2026-09-17T09:05:00Z",
+   "stale": false
+  },
+  {
+   "pair": "USDT/RUB",
+   "rate_e6": 97150000,
+   "source": "bybit_p2p",
+   "at": "2026-09-17T09:05:00Z",
+   "stale": false
+  },
+  {
+   "pair": "USD/RUB",
+   "rate_e6": 84173200,
+   "source": "er_api",
+   "at": "2026-09-17T08:40:00Z",
+   "stale": false
+  }
+ ],
+ "markup_rub_per_aed_e6": 2000000
+}

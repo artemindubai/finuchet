@@ -1,0 +1,457 @@
+{
+ "accounts": [
+  {
+   "id": 1,
+   "slug": "mashreq_personal",
+   "name": "Mashreq личный",
+   "type": "asset_personal",
+   "currency": "AED",
+   "is_money": true,
+   "group_key": "AED",
+   "icon": "bank",
+   "sort": 10,
+   "archived": false
+  },
+  {
+   "id": 2,
+   "slug": "cash_aed",
+   "name": "Наличные AED",
+   "type": "asset_personal",
+   "currency": "AED",
+   "is_money": true,
+   "group_key": "AED",
+   "icon": "cash",
+   "sort": 20,
+   "archived": false
+  },
+  {
+   "id": 3,
+   "slug": "cash_rub",
+   "name": "Наличные ₽",
+   "type": "asset_personal",
+   "currency": "RUB",
+   "is_money": true,
+   "group_key": "RUB",
+   "icon": "cash",
+   "sort": 30,
+   "archived": false
+  },
+  {
+   "id": 4,
+   "slug": "bybit",
+   "name": "Bybit",
+   "type": "asset_personal",
+   "currency": "USDT",
+   "is_money": true,
+   "group_key": "USDT",
+   "icon": "crypto",
+   "sort": 40,
+   "archived": false
+  },
+  {
+   "id": 5,
+   "slug": "tbank",
+   "name": "Т-Банк",
+   "type": "asset_personal",
+   "currency": "RUB",
+   "is_money": true,
+   "group_key": "RUB",
+   "icon": "card",
+   "sort": 5,
+   "archived": false
+  },
+  {
+   "id": 6,
+   "slug": "sber",
+   "name": "Сбер",
+   "type": "asset_personal",
+   "currency": "RUB",
+   "is_money": true,
+   "group_key": "RUB",
+   "icon": "card",
+   "sort": 15,
+   "archived": false
+  },
+  {
+   "id": 7,
+   "slug": "mashreq_family",
+   "name": "Mashreq семейный",
+   "type": "asset_family",
+   "currency": "AED",
+   "is_money": true,
+   "group_key": "FAMILY",
+   "icon": "bank",
+   "sort": 10,
+   "archived": false
+  },
+  {
+   "id": 8,
+   "slug": "cash_aed_family",
+   "name": "Наличные AED семейные",
+   "type": "asset_family",
+   "currency": "AED",
+   "is_money": true,
+   "group_key": "FAMILY",
+   "icon": "cash",
+   "sort": 20,
+   "archived": false
+  },
+  {
+   "id": 9,
+   "slug": "receivable",
+   "name": "Мне должны",
+   "type": "asset_personal",
+   "currency": null,
+   "is_money": false,
+   "group_key": null,
+   "icon": "person",
+   "sort": 90,
+   "archived": false
+  },
+  {
+   "id": 10,
+   "slug": "family_fund",
+   "name": "Семейный фонд",
+   "type": "liability",
+   "currency": "AED",
+   "is_money": false,
+   "group_key": "FAMILY",
+   "icon": "family",
+   "sort": 30,
+   "archived": false
+  },
+  {
+   "id": 11,
+   "slug": "payable",
+   "name": "Я должен",
+   "type": "liability",
+   "currency": null,
+   "is_money": false,
+   "group_key": null,
+   "icon": "person",
+   "sort": 90,
+   "archived": false
+  },
+  {
+   "id": 12,
+   "slug": "sber_credit",
+   "name": "Кредитка Сбер",
+   "type": "liability",
+   "currency": "RUB",
+   "is_money": true,
+   "group_key": "RUB",
+   "icon": "credit",
+   "sort": 40,
+   "archived": false
+  },
+  {
+   "id": 13,
+   "slug": "tax_npd",
+   "name": "Налог НПД",
+   "type": "liability",
+   "currency": "RUB",
+   "is_money": false,
+   "group_key": null,
+   "icon": "tax",
+   "sort": 50,
+   "archived": false
+  }
+ ],
+ "categories": [
+  {
+   "id": 18,
+   "slug": "exp_cafe",
+   "name": "Кафе и рестораны",
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "sort": 10,
+   "archived": false
+  },
+  {
+   "id": 19,
+   "slug": "exp_groceries",
+   "name": "Продукты",
+   "icon": "groceries",
+   "color": "#EA4C55",
+   "sort": 20,
+   "archived": false
+  },
+  {
+   "id": 20,
+   "slug": "exp_transport",
+   "name": "Транспорт",
+   "icon": "car",
+   "color": "#FFC531",
+   "sort": 30,
+   "archived": false
+  },
+  {
+   "id": 21,
+   "slug": "exp_housing",
+   "name": "Жильё",
+   "icon": "home",
+   "color": "#34B37E",
+   "sort": 40,
+   "archived": false
+  },
+  {
+   "id": 22,
+   "slug": "exp_home",
+   "name": "Дом и быт",
+   "icon": "sofa",
+   "color": "#17B0A8",
+   "sort": 50,
+   "archived": false
+  },
+  {
+   "id": 23,
+   "slug": "exp_comm",
+   "name": "Связь и подписки",
+   "icon": "wifi",
+   "color": "#5B6CD9",
+   "sort": 60,
+   "archived": false
+  },
+  {
+   "id": 24,
+   "slug": "exp_fun",
+   "name": "Развлечения",
+   "icon": "fun",
+   "color": "#8E7CE0",
+   "sort": 70,
+   "archived": false
+  },
+  {
+   "id": 25,
+   "slug": "exp_clothes",
+   "name": "Одежда",
+   "icon": "shirt",
+   "color": "#B455C9",
+   "sort": 80,
+   "archived": false
+  },
+  {
+   "id": 26,
+   "slug": "exp_health",
+   "name": "Здоровье",
+   "icon": "health",
+   "color": "#2FA8E8",
+   "sort": 90,
+   "archived": false
+  },
+  {
+   "id": 27,
+   "slug": "exp_edu",
+   "name": "Учёба",
+   "icon": "edu",
+   "color": "#3E7BFA",
+   "sort": 100,
+   "archived": false
+  },
+  {
+   "id": 28,
+   "slug": "exp_visa",
+   "name": "Виза и документы",
+   "icon": "doc",
+   "color": "#7B8794",
+   "sort": 110,
+   "archived": false
+  },
+  {
+   "id": 29,
+   "slug": "exp_travel",
+   "name": "Путешествия",
+   "icon": "plane",
+   "color": "#00A5C4",
+   "sort": 120,
+   "archived": false
+  },
+  {
+   "id": 30,
+   "slug": "exp_charity",
+   "name": "Благотворительность",
+   "icon": "heart",
+   "color": "#EE5FA0",
+   "sort": 130,
+   "archived": false
+  },
+  {
+   "id": 31,
+   "slug": "exp_gifts",
+   "name": "Подарки",
+   "icon": "gift",
+   "color": "#FF9F1C",
+   "sort": 140,
+   "archived": false
+  },
+  {
+   "id": 32,
+   "slug": "exp_taxes",
+   "name": "Налоги",
+   "icon": "tax",
+   "color": "#6E7781",
+   "sort": 150,
+   "archived": false
+  },
+  {
+   "id": 33,
+   "slug": "exp_family_contrib",
+   "name": "Взнос в семейный фонд",
+   "icon": "family",
+   "color": "#1FA855",
+   "sort": 160,
+   "archived": false
+  },
+  {
+   "id": 34,
+   "slug": "exp_other",
+   "name": "Прочее",
+   "icon": "dots",
+   "color": "#A0A7B0",
+   "sort": 170,
+   "archived": false
+  }
+ ],
+ "income_sources": [
+  {
+   "id": 14,
+   "slug": "inc_projects",
+   "name": "Проекты",
+   "tax_rate_bp": 600,
+   "tax_account_id": 13,
+   "color": "#3E7BFA",
+   "icon": "briefcase",
+   "sort": 10,
+   "archived": false
+  },
+  {
+   "id": 15,
+   "slug": "inc_parents",
+   "name": "Родители",
+   "tax_rate_bp": 0,
+   "tax_account_id": 13,
+   "color": "#34B37E",
+   "icon": "home",
+   "sort": 20,
+   "archived": false
+  },
+  {
+   "id": 16,
+   "slug": "inc_uae_job",
+   "name": "Подработка ОАЭ",
+   "tax_rate_bp": 0,
+   "tax_account_id": 13,
+   "color": "#17B0A8",
+   "icon": "sun",
+   "sort": 30,
+   "archived": false
+  },
+  {
+   "id": 17,
+   "slug": "inc_other",
+   "name": "Прочее",
+   "tax_rate_bp": 0,
+   "tax_account_id": 13,
+   "color": "#A0A7B0",
+   "icon": "dots",
+   "sort": 40,
+   "archived": false
+  }
+ ],
+ "counterparties": [
+  {
+   "id": 3,
+   "name": "Маша",
+   "kind": "person",
+   "archived": false
+  },
+  {
+   "id": 4,
+   "name": "Альфа",
+   "kind": "client",
+   "archived": false
+  },
+  {
+   "id": 5,
+   "name": "Бета",
+   "kind": "client",
+   "archived": false
+  }
+ ],
+ "currencies": [
+  "RUB",
+  "AED",
+  "USDT",
+  "USD"
+ ],
+ "kinds": [
+  {
+   "key": "expense",
+   "title": "Расход"
+  },
+  {
+   "key": "income",
+   "title": "Доход"
+  },
+  {
+   "key": "transfer",
+   "title": "Перевод"
+  },
+  {
+   "key": "exchange",
+   "title": "Обмен"
+  },
+  {
+   "key": "family_withdrawal",
+   "title": "Взял из семейного"
+  },
+  {
+   "key": "family_repayment",
+   "title": "Вернул в семейный"
+  },
+  {
+   "key": "family_topup_by_parents",
+   "title": "Пополнение семейного"
+  },
+  {
+   "key": "own_contribution_to_family",
+   "title": "Внёс своих в семейный"
+  },
+  {
+   "key": "family_spent_own",
+   "title": "Семья потратила из семейного"
+  },
+  {
+   "key": "paid_for_family_from_own",
+   "title": "Заплатил за семью со своих"
+  },
+  {
+   "key": "loan_given",
+   "title": "Дал в долг"
+  },
+  {
+   "key": "loan_repaid_to_me",
+   "title": "Вернули долг мне"
+  },
+  {
+   "key": "loan_taken",
+   "title": "Взял в долг"
+  },
+  {
+   "key": "loan_repaid_by_me",
+   "title": "Вернул долг"
+  },
+  {
+   "key": "tax_payment",
+   "title": "Уплата налога"
+  },
+  {
+   "key": "opening_balance",
+   "title": "Начальный остаток"
+  },
+  {
+   "key": "balance_correction",
+   "title": "Выравнивание остатка"
+  }
+ ]
+}

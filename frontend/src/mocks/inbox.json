@@ -1,0 +1,93 @@
+{
+ "batches": [
+  {
+   "batch_id": "scr_20260917_1",
+   "source": "screenshot",
+   "account_id": 5,
+   "created_at": "2026-09-17T08:10:00Z",
+   "pending": 2,
+   "items": [
+    {
+     "id": 11,
+     "op_date": "2026-09-16",
+     "amount": {
+      "amount": -235000,
+      "currency": "RUB"
+     },
+     "raw_text": "ЯНДЕКС ЕДА",
+     "match_status": "new",
+     "suggested_category_id": 19,
+     "candidates": []
+    },
+    {
+     "id": 12,
+     "op_date": "2026-09-15",
+     "amount": {
+      "amount": -39900,
+      "currency": "RUB"
+     },
+     "raw_text": "YANDEX PLUS",
+     "match_status": "matched",
+     "suggested_category_id": 23,
+     "candidates": []
+    },
+    {
+     "id": 13,
+     "op_date": "2026-09-15",
+     "amount": {
+      "amount": -2000000,
+      "currency": "RUB"
+     },
+     "raw_text": "PEREVOD SBER",
+     "match_status": "matched",
+     "suggested_category_id": null,
+     "candidates": []
+    },
+    {
+     "id": 14,
+     "op_date": "2026-09-12",
+     "amount": {
+      "amount": 1712000,
+      "currency": "RUB"
+     },
+     "raw_text": "POSTUPLENIE",
+     "match_status": "matched",
+     "suggested_category_id": null,
+     "candidates": []
+    },
+    {
+     "id": 15,
+     "op_date": "2026-09-12",
+     "amount": {
+      "amount": -364581,
+      "currency": "RUB"
+     },
+     "raw_text": "SNYATIE NALICHNYH",
+     "match_status": "ambiguous",
+     "suggested_category_id": 34,
+     "candidates": [
+      {
+       "entry_id": 435,
+       "score": 60,
+       "why": "сумма 3 645,81 против 3 645,81"
+      }
+     ]
+    }
+   ],
+   "balance_check": {
+    "bank": {
+     "amount": 13200000,
+     "currency": "RUB"
+    },
+    "ledger": {
+     "amount": 13435000,
+     "currency": "RUB"
+    },
+    "diff": {
+     "amount": -235000,
+     "currency": "RUB"
+    }
+   }
+  }
+ ]
+}

@@ -1,0 +1,81 @@
+{
+ "owed_to_me": [
+  {
+   "counterparty_id": 3,
+   "name": "Маша",
+   "amounts": [
+    {
+     "amount": 30000,
+     "currency": "AED"
+    }
+   ],
+   "in_view": {
+    "amount": 703500,
+    "currency": "RUB"
+   },
+   "due_date": "2026-09-30",
+   "since": "2026-09-14",
+   "entry_ids": [
+    433
+   ]
+  }
+ ],
+ "i_owe": [],
+ "tax": {
+  "account_id": 13,
+  "name": "Налог НПД",
+  "amount": {
+   "amount": 1836000,
+   "currency": "RUB"
+  },
+  "due_date": "2026-10-28",
+  "note": "начислено по доходам проектов"
+ },
+ "credit_card": {
+  "account_id": 12,
+  "name": "Кредитка Сбер",
+  "amount": {
+   "amount": 0,
+   "currency": "RUB"
+  },
+  "due_date": null
+ },
+ "family": {
+  "debt": {
+   "amount": 50000,
+   "currency": "AED"
+  },
+  "direction": "i_owe",
+  "frozen_rub": {
+   "amount": 1225000,
+   "currency": "RUB"
+  },
+  "today_repay_rub": {
+   "amount": 1172500,
+   "currency": "RUB"
+  },
+  "tranches": [
+   {
+    "id": 3,
+    "op_date": "2026-09-17",
+    "aed_left": {
+     "amount": 50000,
+     "currency": "AED"
+    },
+    "rub_left": {
+     "amount": 1225000,
+     "currency": "RUB"
+    },
+    "rate_e6": 24500000,
+    "rate_source": "bybit_p2p",
+    "entry_id": 431,
+    "status": "open",
+    "label": "заблокировано в счёт взятых 17.09.2026 500 AED по курсу 24,50"
+   }
+  ]
+ },
+ "total_in_view": {
+  "amount": -2305000,
+  "currency": "RUB"
+ }
+}

@@ -1,0 +1,112 @@
+{
+ "id": 431,
+ "kind": "family_withdrawal",
+ "direction": "neutral",
+ "amount": {
+  "amount": 50000,
+  "currency": "AED"
+ },
+ "amount_in_view": {
+  "amount": 1172500,
+  "currency": "RUB"
+ },
+ "title": "Взял из семейного",
+ "subtitle": "Mashreq семейный → Mashreq личный",
+ "category_id": null,
+ "icon": "family",
+ "color": "#34B37E",
+ "version": 1,
+ "op_date": "2026-09-17",
+ "created_at": "2026-09-17T09:20:11Z",
+ "status": "posted",
+ "source": "voice",
+ "description": "взял на расходы",
+ "counterparty": null,
+ "project": null,
+ "replaces_entry_id": null,
+ "replaced_by_entry_id": null,
+ "due_date": null,
+ "raw_input": "Взял с семейного счёта 500 дирхам, заморозь эквивалент в рублях на моём счёте",
+ "confidence": 0.94,
+ "postings": [
+  {
+   "seq": 1,
+   "account_id": 1,
+   "account_slug": "mashreq_personal",
+   "account_name": "Mashreq личный",
+   "side": "debit",
+   "amount": {
+    "amount": 50000,
+    "currency": "AED"
+   },
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "seq": 2,
+   "account_id": 7,
+   "account_slug": "mashreq_family",
+   "account_name": "Mashreq семейный",
+   "side": "credit",
+   "amount": {
+    "amount": 50000,
+    "currency": "AED"
+   },
+   "counterparty": null,
+   "project": null
+  }
+ ],
+ "rate": {
+  "pair": "AED/RUB",
+  "rate_e6": 24500000,
+  "source": "bybit_p2p",
+  "at": "2026-09-17T09:20:11Z"
+ },
+ "rates_snapshot": {
+  "at": "2026-09-17T09:20:11Z",
+  "source": "bybit_p2p",
+  "rub_per_aed_e6": 23450000,
+  "rub_per_usd_e6": 84173200,
+  "rub_per_usdt_e6": 97150000,
+  "markup_rub_per_aed_e6": 2000000,
+  "used_rate_e6": 24500000,
+  "used_pair": "AED/RUB",
+  "used_source": "bybit_p2p"
+ },
+ "tranche": {
+  "id": 3,
+  "aed_taken": {
+   "amount": 50000,
+   "currency": "AED"
+  },
+  "aed_left": {
+   "amount": 50000,
+   "currency": "AED"
+  },
+  "rub_frozen": {
+   "amount": 1225000,
+   "currency": "RUB"
+  },
+  "rub_left": {
+   "amount": 1225000,
+   "currency": "RUB"
+  },
+  "rate_e6": 24500000,
+  "rate_source": "bybit_p2p",
+  "op_date": "2026-09-17",
+  "account_id": 5,
+  "account_name": "Т-Банк",
+  "status": "open",
+  "label": "заблокировано в счёт взятых 17.09.2026 500 AED по курсу 24,50"
+ },
+ "versions": [
+  {
+   "id": 431,
+   "version": 1,
+   "status": "posted",
+   "created_at": "2026-09-17T09:20:11Z",
+   "changed": []
+  }
+ ],
+ "warnings": []
+}

@@ -1,0 +1,1463 @@
+{
+ "items": [
+  {
+   "id": 431,
+   "kind": "family_withdrawal",
+   "direction": "neutral",
+   "amount": {
+    "amount": 50000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 1172500,
+    "currency": "RUB"
+   },
+   "title": "Взял из семейного",
+   "subtitle": "Mashreq семейный → Mashreq личный",
+   "category_id": null,
+   "icon": "family",
+   "color": "#34B37E",
+   "version": 1,
+   "op_date": "2026-09-17",
+   "created_at": "2026-09-17T09:20:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "взял на расходы",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 434,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 3400,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 79730,
+    "currency": "RUB"
+   },
+   "title": "Подарки",
+   "subtitle": "Наличные AED",
+   "category_id": 31,
+   "icon": "gift",
+   "color": "#FF9F1C",
+   "version": 2,
+   "op_date": "2026-09-16",
+   "created_at": "2026-09-16T16:40:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "цветы маме Маши",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 428,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 3100,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 72695,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Наличные AED",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-16",
+   "created_at": "2026-09-16T09:10:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "шаурма и сок",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 427,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 6800,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 159460,
+    "currency": "RUB"
+   },
+   "title": "Продукты",
+   "subtitle": "Наличные AED",
+   "category_id": 19,
+   "icon": "groceries",
+   "color": "#EA4C55",
+   "version": 1,
+   "op_date": "2026-09-16",
+   "created_at": "2026-09-16T14:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Union Coop",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 426,
+   "kind": "transfer",
+   "direction": "neutral",
+   "amount": {
+    "amount": 2000000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 2000000,
+    "currency": "RUB"
+   },
+   "title": "Перевод",
+   "subtitle": "Т-Банк → Сбер",
+   "category_id": null,
+   "icon": "swap",
+   "color": "#7B8794",
+   "version": 1,
+   "op_date": "2026-09-15",
+   "created_at": "2026-09-15T08:10:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "переложил на Сбер",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 425,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 5120,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 120064,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-15",
+   "created_at": "2026-09-15T08:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "бизнес-ланч",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 433,
+   "kind": "loan_given",
+   "direction": "out",
+   "amount": {
+    "amount": 30000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 703500,
+    "currency": "RUB"
+   },
+   "title": "Дал в долг · Маша",
+   "subtitle": "Mashreq личный",
+   "category_id": null,
+   "icon": "person",
+   "color": "#5B6CD9",
+   "version": 1,
+   "op_date": "2026-09-14",
+   "created_at": "2026-09-14T12:00:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "до конца месяца",
+   "counterparty": "Маша",
+   "project": null
+  },
+  {
+   "id": 424,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 4200,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 98490,
+    "currency": "RUB"
+   },
+   "title": "Транспорт",
+   "subtitle": "Mashreq личный",
+   "category_id": 20,
+   "icon": "car",
+   "color": "#FFC531",
+   "version": 1,
+   "op_date": "2026-09-14",
+   "created_at": "2026-09-14T13:50:11Z",
+   "status": "posted",
+   "source": "screenshot",
+   "description": "бензин",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 423,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 8700,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 204015,
+    "currency": "RUB"
+   },
+   "title": "Здоровье",
+   "subtitle": "Mashreq личный",
+   "category_id": 26,
+   "icon": "health",
+   "color": "#2FA8E8",
+   "version": 1,
+   "op_date": "2026-09-14",
+   "created_at": "2026-09-14T07:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "аптека Life",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 422,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 39900,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 39900,
+    "currency": "RUB"
+   },
+   "title": "Связь и подписки",
+   "subtitle": "Т-Банк",
+   "category_id": 23,
+   "icon": "wifi",
+   "color": "#5B6CD9",
+   "version": 1,
+   "op_date": "2026-09-13",
+   "created_at": "2026-09-13T06:00:11Z",
+   "status": "posted",
+   "source": "screenshot",
+   "description": "Яндекс Плюс",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 421,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 9500,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 222775,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-13",
+   "created_at": "2026-09-13T17:00:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "ужин на набережной",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 435,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 284806,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 284806,
+    "currency": "RUB"
+   },
+   "title": "Прочее",
+   "subtitle": "Наличные ₽",
+   "category_id": 34,
+   "icon": "dots",
+   "color": "#A0A7B0",
+   "version": 1,
+   "op_date": "2026-09-12",
+   "created_at": "2026-09-12T16:00:11Z",
+   "status": "posted",
+   "source": "manual",
+   "description": "мелкие траты наличными",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 420,
+   "kind": "income",
+   "direction": "in",
+   "amount": {
+    "amount": 1712000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 1712000,
+    "currency": "RUB"
+   },
+   "title": "Проекты",
+   "subtitle": "Т-Банк",
+   "category_id": 14,
+   "icon": "briefcase",
+   "color": "#3E7BFA",
+   "version": 1,
+   "op_date": "2026-09-12",
+   "created_at": "2026-09-12T11:10:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "второй этап",
+   "counterparty": null,
+   "project": "Бета"
+  },
+  {
+   "id": 419,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 14300,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 335335,
+    "currency": "RUB"
+   },
+   "title": "Продукты",
+   "subtitle": "Mashreq личный",
+   "category_id": 19,
+   "icon": "groceries",
+   "color": "#EA4C55",
+   "version": 1,
+   "op_date": "2026-09-11",
+   "created_at": "2026-09-11T15:40:11Z",
+   "status": "posted",
+   "source": "screenshot",
+   "description": "Carrefour",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 418,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 6000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 140700,
+    "currency": "RUB"
+   },
+   "title": "Развлечения",
+   "subtitle": "Mashreq личный",
+   "category_id": 24,
+   "icon": "fun",
+   "color": "#8E7CE0",
+   "version": 1,
+   "op_date": "2026-09-11",
+   "created_at": "2026-09-11T17:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "кино в Mall of the Emirates",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 417,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 6200,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 145390,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-11",
+   "created_at": "2026-09-11T10:05:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "обед в Reem Al Bawadi",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 416,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 1500,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 35175,
+    "currency": "RUB"
+   },
+   "title": "Транспорт",
+   "subtitle": "Наличные AED",
+   "category_id": 20,
+   "icon": "car",
+   "color": "#FFC531",
+   "version": 1,
+   "op_date": "2026-09-10",
+   "created_at": "2026-09-10T04:20:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "метро",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 415,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 12000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 281400,
+    "currency": "RUB"
+   },
+   "title": "Дом и быт",
+   "subtitle": "Mashreq личный",
+   "category_id": 22,
+   "icon": "sofa",
+   "color": "#17B0A8",
+   "version": 1,
+   "op_date": "2026-09-10",
+   "created_at": "2026-09-10T12:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Noon: лампа, швабра, мышка",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 414,
+   "kind": "income",
+   "direction": "in",
+   "amount": {
+    "amount": 40000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 938000,
+    "currency": "RUB"
+   },
+   "title": "Подработка ОАЭ",
+   "subtitle": "Mashreq личный",
+   "category_id": 16,
+   "icon": "sun",
+   "color": "#17B0A8",
+   "version": 1,
+   "op_date": "2026-09-10",
+   "created_at": "2026-09-10T09:20:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "подработка за сентябрь",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 413,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 7300,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 171185,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-09",
+   "created_at": "2026-09-09T15:20:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "ужин с Машей",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 412,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 10500,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 246225,
+    "currency": "RUB"
+   },
+   "title": "Связь и подписки",
+   "subtitle": "Mashreq личный",
+   "category_id": 23,
+   "icon": "wifi",
+   "color": "#5B6CD9",
+   "version": 1,
+   "op_date": "2026-09-09",
+   "created_at": "2026-09-09T07:15:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Etisalat, интернет и связь",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 411,
+   "kind": "income",
+   "direction": "in",
+   "amount": {
+    "amount": 1000000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 1000000,
+    "currency": "RUB"
+   },
+   "title": "Родители",
+   "subtitle": "Т-Банк",
+   "category_id": 15,
+   "icon": "home",
+   "color": "#34B37E",
+   "version": 1,
+   "op_date": "2026-09-08",
+   "created_at": "2026-09-08T06:50:11Z",
+   "status": "posted",
+   "source": "text",
+   "description": "перевод от родителей",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 432,
+   "kind": "family_repayment",
+   "direction": "neutral",
+   "amount": {
+    "amount": 20000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 469000,
+    "currency": "RUB"
+   },
+   "title": "Вернул в семейный",
+   "subtitle": "Mashreq личный → Mashreq семейный",
+   "category_id": null,
+   "icon": "family",
+   "color": "#34B37E",
+   "version": 1,
+   "op_date": "2026-09-07",
+   "created_at": "2026-09-07T08:40:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "вернул, что брал",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 410,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 9200,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 215740,
+    "currency": "RUB"
+   },
+   "title": "Продукты",
+   "subtitle": "Mashreq личный",
+   "category_id": 19,
+   "icon": "groceries",
+   "color": "#EA4C55",
+   "version": 1,
+   "op_date": "2026-09-07",
+   "created_at": "2026-09-07T14:00:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Spinneys",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 409,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 2800,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 65660,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Наличные AED",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-07",
+   "created_at": "2026-09-07T05:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "кофе и круассан",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 429,
+   "kind": "exchange",
+   "direction": "neutral",
+   "amount": {
+    "amount": 5000000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 5000000,
+    "currency": "RUB"
+   },
+   "title": "Обмен 50 000 ₽ на 512,30 USDT",
+   "subtitle": "Т-Банк → Bybit",
+   "category_id": null,
+   "icon": "swap",
+   "color": "#00A88F",
+   "version": 1,
+   "op_date": "2026-09-06",
+   "created_at": "2026-09-06T10:20:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "перевёл на Bybit",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 408,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 3500,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 82075,
+    "currency": "RUB"
+   },
+   "title": "Транспорт",
+   "subtitle": "Mashreq личный",
+   "category_id": 20,
+   "icon": "car",
+   "color": "#FFC531",
+   "version": 1,
+   "op_date": "2026-09-06",
+   "created_at": "2026-09-06T05:10:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "такси в аэропорт",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 407,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 30000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 703500,
+    "currency": "RUB"
+   },
+   "title": "Жильё",
+   "subtitle": "Mashreq личный",
+   "category_id": 21,
+   "icon": "home",
+   "color": "#34B37E",
+   "version": 1,
+   "op_date": "2026-09-05",
+   "created_at": "2026-09-05T08:00:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "DEWA, вода и электричество",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 406,
+   "kind": "income",
+   "direction": "in",
+   "amount": {
+    "amount": 2500000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 2500000,
+    "currency": "RUB"
+   },
+   "title": "Проекты",
+   "subtitle": "Т-Банк",
+   "category_id": 14,
+   "icon": "briefcase",
+   "color": "#3E7BFA",
+   "version": 1,
+   "op_date": "2026-09-05",
+   "created_at": "2026-09-05T12:40:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "оплата за сентябрь",
+   "counterparty": null,
+   "project": "Альфа"
+  },
+  {
+   "id": 405,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 12000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 281400,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-04",
+   "created_at": "2026-09-04T16:15:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "ужин в Loca",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 430,
+   "kind": "family_withdrawal",
+   "direction": "neutral",
+   "amount": {
+    "amount": 20000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 469000,
+    "currency": "RUB"
+   },
+   "title": "Взял из семейного",
+   "subtitle": "Mashreq семейный → Mashreq личный",
+   "category_id": null,
+   "icon": "family",
+   "color": "#34B37E",
+   "version": 1,
+   "op_date": "2026-09-03",
+   "created_at": "2026-09-03T13:00:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "взял на продукты",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 404,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 2000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 46900,
+    "currency": "RUB"
+   },
+   "title": "Транспорт",
+   "subtitle": "Mashreq личный",
+   "category_id": 20,
+   "icon": "car",
+   "color": "#FFC531",
+   "version": 1,
+   "op_date": "2026-09-03",
+   "created_at": "2026-09-03T04:40:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Careem до Марины",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 403,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 18500,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 433825,
+    "currency": "RUB"
+   },
+   "title": "Продукты",
+   "subtitle": "Mashreq личный",
+   "category_id": 19,
+   "icon": "groceries",
+   "color": "#EA4C55",
+   "version": 1,
+   "op_date": "2026-09-03",
+   "created_at": "2026-09-03T14:20:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Carrefour, большая закупка",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 402,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 4300,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 100835,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-02",
+   "created_at": "2026-09-02T09:40:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "обед в кафе",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 401,
+   "kind": "income",
+   "direction": "in",
+   "amount": {
+    "amount": 1000000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 1000000,
+    "currency": "RUB"
+   },
+   "title": "Родители",
+   "subtitle": "Т-Банк",
+   "category_id": 15,
+   "icon": "home",
+   "color": "#34B37E",
+   "version": 1,
+   "op_date": "2026-09-01",
+   "created_at": "2026-09-01T07:05:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "перевод от родителей",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 400,
+   "kind": "tax_payment",
+   "direction": "out",
+   "amount": {
+    "amount": 500000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 500000,
+    "currency": "RUB"
+   },
+   "title": "Уплата налога НПД",
+   "subtitle": "Т-Банк",
+   "category_id": null,
+   "icon": "tax",
+   "color": "#6E7781",
+   "version": 1,
+   "op_date": "2026-09-01",
+   "created_at": "2026-09-01T05:00:11Z",
+   "status": "posted",
+   "source": "manual",
+   "description": "частичная уплата НПД",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 399,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 8600,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 201670,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-08-31",
+   "created_at": "2026-08-31T15:10:11Z",
+   "status": "void",
+   "source": "voice",
+   "description": "ужин, записал дважды",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 398,
+   "kind": "balance_correction",
+   "direction": "neutral",
+   "amount": {
+    "amount": 235000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 235000,
+    "currency": "RUB"
+   },
+   "title": "Выровнял остаток",
+   "subtitle": "Т-Банк",
+   "category_id": null,
+   "icon": "adjust",
+   "color": "#A0A7B0",
+   "version": 1,
+   "op_date": "2026-08-31",
+   "created_at": "2026-08-31T05:20:11Z",
+   "status": "posted",
+   "source": "screenshot",
+   "description": "выровнял по скрину банка",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 397,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 4500,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 105525,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-08-30",
+   "created_at": "2026-08-30T09:00:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "завтрак",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 396,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 22000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 515900,
+    "currency": "RUB"
+   },
+   "title": "Одежда",
+   "subtitle": "Mashreq личный",
+   "category_id": 25,
+   "icon": "shirt",
+   "color": "#B455C9",
+   "version": 1,
+   "op_date": "2026-08-29",
+   "created_at": "2026-08-29T12:10:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "кроссовки",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 395,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 2400,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 56280,
+    "currency": "RUB"
+   },
+   "title": "Транспорт",
+   "subtitle": "Наличные AED",
+   "category_id": 20,
+   "icon": "car",
+   "color": "#FFC531",
+   "version": 1,
+   "op_date": "2026-08-29",
+   "created_at": "2026-08-29T06:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Careem",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 394,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 16200,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 379890,
+    "currency": "RUB"
+   },
+   "title": "Продукты",
+   "subtitle": "Mashreq личный",
+   "category_id": 19,
+   "icon": "groceries",
+   "color": "#EA4C55",
+   "version": 1,
+   "op_date": "2026-08-28",
+   "created_at": "2026-08-28T14:40:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Carrefour",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 393,
+   "kind": "income",
+   "direction": "in",
+   "amount": {
+    "amount": 1000000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 1000000,
+    "currency": "RUB"
+   },
+   "title": "Родители",
+   "subtitle": "Т-Банк",
+   "category_id": 15,
+   "icon": "home",
+   "color": "#34B37E",
+   "version": 1,
+   "op_date": "2026-08-28",
+   "created_at": "2026-08-28T07:00:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "перевод от родителей",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 392,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 5400,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 126630,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-08-27",
+   "created_at": "2026-08-27T08:20:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "обед на Джумейре",
+   "counterparty": null,
+   "project": null
+  }
+ ],
+ "_index": [
+  {
+   "id": 431,
+   "accounts": [
+    1,
+    7
+   ]
+  },
+  {
+   "id": 434,
+   "accounts": [
+    2,
+    31
+   ]
+  },
+  {
+   "id": 428,
+   "accounts": [
+    2,
+    18
+   ]
+  },
+  {
+   "id": 427,
+   "accounts": [
+    2,
+    19
+   ]
+  },
+  {
+   "id": 426,
+   "accounts": [
+    5,
+    6
+   ]
+  },
+  {
+   "id": 425,
+   "accounts": [
+    1,
+    18
+   ]
+  },
+  {
+   "id": 433,
+   "accounts": [
+    1,
+    9
+   ]
+  },
+  {
+   "id": 424,
+   "accounts": [
+    1,
+    20
+   ]
+  },
+  {
+   "id": 423,
+   "accounts": [
+    1,
+    26
+   ]
+  },
+  {
+   "id": 422,
+   "accounts": [
+    5,
+    23
+   ]
+  },
+  {
+   "id": 421,
+   "accounts": [
+    1,
+    18
+   ]
+  },
+  {
+   "id": 435,
+   "accounts": [
+    3,
+    34
+   ]
+  },
+  {
+   "id": 420,
+   "accounts": [
+    5,
+    13,
+    14,
+    32
+   ]
+  },
+  {
+   "id": 419,
+   "accounts": [
+    1,
+    19
+   ]
+  },
+  {
+   "id": 418,
+   "accounts": [
+    1,
+    24
+   ]
+  },
+  {
+   "id": 417,
+   "accounts": [
+    1,
+    18
+   ]
+  },
+  {
+   "id": 416,
+   "accounts": [
+    2,
+    20
+   ]
+  },
+  {
+   "id": 415,
+   "accounts": [
+    1,
+    22
+   ]
+  },
+  {
+   "id": 414,
+   "accounts": [
+    1,
+    16
+   ]
+  },
+  {
+   "id": 413,
+   "accounts": [
+    1,
+    18
+   ]
+  },
+  {
+   "id": 412,
+   "accounts": [
+    1,
+    23
+   ]
+  },
+  {
+   "id": 411,
+   "accounts": [
+    5,
+    15
+   ]
+  },
+  {
+   "id": 432,
+   "accounts": [
+    1,
+    7
+   ]
+  },
+  {
+   "id": 410,
+   "accounts": [
+    1,
+    19
+   ]
+  },
+  {
+   "id": 409,
+   "accounts": [
+    2,
+    18
+   ]
+  },
+  {
+   "id": 429,
+   "accounts": [
+    4,
+    5,
+    36
+   ]
+  },
+  {
+   "id": 408,
+   "accounts": [
+    1,
+    20
+   ]
+  },
+  {
+   "id": 407,
+   "accounts": [
+    1,
+    21
+   ]
+  },
+  {
+   "id": 406,
+   "accounts": [
+    5,
+    13,
+    14,
+    32
+   ]
+  },
+  {
+   "id": 405,
+   "accounts": [
+    1,
+    18
+   ]
+  },
+  {
+   "id": 430,
+   "accounts": [
+    1,
+    7
+   ]
+  },
+  {
+   "id": 404,
+   "accounts": [
+    1,
+    20
+   ]
+  },
+  {
+   "id": 403,
+   "accounts": [
+    1,
+    19
+   ]
+  },
+  {
+   "id": 402,
+   "accounts": [
+    1,
+    18
+   ]
+  },
+  {
+   "id": 401,
+   "accounts": [
+    5,
+    15
+   ]
+  },
+  {
+   "id": 400,
+   "accounts": [
+    5,
+    13
+   ]
+  },
+  {
+   "id": 399,
+   "accounts": [
+    1,
+    18
+   ]
+  },
+  {
+   "id": 398,
+   "accounts": [
+    5,
+    37
+   ]
+  },
+  {
+   "id": 397,
+   "accounts": [
+    1,
+    18
+   ]
+  },
+  {
+   "id": 396,
+   "accounts": [
+    1,
+    25
+   ]
+  },
+  {
+   "id": 395,
+   "accounts": [
+    2,
+    20
+   ]
+  },
+  {
+   "id": 394,
+   "accounts": [
+    1,
+    19
+   ]
+  },
+  {
+   "id": 393,
+   "accounts": [
+    5,
+    15
+   ]
+  },
+  {
+   "id": 392,
+   "accounts": [
+    1,
+    18
+   ]
+  }
+ ]
+}

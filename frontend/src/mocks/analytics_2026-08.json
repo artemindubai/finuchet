@@ -1,0 +1,360 @@
+{
+ "month": "2026-08",
+ "currency": "RUB",
+ "prev_month": "2026-07",
+ "next_month": "2026-09",
+ "income_total": {
+  "amount": 6900000,
+  "currency": "RUB"
+ },
+ "expense_total": {
+  "amount": 4410000,
+  "currency": "RUB"
+ },
+ "net": {
+  "amount": 2490000,
+  "currency": "RUB"
+ },
+ "categories": [
+  {
+   "category_id": 19,
+   "name": "Продукты",
+   "icon": "groceries",
+   "color": "#EA4C55",
+   "amount": {
+    "amount": 1040000,
+    "currency": "RUB"
+   },
+   "share_bp": 2358,
+   "count": 4,
+   "prev_amount": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "limit": null,
+   "limit_used_bp": null
+  },
+  {
+   "category_id": 18,
+   "name": "Кафе и рестораны",
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "amount": {
+    "amount": 970000,
+    "currency": "RUB"
+   },
+   "share_bp": 2200,
+   "count": 4,
+   "prev_amount": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "limit": null,
+   "limit_used_bp": null
+  },
+  {
+   "category_id": 25,
+   "name": "Одежда",
+   "icon": "shirt",
+   "color": "#B455C9",
+   "amount": {
+    "amount": 620000,
+    "currency": "RUB"
+   },
+   "share_bp": 1406,
+   "count": 4,
+   "prev_amount": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "limit": null,
+   "limit_used_bp": null
+  },
+  {
+   "category_id": 21,
+   "name": "Жильё",
+   "icon": "home",
+   "color": "#34B37E",
+   "amount": {
+    "amount": 703500,
+    "currency": "RUB"
+   },
+   "share_bp": 1595,
+   "count": 4,
+   "prev_amount": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "limit": null,
+   "limit_used_bp": null
+  },
+  {
+   "category_id": 20,
+   "name": "Транспорт",
+   "icon": "car",
+   "color": "#FFC531",
+   "amount": {
+    "amount": 310000,
+    "currency": "RUB"
+   },
+   "share_bp": 703,
+   "count": 4,
+   "prev_amount": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "limit": null,
+   "limit_used_bp": null
+  },
+  {
+   "category_id": 32,
+   "name": "Налоги",
+   "icon": "tax",
+   "color": "#6E7781",
+   "amount": {
+    "amount": 414000,
+    "currency": "RUB"
+   },
+   "share_bp": 939,
+   "count": 4,
+   "prev_amount": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "limit": null,
+   "limit_used_bp": null
+  },
+  {
+   "category_id": 23,
+   "name": "Связь и подписки",
+   "icon": "wifi",
+   "color": "#5B6CD9",
+   "amount": {
+    "amount": 286125,
+    "currency": "RUB"
+   },
+   "share_bp": 649,
+   "count": 4,
+   "prev_amount": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "limit": null,
+   "limit_used_bp": null
+  },
+  {
+   "category_id": 34,
+   "name": "Прочее",
+   "icon": "dots",
+   "color": "#A0A7B0",
+   "amount": {
+    "amount": 66375,
+    "currency": "RUB"
+   },
+   "share_bp": 150,
+   "count": 4,
+   "prev_amount": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "limit": null,
+   "limit_used_bp": null
+  }
+ ],
+ "by_month": [
+  {
+   "month": "2025-10",
+   "income": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 0,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2025-11",
+   "income": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 0,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2025-12",
+   "income": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 0,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-01",
+   "income": {
+    "amount": 0,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 0,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-02",
+   "income": {
+    "amount": 4150000,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 3020000,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-03",
+   "income": {
+    "amount": 5400000,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 3860000,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-04",
+   "income": {
+    "amount": 5050000,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 4120000,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-05",
+   "income": {
+    "amount": 6300000,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 4640000,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-06",
+   "income": {
+    "amount": 5800000,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 5010000,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-07",
+   "income": {
+    "amount": 6100000,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 5230000,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-08",
+   "income": {
+    "amount": 6900000,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 4410000,
+    "currency": "RUB"
+   }
+  },
+  {
+   "month": "2026-09",
+   "income": {
+    "amount": 7150000,
+    "currency": "RUB"
+   },
+   "expense": {
+    "amount": 4820000,
+    "currency": "RUB"
+   }
+  }
+ ],
+ "income_sources": [
+  {
+   "source_id": 14,
+   "name": "Проекты",
+   "color": "#3E7BFA",
+   "icon": "briefcase",
+   "amount": {
+    "amount": 3900000,
+    "currency": "RUB"
+   },
+   "share_bp": 5652,
+   "tax_accrued": {
+    "amount": 234000,
+    "currency": "RUB"
+   },
+   "projects": [
+    {
+     "project": "Альфа",
+     "amount": {
+      "amount": 2500000,
+      "currency": "RUB"
+     },
+     "share_bp": 6410
+    },
+    {
+     "project": "Бета",
+     "amount": {
+      "amount": 1400000,
+      "currency": "RUB"
+     },
+     "share_bp": 3590
+    }
+   ]
+  },
+  {
+   "source_id": 15,
+   "name": "Родители",
+   "color": "#34B37E",
+   "icon": "home",
+   "amount": {
+    "amount": 2000000,
+    "currency": "RUB"
+   },
+   "share_bp": 2899,
+   "tax_accrued": null,
+   "projects": []
+  },
+  {
+   "source_id": 16,
+   "name": "Подработка ОАЭ",
+   "color": "#17B0A8",
+   "icon": "sun",
+   "amount": {
+    "amount": 1000000,
+    "currency": "RUB"
+   },
+   "share_bp": 1449,
+   "tax_accrued": null,
+   "projects": []
+  }
+ ],
+ "limits": []
+}

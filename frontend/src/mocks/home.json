@@ -1,0 +1,623 @@
+{
+ "currency": "RUB",
+ "as_of": "2026-09-17T09:20:11Z",
+ "net_worth": {
+  "amount": 22291642,
+  "currency": "RUB"
+ },
+ "free_rub": {
+  "amount": 14315000,
+  "currency": "RUB"
+ },
+ "frozen_rub": {
+  "amount": 1225000,
+  "currency": "RUB"
+ },
+ "groups": [
+  {
+   "key": "RUB",
+   "title": "Рубли",
+   "total": {
+    "amount": 15540000,
+    "currency": "RUB"
+   },
+   "accounts": [
+    {
+     "id": 5,
+     "slug": "tbank",
+     "name": "Т-Банк",
+     "type": "asset_personal",
+     "role": "asset",
+     "currency": "RUB",
+     "icon": "card",
+     "balance": {
+      "amount": 13200000,
+      "currency": "RUB"
+     },
+     "natural": {
+      "amount": 13200000,
+      "currency": "RUB"
+     },
+     "in_view": {
+      "amount": 13200000,
+      "currency": "RUB"
+     },
+     "frozen": {
+      "amount": 1225000,
+      "currency": "RUB"
+     },
+     "archived": false
+    },
+    {
+     "id": 6,
+     "slug": "sber",
+     "name": "Сбер",
+     "type": "asset_personal",
+     "role": "asset",
+     "currency": "RUB",
+     "icon": "card",
+     "balance": {
+      "amount": 1840000,
+      "currency": "RUB"
+     },
+     "natural": {
+      "amount": 1840000,
+      "currency": "RUB"
+     },
+     "in_view": {
+      "amount": 1840000,
+      "currency": "RUB"
+     },
+     "frozen": null,
+     "archived": false
+    },
+    {
+     "id": 3,
+     "slug": "cash_rub",
+     "name": "Наличные ₽",
+     "type": "asset_personal",
+     "role": "asset",
+     "currency": "RUB",
+     "icon": "cash",
+     "balance": {
+      "amount": 500000,
+      "currency": "RUB"
+     },
+     "natural": {
+      "amount": 500000,
+      "currency": "RUB"
+     },
+     "in_view": {
+      "amount": 500000,
+      "currency": "RUB"
+     },
+     "frozen": null,
+     "archived": false
+    },
+    {
+     "id": 12,
+     "slug": "sber_credit",
+     "name": "Кредитка Сбер",
+     "type": "liability",
+     "role": "liability",
+     "currency": "RUB",
+     "icon": "credit",
+     "balance": {
+      "amount": 0,
+      "currency": "RUB"
+     },
+     "natural": {
+      "amount": 0,
+      "currency": "RUB"
+     },
+     "in_view": {
+      "amount": 0,
+      "currency": "RUB"
+     },
+     "frozen": null,
+     "archived": false
+    }
+   ]
+  },
+  {
+   "key": "AED",
+   "title": "Дирхамы",
+   "total": {
+    "amount": 5071063,
+    "currency": "RUB"
+   },
+   "accounts": [
+    {
+     "id": 1,
+     "slug": "mashreq_personal",
+     "name": "Mashreq личный",
+     "type": "asset_personal",
+     "role": "asset",
+     "currency": "AED",
+     "icon": "bank",
+     "balance": {
+      "amount": 184250,
+      "currency": "AED"
+     },
+     "natural": {
+      "amount": 184250,
+      "currency": "AED"
+     },
+     "in_view": {
+      "amount": 4320663,
+      "currency": "RUB"
+     },
+     "frozen": null,
+     "archived": false
+    },
+    {
+     "id": 2,
+     "slug": "cash_aed",
+     "name": "Наличные AED",
+     "type": "asset_personal",
+     "role": "asset",
+     "currency": "AED",
+     "icon": "cash",
+     "balance": {
+      "amount": 32000,
+      "currency": "AED"
+     },
+     "natural": {
+      "amount": 32000,
+      "currency": "AED"
+     },
+     "in_view": {
+      "amount": 750400,
+      "currency": "RUB"
+     },
+     "frozen": null,
+     "archived": false
+    }
+   ]
+  },
+  {
+   "key": "USDT",
+   "title": "USDT",
+   "total": {
+    "amount": 3985579,
+    "currency": "RUB"
+   },
+   "accounts": [
+    {
+     "id": 4,
+     "slug": "bybit",
+     "name": "Bybit",
+     "type": "asset_personal",
+     "role": "asset",
+     "currency": "USDT",
+     "icon": "crypto",
+     "balance": {
+      "amount": 41025,
+      "currency": "USDT"
+     },
+     "natural": {
+      "amount": 41025,
+      "currency": "USDT"
+     },
+     "in_view": {
+      "amount": 3985579,
+      "currency": "RUB"
+     },
+     "frozen": null,
+     "archived": false
+    }
+   ]
+  }
+ ],
+ "totals_by_view": {
+  "net_worth": {
+   "RUB": {
+    "amount": 22291642,
+    "currency": "RUB"
+   },
+   "USD": {
+    "amount": 264831,
+    "currency": "USD"
+   },
+   "AED": {
+    "amount": 950603,
+    "currency": "AED"
+   }
+  },
+  "groups": {
+   "RUB": {
+    "RUB": {
+     "amount": 15540000,
+     "currency": "RUB"
+    },
+    "USD": {
+     "amount": 184619,
+     "currency": "USD"
+    },
+    "AED": {
+     "amount": 662687,
+     "currency": "AED"
+    }
+   },
+   "AED": {
+    "RUB": {
+     "amount": 5071063,
+     "currency": "RUB"
+    },
+    "USD": {
+     "amount": 60246,
+     "currency": "USD"
+    },
+    "AED": {
+     "amount": 216250,
+     "currency": "AED"
+    }
+   },
+   "USDT": {
+    "RUB": {
+     "amount": 3985579,
+     "currency": "RUB"
+    },
+    "USD": {
+     "amount": 47350,
+     "currency": "USD"
+    },
+    "AED": {
+     "amount": 169961,
+     "currency": "AED"
+    }
+   }
+  }
+ },
+ "family": {
+  "visible": true,
+  "total": {
+   "amount": 22746500,
+   "currency": "RUB"
+  },
+  "accounts": [
+   {
+    "id": 7,
+    "slug": "mashreq_family",
+    "name": "Mashreq семейный",
+    "type": "asset_family",
+    "role": "asset",
+    "currency": "AED",
+    "icon": "bank",
+    "balance": {
+     "amount": 850000,
+     "currency": "AED"
+    },
+    "natural": {
+     "amount": 850000,
+     "currency": "AED"
+    },
+    "in_view": {
+     "amount": 19932500,
+     "currency": "RUB"
+    },
+    "frozen": null,
+    "archived": false
+   },
+   {
+    "id": 8,
+    "slug": "cash_aed_family",
+    "name": "Наличные AED семейные",
+    "type": "asset_family",
+    "role": "asset",
+    "currency": "AED",
+    "icon": "cash",
+    "balance": {
+     "amount": 120000,
+     "currency": "AED"
+    },
+    "natural": {
+     "amount": 120000,
+     "currency": "AED"
+    },
+    "in_view": {
+     "amount": 2814000,
+     "currency": "RUB"
+    },
+    "frozen": null,
+    "archived": false
+   }
+  ],
+  "debt": {
+   "amount": 50000,
+   "currency": "AED"
+  },
+  "direction": "i_owe",
+  "frozen_rub": {
+   "amount": 1225000,
+   "currency": "RUB"
+  },
+  "frozen_note": "по 24,50 от 17.09.2026",
+  "today_repay_rub": {
+   "amount": 1172500,
+   "currency": "RUB"
+  }
+ },
+ "upcoming": [
+  {
+   "id": 1,
+   "title": "Аренда квартиры",
+   "amount": {
+    "amount": 350000,
+    "currency": "AED"
+   },
+   "next_date": "2026-10-01",
+   "days_left": 14,
+   "repeat": "monthly",
+   "account_id": 1,
+   "category_id": 21,
+   "overdue": false
+  },
+  {
+   "id": 2,
+   "title": "Университет",
+   "amount": {
+    "amount": 1200000,
+    "currency": "RUB"
+   },
+   "next_date": "2026-10-10",
+   "days_left": 23,
+   "repeat": "quarterly",
+   "account_id": 5,
+   "category_id": 27,
+   "overdue": false
+  },
+  {
+   "id": 3,
+   "title": "Продление визы",
+   "amount": {
+    "amount": 120000,
+    "currency": "AED"
+   },
+   "next_date": "2026-10-20",
+   "days_left": 33,
+   "repeat": "once",
+   "account_id": 1,
+   "category_id": 28,
+   "overdue": false
+  }
+ ],
+ "recent": [
+  {
+   "id": 431,
+   "kind": "family_withdrawal",
+   "direction": "neutral",
+   "amount": {
+    "amount": 50000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 1172500,
+    "currency": "RUB"
+   },
+   "title": "Взял из семейного",
+   "subtitle": "Mashreq семейный → Mashreq личный",
+   "category_id": null,
+   "icon": "family",
+   "color": "#34B37E",
+   "version": 1,
+   "op_date": "2026-09-17",
+   "created_at": "2026-09-17T09:20:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "взял на расходы",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 434,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 3400,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 79730,
+    "currency": "RUB"
+   },
+   "title": "Подарки",
+   "subtitle": "Наличные AED",
+   "category_id": 31,
+   "icon": "gift",
+   "color": "#FF9F1C",
+   "version": 2,
+   "op_date": "2026-09-16",
+   "created_at": "2026-09-16T16:40:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "цветы маме Маши",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 428,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 3100,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 72695,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Наличные AED",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-16",
+   "created_at": "2026-09-16T09:10:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "шаурма и сок",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 427,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 6800,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 159460,
+    "currency": "RUB"
+   },
+   "title": "Продукты",
+   "subtitle": "Наличные AED",
+   "category_id": 19,
+   "icon": "groceries",
+   "color": "#EA4C55",
+   "version": 1,
+   "op_date": "2026-09-16",
+   "created_at": "2026-09-16T14:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "Union Coop",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 426,
+   "kind": "transfer",
+   "direction": "neutral",
+   "amount": {
+    "amount": 2000000,
+    "currency": "RUB"
+   },
+   "amount_in_view": {
+    "amount": 2000000,
+    "currency": "RUB"
+   },
+   "title": "Перевод",
+   "subtitle": "Т-Банк → Сбер",
+   "category_id": null,
+   "icon": "swap",
+   "color": "#7B8794",
+   "version": 1,
+   "op_date": "2026-09-15",
+   "created_at": "2026-09-15T08:10:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "переложил на Сбер",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 425,
+   "kind": "expense",
+   "direction": "out",
+   "amount": {
+    "amount": 5120,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 120064,
+    "currency": "RUB"
+   },
+   "title": "Кафе и рестораны",
+   "subtitle": "Mashreq личный",
+   "category_id": 18,
+   "icon": "cafe",
+   "color": "#FF7A45",
+   "version": 1,
+   "op_date": "2026-09-15",
+   "created_at": "2026-09-15T08:30:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "бизнес-ланч",
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "id": 433,
+   "kind": "loan_given",
+   "direction": "out",
+   "amount": {
+    "amount": 30000,
+    "currency": "AED"
+   },
+   "amount_in_view": {
+    "amount": 703500,
+    "currency": "RUB"
+   },
+   "title": "Дал в долг · Маша",
+   "subtitle": "Mashreq личный",
+   "category_id": null,
+   "icon": "person",
+   "color": "#5B6CD9",
+   "version": 1,
+   "op_date": "2026-09-14",
+   "created_at": "2026-09-14T12:00:11Z",
+   "status": "posted",
+   "source": "voice",
+   "description": "до конца месяца",
+   "counterparty": "Маша",
+   "project": null
+  }
+ ],
+ "month": {
+  "month": "2026-09",
+  "expense_total": {
+   "amount": 4820000,
+   "currency": "RUB"
+  },
+  "income_total": {
+   "amount": 7150000,
+   "currency": "RUB"
+  },
+  "top_categories": [
+   {
+    "category_id": 18,
+    "name": "Кафе и рестораны",
+    "icon": "cafe",
+    "color": "#FF7A45",
+    "amount": {
+     "amount": 1180004,
+     "currency": "RUB"
+    },
+    "share_bp": 2448
+   },
+   {
+    "category_id": 19,
+    "name": "Продукты",
+    "icon": "groceries",
+    "color": "#EA4C55",
+    "amount": {
+     "amount": 1144360,
+     "currency": "RUB"
+    },
+    "share_bp": 2374
+   },
+   {
+    "category_id": 21,
+    "name": "Жильё",
+    "icon": "home",
+    "color": "#34B37E",
+    "amount": {
+     "amount": 703500,
+     "currency": "RUB"
+    },
+    "share_bp": 1460
+   }
+  ]
+ },
+ "rates": {
+  "at": "2026-09-17T09:05:00Z",
+  "source": "bybit_p2p",
+  "rub_per_aed_e6": 23450000,
+  "rub_per_usd_e6": 84173200,
+  "rub_per_usdt_e6": 97150000
+ },
+ "warnings": []
+}

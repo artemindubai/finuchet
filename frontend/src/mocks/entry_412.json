@@ -1,0 +1,79 @@
+{
+ "id": 412,
+ "kind": "expense",
+ "direction": "out",
+ "amount": {
+  "amount": 10500,
+  "currency": "AED"
+ },
+ "amount_in_view": {
+  "amount": 246225,
+  "currency": "RUB"
+ },
+ "title": "Связь и подписки",
+ "subtitle": "Mashreq личный",
+ "category_id": 23,
+ "icon": "wifi",
+ "color": "#5B6CD9",
+ "version": 1,
+ "op_date": "2026-09-09",
+ "created_at": "2026-09-09T07:15:11Z",
+ "status": "posted",
+ "source": "voice",
+ "description": "Etisalat, интернет и связь",
+ "counterparty": null,
+ "project": null,
+ "replaces_entry_id": null,
+ "replaced_by_entry_id": null,
+ "due_date": null,
+ "raw_input": "Заплатил за интернет Этисалат 105 дирхам",
+ "confidence": 0.94,
+ "postings": [
+  {
+   "seq": 1,
+   "account_id": 23,
+   "account_slug": "exp_comm",
+   "account_name": "Связь и подписки",
+   "side": "debit",
+   "amount": {
+    "amount": 10500,
+    "currency": "AED"
+   },
+   "counterparty": null,
+   "project": null
+  },
+  {
+   "seq": 2,
+   "account_id": 1,
+   "account_slug": "mashreq_personal",
+   "account_name": "Mashreq личный",
+   "side": "credit",
+   "amount": {
+    "amount": 10500,
+    "currency": "AED"
+   },
+   "counterparty": null,
+   "project": null
+  }
+ ],
+ "rate": null,
+ "rates_snapshot": {
+  "at": "2026-09-09T07:15:11Z",
+  "source": "bybit_p2p",
+  "rub_per_aed_e6": 23450000,
+  "rub_per_usd_e6": 84173200,
+  "rub_per_usdt_e6": 97150000,
+  "markup_rub_per_aed_e6": 2000000
+ },
+ "tranche": null,
+ "versions": [
+  {
+   "id": 412,
+   "version": 1,
+   "status": "posted",
+   "created_at": "2026-09-09T07:15:11Z",
+   "changed": []
+  }
+ ],
+ "warnings": []
+}

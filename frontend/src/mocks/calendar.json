@@ -1,0 +1,61 @@
+{
+ "items": [
+  {
+   "id": 1,
+   "title": "Аренда квартиры",
+   "amount": {
+    "amount": 350000,
+    "currency": "AED"
+   },
+   "next_date": "2026-10-01",
+   "days_left": 14,
+   "repeat": "monthly",
+   "day_of_month": 1,
+   "account_id": 1,
+   "category_id": 21,
+   "remind_days_before": 2,
+   "active": true,
+   "overdue": false,
+   "last_paid": null
+  },
+  {
+   "id": 2,
+   "title": "Университет",
+   "amount": {
+    "amount": 1200000,
+    "currency": "RUB"
+   },
+   "next_date": "2026-10-10",
+   "days_left": 23,
+   "repeat": "quarterly",
+   "day_of_month": null,
+   "account_id": 5,
+   "category_id": 27,
+   "remind_days_before": 3,
+   "active": true,
+   "overdue": false,
+   "last_paid": {
+    "entry_id": 371,
+    "op_date": "2026-07-10"
+   }
+  },
+  {
+   "id": 3,
+   "title": "Продление визы",
+   "amount": {
+    "amount": 120000,
+    "currency": "AED"
+   },
+   "next_date": "2026-10-20",
+   "days_left": 33,
+   "repeat": "once",
+   "day_of_month": null,
+   "account_id": 1,
+   "category_id": 28,
+   "remind_days_before": 5,
+   "active": true,
+   "overdue": false,
+   "last_paid": null
+  }
+ ]
+}
