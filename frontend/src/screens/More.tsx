@@ -1,14 +1,16 @@
 import { useState } from 'react';
-import { ChevronLeft } from 'lucide-react';
+import { Check, ChevronLeft } from 'lucide-react';
 import { api } from '../lib/api';
 import { dropCache, useResource } from '../app/data';
 import {
-  dateLong, money, monthLong, num, plural, rate, rateSource, REPEAT_LABEL, timeDubai,
+  dateLong, money, moneyWhole, monthChip, num, plural, rate, rateSource, REPEAT_LABEL, timeDubai,
 } from '../lib/format';
-import { Button, Card, CardHead, Empty, LoadError, MenuRow, ProgressBar, Row, Screen, Segment } from '../components/ui';
-import { accountColor, CircleIcon } from '../components/Icon';
+import {
+  Button, Card, CardHead, Empty, GroupTitle, LoadError, MenuRow, PageTitle, ProgressBar, Row, Screen, Segment,
+} from '../components/ui';
+import { accountColor, accountGlyph, accountRing, CircleIcon } from '../components/Icon';
 import { TrancheRow } from '../components/rows';
-import { Sheet } from '../components/Sheet';
+import { PickerLayer, Sheet } from '../components/Sheet';
 import { useToast } from '../components/Toast';
 import { haptic } from '../app/telegram';
 import { openEntry } from '../app/router';
@@ -50,8 +52,10 @@ export function More({ sub, setSub }: { sub: Sub; setSub: (s: Sub) => void }) {
 
   return (
     <Screen>
-      <h1 className="py-4 text-[22px] font-bold leading-7 tracking-[-0.01em]">Ещё</h1>
+      <PageTitle title="Ещё" />
 
+      {/* Группы без заголовков читались как три безымянные одинаковые плашки (B2). */}
+      <GroupTitle title="Деньги" />
       <Card>
         <MenuRow title="Долги" value={debtSummary || 'нет'} onClick={() => setSub('debts')} />
         <MenuRow
@@ -71,7 +75,8 @@ export function More({ sub, setSub }: { sub: Sub; setSub: (s: Sub) => void }) {
         />
       </Card>
 
-      <div className="mt-3">
+      <GroupTitle title="Справочники" />
+      <div>
         <Card>
           <MenuRow title="Счета" value={String(moneyAccounts.length)} onClick={() => setSub('accounts')} />
           <MenuRow
@@ -87,7 +92,8 @@ export function More({ sub, setSub }: { sub: Sub; setSub: (s: Sub) => void }) {
         </Card>
       </div>
 
-      <div className="mt-3">
+      <GroupTitle title="Прочее" />
+      <div>
         <Card>
           <MenuRow title="Начальные остатки" onClick={() => setSub('opening')} />
           <MenuRow title="Выгрузка в таблицу" onClick={() => setSub('export')} />
@@ -178,8 +184,8 @@ function Debts() {
               key={d.counterparty_id}
               title={d.name}
               subtitle={d.due_date ? `до ${dateLong(d.due_date)}` : undefined}
-              right={money(d.amounts[0], 'none')}
-              rightSub={d.amounts[0].currency !== 'RUB' ? money(d.in_view, 'none') : undefined}
+              right={moneyWhole(d.amounts[0], 'none')}
+              rightSub={d.amounts[0].currency !== 'RUB' ? moneyWhole(d.in_view, 'none') : undefined}
               onClick={d.entry_ids.length ? () => openEntry(d.entry_ids[0]) : undefined}
             />
           ))}
@@ -188,17 +194,17 @@ function Debts() {
               <Row
                 title={data.tax.name}
                 subtitle={data.tax.due_date ? `до ${dateLong(data.tax.due_date)}` : undefined}
-                right={money(data.tax.amount, 'none')}
+                right={moneyWhole(data.tax.amount, 'none')}
               />
               <Row
                 title={data.credit_card.name}
-                right={money(data.credit_card.amount, 'none')}
+                right={moneyWhole(data.credit_card.amount, 'none')}
               />
               {data.family.debt.amount !== 0 ? (
                 <Row
                   title={data.family.direction === 'i_owe' ? 'Долг семье' : 'Семья должна вам'}
-                  subtitle={`заморожено ${money(data.family.frozen_rub, 'none')}`}
-                  right={money({ ...data.family.debt, amount: Math.abs(data.family.debt.amount) }, 'none')}
+                  subtitle={`заморожено ${moneyWhole(data.family.frozen_rub, 'none')}`}
+                  right={moneyWhole({ ...data.family.debt, amount: Math.abs(data.family.debt.amount) }, 'none')}
                 />
               ) : null}
             </>
@@ -215,7 +221,7 @@ function Debts() {
             ))}
             {data.family.today_repay_rub ? (
               <div className="nums pt-2 text-[13px] text-hint">
-                по курсу сегодня на возврат нужно {money(data.family.today_repay_rub, 'none')}
+                На возврат сегодня {moneyWhole(data.family.today_repay_rub, 'none')}
               </div>
             ) : null}
           </Card>
@@ -278,7 +284,7 @@ function Calendar() {
             <button
               type="button"
               disabled={busy === p.id}
-              className="mt-0.5 text-[13px] font-medium leading-4 text-blue"
+              className="mt-1 inline-flex h-8 items-center rounded-full bg-insetbg px-3 text-[13px] font-medium text-blue"
               onClick={() => void pay(p)}
             >
               {busy === p.id ? 'Записываю' : 'Оплачено'}
@@ -304,17 +310,18 @@ function Goals() {
   return (
     <Card>
       {data.items.map((g) => (
-        <div key={g.id} className="py-2">
-          <div className="flex items-baseline justify-between">
-            <span className="text-[16px] font-medium">{g.name}</span>
-            <span className="nums text-[15px] text-hint">
-              {money(g.saved, 'none')} из {money(g.target, 'none')}
+        <div key={g.id} className="py-2.5">
+          <div className="flex items-baseline justify-between gap-3">
+            <span className="min-w-0 truncate text-[16px] font-medium">{g.name}</span>
+            <span className="nums shrink-0 text-[15px] text-hint">
+              {moneyWhole(g.saved, 'none')} из {moneyWhole(g.target, 'none')}
             </span>
           </div>
+          {/* Срок стоял ПОД полосой и глаз приписывал его следующей цели (m10). */}
+          {g.due_date ? <div className="mt-0.5 text-[13px] text-hint">до {dateLong(g.due_date)}</div> : null}
           <div className="mt-2">
             <ProgressBar value={g.saved.amount} max={g.target.amount} />
           </div>
-          {g.due_date ? <div className="mt-1.5 text-[13px] text-hint">до {dateLong(g.due_date)}</div> : null}
         </div>
       ))}
     </Card>
@@ -326,20 +333,16 @@ function Limits() {
     `limits:${currentMonth()}`,
     () => api.limits(currentMonth()),
   );
+  const refs = useResource<Refs>('refs', () => api.refs());
   const [edit, setEdit] = useState<LimitRow | null>(null);
   const [value, setValue] = useState('');
   const [busy, setBusy] = useState(false);
+  const [pick, setPick] = useState(false);
   const toast = useToast();
+  const colorOf = (categoryId: number) => refs.data?.categories.find((c) => c.id === categoryId)?.color;
 
   if (loading) return <span className="skeleton skeleton-wrap mt-4 block h-24 w-full rounded-card" />;
   if (error || !data) return <LoadError onRetry={reload} />;
-  if (data.items.length === 0) {
-    return (
-      <Card>
-        <Empty text="Лимиты не заданы" />
-      </Card>
-    );
-  }
 
   const save = async () => {
     if (!edit) return;
@@ -360,35 +363,78 @@ function Limits() {
     }
   };
 
+  const free = (refs.data?.categories ?? []).filter(
+    (c) => !c.archived && !data.items.some((l) => l.category_id === c.id),
+  );
+
   return (
     <>
-      <Card>
-        {data.items.map((l) => {
-          const over = l.spent.amount > l.limit.amount;
-          return (
-            <button
-              key={l.category_id}
-              type="button"
-              className="-mx-2 w-[calc(100%+16px)] rounded-inset px-2 py-2 text-left active:bg-inset"
-              onClick={() => {
-                haptic.tap();
-                setValue(num(l.limit.amount).replace(/ /g, ''));
-                setEdit(l);
-              }}
-            >
-              <div className="flex items-baseline justify-between">
-                <span className="text-[16px] font-medium">{l.name}</span>
-                <span className={`nums text-[15px] ${over ? 'text-danger' : 'text-hint'}`}>
-                  {money(l.spent, 'none')} из {money(l.limit, 'none')}
-                </span>
-              </div>
-              <div className="mt-2">
-                <ProgressBar value={l.spent.amount} max={l.limit.amount} danger={over} />
-              </div>
-            </button>
-          );
-        })}
-      </Card>
+      {data.items.length === 0 ? (
+        <Card>
+          <Empty text="Лимиты не заданы" />
+        </Card>
+      ) : (
+        <Card>
+          {data.items.map((l) => {
+            const over = l.spent.amount > l.limit.amount;
+            return (
+              <button
+                key={l.category_id}
+                type="button"
+                className="-mx-2 w-[calc(100%+16px)] rounded-inset px-2 py-2.5 text-left active:bg-inset"
+                onClick={() => {
+                  haptic.tap();
+                  setValue(num(l.limit.amount).replace(/ /g, ''));
+                  setEdit(l);
+                }}
+              >
+                <div className="flex items-baseline justify-between gap-3">
+                  <span className="min-w-0 truncate text-[16px] font-medium">{l.name}</span>
+                  <span className={`nums shrink-0 text-[15px] ${over ? 'text-danger' : 'text-hint'}`}>
+                    {moneyWhole(l.spent, 'none')} из {moneyWhole(l.limit, 'none')}
+                  </span>
+                </div>
+                <div className="mt-2">
+                  <ProgressBar
+                    value={l.spent.amount}
+                    max={l.limit.amount}
+                    danger={over}
+                    color={colorOf(l.category_id)}
+                  />
+                </div>
+              </button>
+            );
+          })}
+        </Card>
+      )}
+      {free.length > 0 ? (
+        <div className="mt-4">
+          <Button kind="secondary" onClick={() => setPick(true)}>
+            Добавить лимит
+          </Button>
+        </div>
+      ) : null}
+      {pick ? (
+        <PickerLayer
+          title="Категория"
+          search
+          options={free.map((c) => ({ value: String(c.id), label: c.name }))}
+          onPick={(v) => {
+            const c = free.find((x) => String(x.id) === v)!;
+            setPick(false);
+            setValue('');
+            setEdit({
+              category_id: c.id,
+              name: c.name,
+              limit: { amount: 0, currency: 'RUB' },
+              spent: { amount: 0, currency: 'RUB' },
+              used_bp: 0,
+              left_days: 0,
+            });
+          }}
+          onClose={() => setPick(false)}
+        />
+      ) : null}
       {edit ? (
         <Sheet
           title={edit.name}
@@ -425,7 +471,10 @@ function RefList({ kind }: { kind: 'accounts' | 'categories' | 'sources' }) {
     kind === 'accounts'
       ? data.accounts
           .filter((a) => a.is_money)
-          .map((a) => ({ id: a.id, name: a.name, hint: a.currency ?? '', icon: a.icon, color: accountColor(a.currency, a.icon) }))
+          .map((a) => ({
+            id: a.id, name: a.name, hint: a.currency ?? '',
+            icon: accountGlyph(a), color: accountColor(a.currency, a.icon),
+          }))
       : kind === 'categories'
         ? data.categories.map((c) => ({ id: c.id, name: c.name, hint: '', icon: c.icon, color: c.color }))
         : data.income_sources.map((s) => ({
@@ -503,9 +552,9 @@ function Opening() {
       <Card>
         {accounts.map((a) => (
           <div key={a.slug} className="flex items-center gap-3 py-2">
-            <CircleIcon name={a.icon} color={accountColor(a.currency, a.icon)} ring={a.type === 'asset_family'} />
+            <CircleIcon name={accountGlyph(a)} color={accountColor(a.currency, a.icon)} ring={accountRing(a)} />
             <span className="min-w-0 flex-1 truncate text-[16px] font-medium">{a.name}</span>
-            <span className="flex h-11 w-[132px] shrink-0 items-center gap-1 rounded-inset bg-inset px-3">
+            <span className="flex h-11 w-[96px] shrink-0 items-center gap-1 rounded-inset bg-inset px-3">
               <input
                 inputMode="decimal"
                 className="nums w-full text-right text-[16px]"
@@ -564,52 +613,45 @@ function Export() {
 
   return (
     <>
+      {/* Пять синих тумблеров подряд делали синий цветом данных — это список выбора
+          с галочкой, приём DESIGN_SPEC 4.3 и кадр sb_ios_37 (M3). Заголовок группы — B2. */}
+      <GroupTitle title="Листы" />
       <Card>
         {SHEETS.map((s) => (
           <button
             key={s.key}
             type="button"
-            className="-mx-2 flex w-[calc(100%+16px)] items-center gap-3 rounded-inset px-2 py-3 text-left active:bg-inset"
+            className="-mx-2 flex min-h-[56px] w-[calc(100%+16px)] items-center gap-3 rounded-inset px-2 text-left active:bg-inset"
             onClick={() => {
               haptic.select();
               setOn({ ...on, [s.key]: !on[s.key] });
             }}
           >
             <span className="flex-1 text-[17px]">{s.label}</span>
-            <span
-              className="flex h-[30px] w-[50px] items-center rounded-full p-0.5 transition-colors duration-[80ms]"
-              style={{ background: on[s.key] ? 'var(--c-blue)' : 'var(--c-inset)' }}
-            >
-              <span
-                className="h-[26px] w-[26px] rounded-full bg-white transition-transform duration-[120ms]"
-                style={{ transform: on[s.key] ? 'translateX(20px)' : 'none' }}
-              />
-            </span>
+            {on[s.key] ? <Check size={20} strokeWidth={2.2} className="shrink-0 text-blue" /> : null}
           </button>
         ))}
       </Card>
-      <div className="mt-3">
-        <Card>
-          <CardHead title="Период" />
-          <div className="flex flex-wrap gap-2">
-            {recentMonths(3).map((p) => (
-              <button
-                key={p}
-                type="button"
-                className={`h-[34px] rounded-full px-[14px] text-[13px] font-medium ${
-                  period === p ? 'bg-blue text-white' : 'bg-inset'
-                }`}
-                onClick={() => {
-                  haptic.select();
-                  setPeriod(p);
-                }}
-              >
-                {monthLong(p)}
-              </button>
-            ))}
-          </div>
-        </Card>
-      </div>
+      <GroupTitle title="Период" />
+      <Card>
+        <div className="flex gap-2">
+          {recentMonths(3).map((p) => (
+            <button
+              key={p}
+              type="button"
+              className={`h-[34px] rounded-full px-[14px] text-[13px] font-medium ${
+                period === p ? 'bg-blue text-white' : 'bg-inset'
+              }`}
+              onClick={() => {
+                haptic.select();
+                setPeriod(p);
+              }}
+            >
+              {monthChip(p)}
+            </button>
+          ))}
+        </div>
+      </Card>
       <div className="mt-5">
         <Button onClick={send} loading={busy}>
           Прислать файл в чат
@@ -661,7 +703,7 @@ function Settings() {
         />
         <MenuRow
           title="Курсы"
-          value={aed ? `${rate(aed.rate_e6)} ₽/AED · ${timeDubai(aed.at)}` : ''}
+          value={aed ? `${rate(aed.rate_e6)} ₽ за AED` : ''}
           onClick={() => setSub('rates')}
         />
         <MenuRow

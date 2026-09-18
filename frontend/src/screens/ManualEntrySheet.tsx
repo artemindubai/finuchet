@@ -1,5 +1,5 @@
 import { useMemo, useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { CalendarDays, ChevronRight } from 'lucide-react';
 import { api } from '../lib/api';
 import { dropCache, useResource } from '../app/data';
 import { dateLong } from '../lib/format';
@@ -187,6 +187,7 @@ export function ManualEntrySheet({ onClose, accountSlug }: { onClose: () => void
         ) : (
           <Segment
             full
+            onCard
             options={KINDS.map((k) => ({ value: k.value as Kind, label: k.label }))}
             value={kind}
             onChange={(v) => setKind(v)}
@@ -221,7 +222,9 @@ export function ManualEntrySheet({ onClose, accountSlug }: { onClose: () => void
         {kind === 'expense' ? <Picker label="Категория" value={catName} onClick={() => setField('category')} /> : null}
         {kind === 'income' ? <Picker label="Источник" value={srcName} onClick={() => setField('source')} /> : null}
 
-        <div className="flex gap-2">
+        {/* Дата была единственным полем формы без подложки — ритм формы рвался (m14).
+            Теперь это такое же поле h 52, а быстрые чипы стоят над ним (DESIGN_SPEC 4.3). */}
+        <div className="flex gap-2 pt-1">
           <button
             type="button"
             className={`h-[34px] rounded-full px-[14px] text-[13px] font-medium ${
@@ -240,8 +243,21 @@ export function ManualEntrySheet({ onClose, accountSlug }: { onClose: () => void
           >
             Вчера
           </button>
-          <span className="flex h-[34px] items-center text-[13px] text-hint">{dateLong(opDate)}</span>
         </div>
+        <label className="relative flex h-[52px] w-full items-center gap-3 rounded-inset bg-inset px-4">
+          <span className="min-w-0 flex-1">
+            <span className="block text-[12px] leading-4 text-hint">Дата</span>
+            <span className="block truncate text-[16px] font-medium leading-5">{dateLong(opDate)}</span>
+          </span>
+          <CalendarDays size={18} className="shrink-0 text-hint" />
+          <input
+            type="date"
+            aria-label="Дата операции"
+            className="absolute inset-0 h-full w-full opacity-0"
+            value={opDate}
+            onChange={(e) => e.target.value && setOpDate(e.target.value)}
+          />
+        </label>
 
         <input
           className="h-[52px] w-full rounded-inset bg-inset px-4 text-[16px] placeholder:text-hint"

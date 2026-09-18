@@ -193,15 +193,21 @@ def test_unfrozen_withdrawal_does_not_disable_freeze_invariant():
     """Одно взятие «без заморозки» не должно глушить проверку «заморозка == долг» навсегда.
 
     check_invariants() отключает эту проверку целиком, если есть хоть одно взятие без транша,
-    — после такой операции сломанная заморозка перестаёт ловиться."""
+    — после такой операции сломанная заморозка перестаёт ловиться.
+
+    Сломанное состояние делаем руками. Раньше оно получалось отменой «заплатил за семью»
+    (находка 2), но после правки транши пересчитываются по журналу и так больше не разъезжаются:
+    заморозку разводим с долгом прямо в таблице, не трогая согласованность траншей с релизами."""
     base_state()
     take(50_000)
-    repay(20_000)
-    paid = paid_for_family(10_000)
-    repay(30_000)
-    ledger.void_entry(paid["id"], actor="test")
+    conn = db.get_conn()
+    conn.execute("UPDATE family_tranches SET aed_taken = aed_taken + 10000,"
+                 " aed_left = aed_left + 10000")
+    assert ledger.family_debt()["debt"]["amount"] == 50_000
+    assert frozen_total() == 1_225_000                   # рубли не трогали: релизы сходятся
     broken = ledger.check_invariants()
     assert broken, "проверка обязана видеть расхождение заморозки и долга"
+    assert all("заморозка" in problem for problem in broken), broken
 
     post(kind="family_withdrawal", amount=1_000, currency="AED",
          from_account="mashreq_family", to_account="mashreq_personal", freeze=False)

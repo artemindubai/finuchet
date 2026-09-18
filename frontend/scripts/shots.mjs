@@ -14,7 +14,8 @@ function arg(name, fallback) {
 }
 
 const BASE = arg('url', 'http://localhost:4173');
-const OUT = path.resolve(HERE, arg('out', '../../design/shots/wave2'));
+const OUT = path.resolve(HERE, arg('out', '../../design/shots/wave4'));
+const ONLY = arg('only', '');
 
 /** Каждый кадр: имя файла, хеш-маршрут и действия до снимка. */
 const SHOTS = [
@@ -40,6 +41,17 @@ const SHOTS = [
   { name: 'ещё_выгрузка', hash: '#/more', click: 'Выгрузка в таблицу' },
   { name: 'ещё_настройки', hash: '#/more', click: 'Настройки' },
   { name: 'шторка_новая_операция', hash: '#/entries', clickLabel: 'Добавить операцию' },
+
+  // Состояния (M11): скелетон, пустая лента, ошибка загрузки, тост, нажатая строка, кнопка в загрузке.
+  // Мок-сервер читает ?slow / ?empty / ?fail — переключатели живут только в моках.
+  { name: 'состояние_скелетон_главная', hash: '#/', query: 'slow=4000', wait: 700, dir: 'states' },
+  { name: 'состояние_скелетон_лента', hash: '#/entries', query: 'slow=4000', wait: 700, dir: 'states' },
+  { name: 'состояние_пусто_лента', hash: '#/entries', query: 'empty=1', dir: 'states' },
+  { name: 'состояние_ошибка', hash: '#/', query: 'fail=1', dir: 'states' },
+  { name: 'состояние_тост_отмена', hash: '#/entry/412', click: 'Отменить', wait: 500, dir: 'states' },
+  { name: 'состояние_нажатая_строка', hash: '#/', press: 'Т-Банк', dir: 'states' },
+  { name: 'состояние_кнопка_загрузка', hash: '#/more', click: 'Выгрузка в таблицу',
+    click2: 'Прислать файл в чат', query: 'slow=4000', wait: 350, dir: 'states' },
 ];
 
 const THEMES = ['light', 'dark'];
@@ -71,16 +83,38 @@ async function main() {
 
   for (const theme of THEMES) {
     for (const shot of SHOTS) {
+      if (ONLY && !shot.name.includes(ONLY)) continue;
       // Уникальный параметр в query — иначе переход на тот же hash не перезагружает страницу
       // и состояние прошлого кадра (открытый подэкран, фильтр, шторка) попадает в следующий.
-      const url = `${BASE}/?theme=${theme}&shot=${made}${shot.hash}`;
-      await page.goto(url, { waitUntil: 'networkidle' });
-      await sleep(350);
-      if (shot.click) {
-        const target = page.getByText(shot.click, { exact: true }).first();
+      const extra = shot.query ? `&${shot.query}` : '';
+      const url = `${BASE}/?theme=${theme}&shot=${made}${extra}${shot.hash}`;
+      // Со скелетоном networkidle ждать нечего — грузится сам мок, поэтому load.
+      await page.goto(url, { waitUntil: shot.query ? 'load' : 'networkidle' });
+      await sleep(shot.wait ?? 350);
+      const tap = async (text) => {
+        const target = page.getByText(text, { exact: true }).first();
         if (await target.count()) {
           await target.click();
           await sleep(400);
+        }
+      };
+      if (shot.click) await tap(shot.click);
+      if (shot.fill) {
+        const row = page.locator('div', { hasText: shot.fill.label }).last();
+        const input = row.locator('input').first();
+        if (await input.count()) await input.fill(shot.fill.value);
+      }
+      if (shot.click2) await tap(shot.click2);
+      if (shot.press) {
+        // Нажатая строка: держим палец, кадр снимается в этом состоянии.
+        const target = page.getByText(shot.press, { exact: true }).first();
+        if (await target.count()) {
+          const box = await target.boundingBox();
+          if (box) {
+            await page.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+            await page.mouse.down();
+            await sleep(200);
+          }
         }
       }
       if (shot.clickLabel) {
@@ -94,8 +128,11 @@ async function main() {
         await page.mouse.wheel(0, shot.scroll);
         await sleep(300);
       }
-      const file = path.join(OUT, `${shot.name}_${theme === 'dark' ? 'тёмная' : 'светлая'}.png`);
+      const dir = shot.dir ? path.join(OUT, shot.dir) : OUT;
+      await mkdir(dir, { recursive: true });
+      const file = path.join(dir, `${shot.name}_${theme === 'dark' ? 'тёмная' : 'светлая'}.png`);
       await page.screenshot({ path: file });
+      if (shot.press) await page.mouse.up();
       made += 1;
       process.stdout.write(`${file}\n`);
     }

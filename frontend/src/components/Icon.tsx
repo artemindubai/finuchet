@@ -1,7 +1,7 @@
 import {
-  ArrowLeftRight, Banknote, Bitcoin, Briefcase, Building2, Car, Clapperboard, Coffee, CreditCard,
+  ArrowLeftRight, Banknote, Bitcoin, Briefcase, Car, Clapperboard, Coffee, CreditCard,
   Dumbbell, FileText, Gift, GraduationCap, Heart, HeartPulse, Home, Landmark, MoreHorizontal,
-  Plane, Shirt, ShoppingCart, SlidersHorizontal, Sofa, Sun, User, Users, Wifi,
+  Plane, Receipt, Shirt, ShoppingCart, SlidersHorizontal, Sofa, Sun, User, Users, Wifi,
 } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 
@@ -21,14 +21,14 @@ const MAP: Record<string, LucideIcon> = {
   plane: Plane,
   heart: Heart,
   gift: Gift,
-  tax: Landmark,
+  tax: Receipt,
   family: Users,
   dots: MoreHorizontal,
   adjust: SlidersHorizontal,
   swap: ArrowLeftRight,
   briefcase: Briefcase,
   sun: Sun,
-  bank: Building2,
+  bank: Landmark, // банковский счёт — «колонны», не та же карта, что у кредитки (M9)
   cash: Banknote,
   card: CreditCard,
   credit: CreditCard,
@@ -63,7 +63,8 @@ export function CircleIcon({
       style={{
         width: size,
         height: size,
-        background: muted ? 'var(--c-inset)' : color,
+        // Погашенная иконка отменённой операции: на --c-inset она сливалась с белой шторкой (m13).
+        background: muted ? 'var(--c-inset-on-bg)' : color,
         boxShadow: ring ? 'inset 0 0 0 3px var(--c-card)' : undefined,
       }}
     >
@@ -112,6 +113,22 @@ export function entryLook(kind: string, icon?: string | null, color?: string | n
 export function accountColor(currency: string | null, icon: string): string {
   if (icon === 'cash') return CASH_COLOR;
   return CURRENCY_COLOR[currency ?? ''] ?? CASH_COLOR;
+}
+
+/**
+ * Пиктограмма счёта — по ТИПУ счёта (DESIGN_SPEC 4.2.3, M9). Сервер шлёт `card` и банковскому
+ * счёту, и кредитке, и на Главной выходила колонка одинаковых синих кругов.
+ */
+export function accountGlyph(a: { icon: string; type?: string; role?: string; currency?: string | null }): string {
+  if (a.icon === 'cash') return 'cash';
+  if (a.icon === 'crypto' || a.currency === 'USDT') return 'crypto';
+  if (a.icon === 'credit' || a.type === 'liability' || a.role === 'liability') return 'credit';
+  return 'bank';
+}
+
+/** Контурное кольцо: у семейных счетов (опека) и у кредитки — единственного счёта «в минус» (M9). */
+export function accountRing(a: { type?: string; role?: string }): boolean {
+  return a.type === 'asset_family' || a.type === 'liability' || a.role === 'liability';
 }
 
 /** Текст на цветной плашке: тёмный на светлой заливке, белый на тёмной (контраст ≥ 4.5). */

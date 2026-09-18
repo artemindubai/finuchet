@@ -3,9 +3,9 @@ import { Plus, Search } from 'lucide-react';
 import { api } from '../lib/api';
 import type { EntriesQuery } from '../lib/api';
 import { useResource } from '../app/data';
-import { money, monthLong } from '../lib/format';
-import { Card, Chip, Empty, LoadError, Screen } from '../components/ui';
-import { EntryRow } from '../components/rows';
+import { moneyWhole, monthLong, monthNom } from '../lib/format';
+import { Card, Chip, Empty, LoadError, PageTitle, Screen } from '../components/ui';
+import { DayBlock } from '../components/rows';
 import { ShareBar } from '../components/Charts';
 import { FeedSkeleton } from '../components/Skeleton';
 import { PickerLayer } from '../components/Sheet';
@@ -107,31 +107,35 @@ export function Entries({ onAdd }: { onAdd: () => void }) {
   return (
     <>
       <Screen>
-        <div className="sticky top-0 z-20 -mx-4 flex h-[52px] items-center gap-2 bg-bg px-4">
-          <h1 className="flex-1 text-[22px] font-bold leading-7 tracking-[-0.01em]">Операции</h1>
-          <button
-            type="button"
-            aria-label="Поиск"
-            className="flex h-11 w-11 items-center justify-center"
-            onClick={() => {
-              haptic.tap();
-              setSearchOpen((v) => !v);
-            }}
-          >
-            <Search size={22} strokeWidth={1.8} className={searchOpen ? 'text-blue' : 'text-text'} />
-          </button>
-          <button
-            type="button"
-            aria-label="Добавить операцию"
-            className="flex h-11 w-11 items-center justify-center"
-            onClick={() => {
-              haptic.tap();
-              onAdd();
-            }}
-          >
-            <Plus size={24} strokeWidth={2} />
-          </button>
-        </div>
+        <PageTitle
+          title="Операции"
+          right={
+            <>
+              <button
+                type="button"
+                aria-label="Поиск"
+                className="flex h-11 w-11 items-center justify-center"
+                onClick={() => {
+                  haptic.tap();
+                  setSearchOpen((v) => !v);
+                }}
+              >
+                <Search size={22} strokeWidth={1.8} className={searchOpen ? 'text-blue' : 'text-text'} />
+              </button>
+              <button
+                type="button"
+                aria-label="Добавить операцию"
+                className="flex h-11 w-11 items-center justify-center"
+                onClick={() => {
+                  haptic.tap();
+                  onAdd();
+                }}
+              >
+                <Plus size={24} strokeWidth={2} />
+              </button>
+            </>
+          }
+        />
 
         {searchOpen ? (
           <input
@@ -144,10 +148,11 @@ export function Entries({ onAdd }: { onAdd: () => void }) {
         ) : null}
 
         <div className="no-scrollbar -mx-4 mb-3 flex gap-2 overflow-x-auto px-4">
-          <Chip active={Boolean(month)} onClick={() => setPicker('month')} onClear={() => setMonth(null)}>
-            {month ? monthLong(month).split(' ')[0] : 'Период'}
+          <Chip caret active={Boolean(month)} onClick={() => setPicker('month')} onClear={() => setMonth(null)}>
+            {month ? monthNom(month) : 'Период'}
           </Chip>
           <Chip
+            caret
             active={Boolean(accountId)}
             onClick={() => setPicker('account')}
             onClear={() => setAccountId(null)}
@@ -155,13 +160,14 @@ export function Entries({ onAdd }: { onAdd: () => void }) {
             {accountId ? accounts.find((a) => a.id === accountId)?.name ?? 'Счёт' : 'Счета'}
           </Chip>
           <Chip
+            caret
             active={Boolean(categoryId)}
             onClick={() => setPicker('category')}
             onClear={() => setCategoryId(null)}
           >
             {categoryId ? categories.find((c) => c.id === categoryId)?.name ?? 'Категория' : 'Категории'}
           </Chip>
-          <Chip active={Boolean(kind)} onClick={() => setPicker('kind')} onClear={() => setKind(null)}>
+          <Chip caret active={Boolean(kind)} onClick={() => setPicker('kind')} onClear={() => setKind(null)}>
             {kind ? kinds.find((k) => k.key === kind)?.title ?? 'Тип' : 'Тип'}
           </Chip>
         </div>
@@ -169,12 +175,12 @@ export function Entries({ onAdd }: { onAdd: () => void }) {
         {first.data?.summary ? (
           <div className="mb-3 grid grid-cols-2 gap-3">
             <div className="rounded-card bg-card p-4">
-              <div className="nums text-[20px] font-bold leading-6">{money(first.data.summary.out, 'none')}</div>
+              <div className="nums text-[20px] font-bold leading-6">{moneyWhole(first.data.summary.out, 'none')}</div>
               <div className="mb-3 mt-0.5 text-[15px] text-hint">Траты</div>
               <ShareBar parts={first.data.summary.out_breakdown} />
             </div>
             <div className="rounded-card bg-card p-4">
-              <div className="nums text-[20px] font-bold leading-6">{money(first.data.summary.in, 'none')}</div>
+              <div className="nums text-[20px] font-bold leading-6">{moneyWhole(first.data.summary.in, 'none')}</div>
               <div className="mb-3 mt-0.5 text-[15px] text-hint">Доходы</div>
               <ShareBar parts={first.data.summary.in_breakdown} />
             </div>
@@ -197,23 +203,19 @@ export function Entries({ onAdd }: { onAdd: () => void }) {
             ) : null}
           </Card>
         ) : (
-          days.map((d) => (
-            <section key={d.date} className="mb-3">
-              <div className="mb-1 flex items-baseline justify-between px-1">
-                <h2 className="text-[15px] font-bold leading-5">{d.meta?.title ?? d.date}</h2>
-                {d.meta && d.meta.total_out.amount > 0 ? (
-                  <span className="nums text-[15px] leading-5 text-hint">
-                    {money(d.meta.total_out, 'minus')}
-                  </span>
-                ) : null}
-              </div>
-              <Card>
-                {d.list.map((e) => (
-                  <EntryRow key={e.id} e={e} onClick={openEntry} />
-                ))}
-              </Card>
-            </section>
-          ))
+          <Card>
+            {days.map((d, i) => (
+              <DayBlock
+                key={d.date}
+                first={i === 0}
+                title={d.meta?.title ?? d.date}
+                total={d.meta?.total_out}
+                totalIn={d.meta?.total_in}
+                items={d.list}
+                onOpen={openEntry}
+              />
+            ))}
+          </Card>
         )}
 
         <div ref={sentinel} />

@@ -162,19 +162,23 @@ export function EntrySheet({ id, onClose }: { id: number; onClose: () => void })
             Вернуть
           </Button>
         ) : (
-          <div className="flex flex-col gap-2">
-            <Button
-              kind="secondary"
-              onClick={() => {
-                setAmountText(String(entry.amount.amount / 100).replace('.', ','));
-                setAmend(true);
-              }}
-            >
-              Изменить
-            </Button>
-            <Button kind="danger" onClick={() => void setStatus('void')} loading={busy}>
-              Отменить операцию
-            </Button>
+          <div className="flex gap-2">
+            <span className="min-w-0 flex-1">
+              <Button
+                kind="secondary"
+                onClick={() => {
+                  setAmountText(String(entry.amount.amount / 100).replace('.', ','));
+                  setAmend(true);
+                }}
+              >
+                Изменить
+              </Button>
+            </span>
+            <span className="min-w-0 flex-1">
+              <Button kind="danger" onClick={() => void setStatus('void')} loading={busy}>
+                Отменить
+              </Button>
+            </span>
           </div>
         )
       }
@@ -197,7 +201,9 @@ export function EntrySheet({ id, onClose }: { id: number; onClose: () => void })
         <div className="mt-1 text-[13px] text-hint">{entry.title}</div>
       </div>
 
-      <div className="mt-2 rounded-inset bg-inset px-4 py-1">
+      {/* Факты — строками на полотне шторки: пять серых плашек подряд читались как список
+          заготовок, в образце tbank_incl_05 в карточке одна серая вставка (M6). */}
+      <div className="mt-2">
         <Fact label="Счёт" value={entry.subtitle} />
         <Fact label="Дата" value={dateLong(entry.op_date)} />
         {entry.rate ? (
@@ -211,13 +217,20 @@ export function EntrySheet({ id, onClose }: { id: number; onClose: () => void })
         {entry.project ? <Fact label="Проект" value={entry.project} /> : null}
         {entry.counterparty ? <Fact label="Кому" value={entry.counterparty} /> : null}
         {entry.due_date ? <Fact label="Срок" value={dateLong(entry.due_date)} /> : null}
+        {entry.version > 1 ? (
+          <Fact
+            label="Правка"
+            value={changes.length ? changes.join(', ') : `версия ${entry.version}`}
+          />
+        ) : null}
       </div>
 
       {entry.tranche ? (
         <div className="mt-3 rounded-inset bg-inset px-4 py-1">
-          <TrancheRow t={entry.tranche} />
+          <TrancheRow t={entry.tranche} compact />
         </div>
       ) : null}
+
 
       <button
         type="button"
@@ -242,12 +255,6 @@ export function EntrySheet({ id, onClose }: { id: number; onClose: () => void })
         </div>
       ) : null}
 
-      {entry.version > 1 ? (
-        <div className="pt-3 text-[12px] leading-4 text-hint">
-          Версия {entry.version}
-          {changes.length ? ` · ${changes.join(', ')}` : ''}
-        </div>
-      ) : null}
     </Sheet>
   );
 }

@@ -20,6 +20,7 @@ HTTP_BY_CODE = {
     "currency_mismatch": 400,
     "counterparty_required": 400,
     "opening_balance_not_allowed": 400,
+    "account_archived": 400,
     "unbalanced_entry": 500,
     "already_void": 409,
     "not_voided": 409,

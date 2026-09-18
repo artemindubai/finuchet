@@ -2,7 +2,11 @@
 """Заморозка рублей за балансом: транши и FIFO-разморозка (ARCHITECTURE §4.3).
 
 Ключевое правило: возврат, гасящий транш целиком, забирает ВЕСЬ остаток рублей транша — иначе
-на пропорции теряются копейки (грабля 4 журнала)."""
+на пропорции теряются копейки (грабля 4 журнала).
+
+Второе ключевое правило (грабля 28): состояние траншей — функция ЖУРНАЛА, а не истории кликов.
+Любая отмена/возврат/правка погашения пересчитывает FIFO заново по всем живым операциям
+(`rebuild_releases`), иначе отмена «заплатил за семью» воскрешает заморозку, которую нечем гасить."""
 from __future__ import annotations
 
 import sqlite3
@@ -12,6 +16,10 @@ from backend.contracts import LedgerError, RateQuote
 from backend.ledger.common import account_row, freeze_account_slug, money_dict, warn
 from backend.money import fmt_amount, fmt_rate
 from backend.tz import human_date, utc_now
+
+# Виды операций, которые гасят долг семье и потому размораживают рубли (§4.3, грабля 13).
+RELEASE_KINDS = ("family_repayment", "paid_for_family_from_own")
+FREEZE_KINDS = ("family_withdrawal",) + RELEASE_KINDS
 
 
 def freeze_account_id(conn: sqlite3.Connection, ref=None) -> int | None:
@@ -125,38 +133,83 @@ def open_tranche(conn: sqlite3.Connection, *, entry_id: int, op_date: str, aed_t
     return tranche_id, warnings
 
 
-def release_fifo(conn: sqlite3.Connection, *, entry_id: int, aed_amount: int) -> tuple[list[dict], list[dict]]:
-    """Гасит открытые транши по FIFO. Возвращает (releases, warnings)."""
-    left = int(aed_amount)
-    releases: list[dict] = []
-    warnings: list[dict] = []
-    for row in open_rows(conn):
-        if left <= 0:
-            break
-        take = min(left, int(row["aed_left"]))
-        if take <= 0:
+def release_amount_of(conn: sqlite3.Connection, entry_id: int) -> int:
+    """Сколько AED эта операция гасит из долга семье: её положительная проводка в семейный контур."""
+    row = conn.execute(
+        "SELECT p.amount AS amount FROM postings p JOIN accounts a ON a.id = p.account_id"
+        " WHERE p.entry_id = ? AND p.amount > 0 AND p.currency = 'AED'"
+        "   AND (a.type = 'asset_family' OR a.slug = 'family_fund')"
+        " ORDER BY p.seq LIMIT 1", (entry_id,)).fetchone()
+    return int(row["amount"]) if row is not None else 0
+
+
+def rebuild_releases(conn: sqlite3.Connection) -> dict[int, int]:
+    """Пересчитывает транши и разморозку заново по живому журналу (§4.3, грабля 28).
+
+    Транш жив ровно пока жива операция-основание; погашения (возвраты и «заплатил за семью»)
+    применяются по FIFO в порядке `op_date, id`. Возвращает {entry_id: сколько AED не нашло транша}
+    — это те самые «вернул больше, чем брал»."""
+    conn.execute("DELETE FROM tranche_releases")
+    live: list[dict] = []
+    for row in conn.execute(
+            "SELECT t.id AS id, t.aed_taken AS aed_taken, t.rub_frozen AS rub_frozen,"
+            " e.status AS entry_status FROM family_tranches t JOIN entries e ON e.id = t.entry_id"
+            " ORDER BY t.op_date, t.id").fetchall():
+        if row["entry_status"] != "posted":
+            conn.execute(
+                "UPDATE family_tranches SET aed_left = ?, rub_left = ?, status = 'void' WHERE id = ?",
+                (int(row["aed_taken"]), int(row["rub_frozen"]), int(row["id"])))
             continue
-        if take == int(row["aed_left"]):
-            rub = int(row["rub_left"])           # закрываем целиком — отдаём весь остаток рублей
-        else:
-            rub = int(row["rub_left"]) * take // int(row["aed_left"])
-        aed_left = int(row["aed_left"]) - take
-        rub_left = int(row["rub_left"]) - rub
+        live.append({"id": int(row["id"]), "aed_left": int(row["aed_taken"]),
+                     "rub_left": int(row["rub_frozen"])})
+
+    now = utc_now()
+    shortfall: dict[int, int] = {}
+    marks = ",".join("?" * len(RELEASE_KINDS))
+    rows = conn.execute(
+        f"SELECT id FROM entries WHERE status = 'posted' AND sealed = 1 AND kind IN ({marks})"
+        " ORDER BY op_date, id", RELEASE_KINDS).fetchall()
+    for row in rows:
+        entry_id = int(row["id"])
+        left = release_amount_of(conn, entry_id)
+        for tranche in live:
+            if left <= 0:
+                break
+            take = min(left, tranche["aed_left"])
+            if take <= 0:
+                continue
+            if take == tranche["aed_left"]:
+                rub = tranche["rub_left"]        # закрываем целиком — отдаём весь остаток рублей
+            else:
+                rub = tranche["rub_left"] * take // tranche["aed_left"]
+            tranche["aed_left"] -= take
+            tranche["rub_left"] -= rub
+            conn.execute(
+                "INSERT INTO tranche_releases (tranche_id, entry_id, aed_released, rub_released,"
+                " created_at) VALUES (?,?,?,?,?)", (tranche["id"], entry_id, take, rub, now))
+            left -= take
+        if left > 0:
+            shortfall[entry_id] = left
+    for tranche in live:
         conn.execute(
             "UPDATE family_tranches SET aed_left = ?, rub_left = ?, status = ? WHERE id = ?",
-            (aed_left, rub_left, "closed" if aed_left == 0 else "open", int(row["id"])))
-        conn.execute(
-            "INSERT INTO tranche_releases (tranche_id, entry_id, aed_released, rub_released, created_at)"
-            " VALUES (?,?,?,?,?)", (int(row["id"]), entry_id, take, rub, utc_now()))
-        releases.append({"tranche_id": int(row["id"]),
-                         "aed": money_dict(take, "AED"), "rub": money_dict(rub, "RUB"),
-                         "op_date": row["op_date"], "rate_e6": int(row["rate_e6"])})
-        left -= take
-    if left > 0:
-        warnings.append(warn("repaid_more_than_taken",
-                             f"Вернули больше, чем брали, на {fmt_amount(left, 'AED')}",
-                             {"extra": money_dict(left, "AED")}))
-    return releases, warnings
+            (tranche["aed_left"], tranche["rub_left"],
+             "closed" if tranche["aed_left"] == 0 else "open", tranche["id"]))
+    return shortfall
+
+
+def shortfall_warning(kind: str, extra: int) -> dict | None:
+    """Погашение не нашло транша. Для возврата это «вернул больше, чем брал»; для «заплатил за
+    семью» никакого возврата не было — врать про возврат нельзя (грабля 35)."""
+    if extra <= 0:
+        return None
+    if kind == "paid_for_family_from_own":
+        return warn("family_owes_you",
+                    f"Долг семье закрыт, теперь семья должна вам {fmt_amount(extra, 'AED')}",
+                    {"extra": money_dict(extra, "AED")})
+    return warn("repaid_more_than_taken",
+                f"Вернули больше, чем брали, на {fmt_amount(extra, 'AED')}",
+                {"extra": money_dict(extra, "AED")})
 
 
 def active_releases_of_tranche(conn: sqlite3.Connection, tranche_id: int) -> list[int]:
@@ -179,41 +232,10 @@ def guard_no_releases(conn: sqlite3.Connection, entry_id: int) -> None:
                 {"tranche_id": int(row["id"]), "releases": releases})
 
 
-def void_for_entry(conn: sqlite3.Connection, entry_id: int) -> None:
-    """Откат заморозки при отмене операции: свои транши в void, свои релизы — назад в транши."""
-    guard_no_releases(conn, entry_id)
-    conn.execute("UPDATE family_tranches SET status = 'void' WHERE entry_id = ?", (entry_id,))
-    for row in conn.execute(
-            "SELECT * FROM tranche_releases WHERE entry_id = ?", (entry_id,)).fetchall():
-        tranche = conn.execute("SELECT * FROM family_tranches WHERE id = ?",
-                               (int(row["tranche_id"]),)).fetchone()
-        if tranche is None or tranche["status"] == "void":
-            continue
-        aed_left = int(tranche["aed_left"]) + int(row["aed_released"])
-        rub_left = int(tranche["rub_left"]) + int(row["rub_released"])
-        conn.execute("UPDATE family_tranches SET aed_left = ?, rub_left = ?, status = 'open'"
-                     " WHERE id = ?", (aed_left, rub_left, int(tranche["id"])))
-
-
-def unvoid_for_entry(conn: sqlite3.Connection, entry_id: int) -> None:
-    """Зеркало void_for_entry для кнопки «Вернуть» (§4.1)."""
-    conn.execute("UPDATE family_tranches SET status = CASE WHEN aed_left = 0 THEN 'closed'"
-                 " ELSE 'open' END WHERE entry_id = ? AND status = 'void'", (entry_id,))
-    for row in conn.execute(
-            "SELECT * FROM tranche_releases WHERE entry_id = ?", (entry_id,)).fetchall():
-        tranche = conn.execute("SELECT * FROM family_tranches WHERE id = ?",
-                               (int(row["tranche_id"]),)).fetchone()
-        if tranche is None or tranche["status"] == "void":
-            continue
-        aed_left = int(tranche["aed_left"]) - int(row["aed_released"])
-        rub_left = int(tranche["rub_left"]) - int(row["rub_released"])
-        if aed_left < 0:
-            raise LedgerError("tranche_has_releases",
-                              "Транш уже погашен другими возвратами",
-                              {"tranche_id": int(tranche["id"])})
-        conn.execute("UPDATE family_tranches SET aed_left = ?, rub_left = ?, status = ?"
-                     " WHERE id = ?",
-                     (aed_left, rub_left, "closed" if aed_left == 0 else "open", int(tranche["id"])))
+def touches_freeze(conn: sqlite3.Connection, entry_id: int) -> bool:
+    """Задевает ли операция заморозку — чтобы не перетряхивать транши на каждой покупке кофе."""
+    row = conn.execute("SELECT kind FROM entries WHERE id = ?", (entry_id,)).fetchone()
+    return row is not None and row["kind"] in FREEZE_KINDS
 
 
 def tranche_of_entry(conn: sqlite3.Connection, entry_id: int) -> sqlite3.Row | None:
@@ -224,7 +246,8 @@ def tranche_of_entry(conn: sqlite3.Connection, entry_id: int) -> sqlite3.Row | N
 def releases_of_entry(conn: sqlite3.Connection, entry_id: int) -> list[dict]:
     rows = conn.execute(
         "SELECT r.*, t.op_date AS tranche_date, t.rate_e6 AS rate_e6 FROM tranche_releases r"
-        " JOIN family_tranches t ON t.id = r.tranche_id WHERE r.entry_id = ?", (entry_id,)).fetchall()
+        " JOIN family_tranches t ON t.id = r.tranche_id WHERE r.entry_id = ?"
+        " ORDER BY t.op_date, t.id", (entry_id,)).fetchall()
     return [{"tranche_id": int(row["tranche_id"]),
              "aed": money_dict(int(row["aed_released"]), "AED"),
              "rub": money_dict(int(row["rub_released"]), "RUB"),

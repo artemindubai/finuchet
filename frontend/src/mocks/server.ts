@@ -22,10 +22,30 @@ import ratesRaw from './rates.json';
 import settingsRaw from './settings.json';
 
 const TODAY = '2026-09-17';
-const DELAY = 120;
+
+// Переключатели для съёмки состояний (M11). Только моки: ?slow=600 — скелетон успевает
+// показаться, ?empty=1 — пустые списки, ?fail=1 — ошибка загрузки.
+const FLAGS = (() => {
+  try {
+    const q = new URLSearchParams(window.location.search);
+    return {
+      delay: Number(q.get('slow')) || 120,
+      empty: q.get('empty') === '1',
+      fail: q.get('fail') === '1',
+    };
+  } catch {
+    return { delay: 120, empty: false, fail: false };
+  }
+})();
 
 const clone = <T,>(v: T): T => JSON.parse(JSON.stringify(v)) as T;
-const wait = <T,>(v: T): Promise<T> => new Promise((r) => setTimeout(() => r(v), DELAY));
+const wait = <T,>(v: T): Promise<T> =>
+  new Promise((resolve, reject) => {
+    setTimeout(() => {
+      if (FLAGS.fail) reject({ code: 'network', message: 'Не удалось загрузить' });
+      else resolve(v);
+    }, FLAGS.delay);
+  });
 
 const MONTHS_GEN = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня',
   'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
@@ -188,6 +208,9 @@ export function home(currency: ViewCurrency): Promise<HomeResponse> {
 }
 
 export function entries(q: EntriesQuery): Promise<EntriesPage> {
+  if (FLAGS.empty) {
+    return wait({ items: [], days: [], next_cursor: null, has_more: false, total: 0 } as EntriesPage);
+  }
   const status = q.status ?? 'posted';
   const accountIds = new Map(state.index.map((i) => [i.id, i.accounts]));
   let items = state.entries.filter((e) => {

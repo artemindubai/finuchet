@@ -70,19 +70,55 @@ export function initTelegram() {
   }
 }
 
-let backHandler: (() => void) | null = null;
+/**
+ * Кнопка «Назад» Телеграма закрывает ВЕРХНИЙ слой (DESIGN_SPEC 4.5). Слои копятся стопкой:
+ * базовый ставит App (экран счёта, подэкран «Ещё», шторка операции), поверх регистрируется
+ * каждая открытая шторка. Без стопки вложенный слой выбора счёта/категории кнопкой «Назад»
+ * не закрывался — чек-лист 4.7 п. 25 (отчёт агента C, «незакрытое в v1»).
+ */
+let baseBack: (() => void) | null = null;
+const layers: (() => void)[] = [];
+let attached: (() => void) | null = null;
+let shown = false;
 
-export function setBackButton(handler: (() => void) | null) {
+function top(): (() => void) | null {
+  return layers.length ? layers[layers.length - 1] : baseBack;
+}
+
+function apply() {
   const app = tg();
   if (!app) return;
-  if (backHandler) app.BackButton.offClick(backHandler);
-  backHandler = handler;
-  if (handler) {
-    app.BackButton.onClick(handler);
-    app.BackButton.show();
-  } else {
+  if (attached) app.BackButton.offClick(attached);
+  const handler = top();
+  attached = handler ? () => handler() : null;
+  // show()/hide() дёргаем только на смене состояния: старые клиенты на каждый вызов пишут
+  // в консоль «BackButton is not supported in version 6.0».
+  if (attached) {
+    app.BackButton.onClick(attached);
+    if (!shown) {
+      app.BackButton.show();
+      shown = true;
+    }
+  } else if (shown) {
     app.BackButton.hide();
+    shown = false;
   }
+}
+
+export function setBackButton(handler: (() => void) | null) {
+  baseBack = handler;
+  apply();
+}
+
+/** Регистрирует слой; возвращает функцию снятия. Зовётся из Sheet на монтировании. */
+export function pushBackLayer(handler: () => void): () => void {
+  layers.push(handler);
+  apply();
+  return () => {
+    const i = layers.lastIndexOf(handler);
+    if (i >= 0) layers.splice(i, 1);
+    apply();
+  };
 }
 
 export const haptic = {

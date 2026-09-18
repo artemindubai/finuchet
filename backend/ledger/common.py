@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 
 from backend import money, rates, settings_store
@@ -12,6 +13,33 @@ from backend.tz import utc_now
 ASSET_TYPES = ("asset_personal", "asset_family")
 NEGATIVE_TYPES = ("liability", "income", "equity")   # показываются со сменой знака (§3)
 VIEW_CURRENCIES = ("RUB", "USD", "AED")
+
+_INT_TEXT = re.compile(r"^[+-]?\d+$")
+
+
+def minor_amount(value, *, field: str = "amount"):
+    """Сумма в минорных единицах — только целое число (§4.4, грабля 36).
+
+    43,99 копейки не бывает: дробь здесь всегда ошибка клиента, и молча отрезать её нельзя —
+    иначе 4300.99 тихо становится 4300 и 99 копеек исчезают из учёта."""
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        raise LedgerError("bad_request", "Сумма должна быть числом", {"field": field})
+    if isinstance(value, int):
+        return value
+    if isinstance(value, float):
+        if not value.is_integer():
+            raise LedgerError("bad_request",
+                              "Сумма указывается в целых минорных единицах (копейки, филсы)",
+                              {"field": field, "value": value})
+        return int(value)
+    text = str(value).strip().replace(" ", "").replace(" ", "")
+    if _INT_TEXT.match(text):
+        return int(text)
+    raise LedgerError("bad_request",
+                      "Сумма указывается в целых минорных единицах (копейки, филсы)",
+                      {"field": field, "value": value})
 
 
 def warn(code: str, message: str, details: dict | None = None) -> dict:

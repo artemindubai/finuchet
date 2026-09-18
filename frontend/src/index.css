@@ -6,14 +6,17 @@
 :root {
   --c-bg: var(--tg-theme-secondary-bg-color, #f2f3f5);
   --c-card: var(--tg-theme-bg-color, #ffffff);
+  --c-sheet: var(--c-card);
   --c-inset: #f4f5f6;
+  /* Та же роль, но на фоне страницы: #f4f5f6 на #f2f3f5 — контраст 1,01:1, дорожка невидима (B4). */
+  --c-inset-on-bg: #e7e9ec;
   --c-separator: #e6e8eb;
 
   --c-text: var(--tg-theme-text-color, #17181a);
-  --c-hint: var(--tg-theme-hint-color, #8b9096);
+  --c-hint: var(--tg-theme-hint-color, #6b7076); /* было #8b9096 — 3,22:1 на карточке (M12) */
   --c-onbtn: #17181a;
 
-  --c-blue: #3e7bfa;
+  --c-blue: #2e6ae6; /* было #3e7bfa — 3,88:1 на белом (m12) */
   --c-blue-weak: #e8f0fe;
   --c-yellow: #ffdd2d;
   --c-yellow-press: #f2ce1a;
@@ -22,6 +25,7 @@
   --c-danger: #e5484d;
   --c-frozen: #6f7a87;
   --c-frozen-bg: #edf1f5;
+  --c-bar: #8e939a; /* столбик расхода: нейтральный в обеих темах (M7) */
 
   --gutter: 16px;
   --nav-h: 56px;
@@ -30,7 +34,9 @@
 :root[data-theme='dark'] {
   --c-bg: var(--tg-theme-secondary-bg-color, #0e0f11);
   --c-card: var(--tg-theme-bg-color, #1c1d20);
+  --c-sheet: #242629; /* шторка на ступень выше карточки, иначе модальность не читается (m17) */
   --c-inset: #2a2c30;
+  --c-inset-on-bg: #2a2c30;
   --c-separator: #2a2c30;
   --c-text: var(--tg-theme-text-color, #ffffff);
   --c-hint: var(--tg-theme-hint-color, #8e939a);
@@ -105,7 +111,8 @@ select {
 }
 
 .skeleton {
-  background: var(--c-inset);
+  /* Скелетон лежит и на карточке, и на фоне страницы: на --c-inset верхние полосы были невидимы (B4). */
+  background: var(--c-inset-on-bg);
   border-radius: 8px;
   animation: pulse 1.4s ease-in-out infinite;
 }
@@ -163,19 +170,12 @@ select {
     transition-duration: 0.001ms !important;
   }
 
-   /* Скелетон не появляется первые 150 мс: быстрый ответ не должен мигать (DESIGN_SPEC 4.3). */
-.skeleton-wrap {
-  opacity: 0;
-  animation: skeleton-appear 0s linear 150ms forwards;
-}
-
-@keyframes skeleton-appear {
-  to {
+  .skeleton-wrap {
     opacity: 1;
+    animation: none;
   }
-}
 
-.skeleton {
+  .skeleton {
     animation: none;
     opacity: 0.8;
   }

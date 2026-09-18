@@ -6,7 +6,9 @@ export default {
       colors: {
         bg: 'var(--c-bg)',
         card: 'var(--c-card)',
+        sheet: 'var(--c-sheet)',
         inset: 'var(--c-inset)',
+        insetbg: 'var(--c-inset-on-bg)',
         separator: 'var(--c-separator)',
         text: 'var(--c-text)',
         hint: 'var(--c-hint)',

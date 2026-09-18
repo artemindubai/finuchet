@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { haptic } from '../app/telegram';
-import { bp, money, monthTiny } from '../lib/format';
+import { bpTight, moneyWhole, monthLong, monthTiny } from '../lib/format';
 import { Glyph, onColor } from './Icon';
 import type { Breakdown, Money } from '../lib/types';
 
@@ -19,11 +19,12 @@ export function CategoryChip({
   onClick?: () => void;
 }) {
   const ink = onColor(color);
+  // Чип по содержимому: имя не режется многоточием, сумма — целая (B3, M2).
   return (
     <button
       type="button"
       disabled={!onClick}
-      className="flex h-[34px] items-center gap-1.5 overflow-hidden rounded-full pl-1.5 pr-3 disabled:cursor-default"
+      className="flex h-[34px] max-w-full items-center gap-1.5 rounded-full pl-1.5 pr-3 disabled:cursor-default"
       style={{ background: color, color: ink }}
       onClick={() => {
         if (!onClick) return;
@@ -38,7 +39,7 @@ export function CategoryChip({
         <Glyph name={icon ?? 'dots'} size={13} color={ink} />
       </span>
       <span className="min-w-0 truncate text-[13px] font-medium">{name}</span>
-      <span className="nums shrink-0 text-[13px] font-medium">{money(amount, 'none')}</span>
+      <span className="nums shrink-0 text-[13px] font-medium">{moneyWhole(amount, 'none')}</span>
     </button>
   );
 }
@@ -54,6 +55,9 @@ export function ShareBar({ parts, height = 8 }: { parts: { color: string; share_
     </div>
   );
 }
+
+/** Цвет служебного сегмента «Остальное» (DESIGN_SPEC 4.3, M10). От темы не зависит, как и цвета категорий. */
+const REST_COLOR = '#C4C9CF';
 
 interface Slice {
   key: string;
@@ -76,10 +80,12 @@ function toSlices(rows: Breakdown[]): Slice[] {
     category_id: r.category_id,
   }));
   if (small.length) {
+    // «Прочее» — настоящая категория цвета #A0A7B0. Служебный сегмент зовётся «Остальное»
+    // и красится в #C4C9CF, иначе на кольце два несмежных серых сегмента одного цвета (M10).
     slices.push({
       key: 'rest',
-      name: 'Прочее',
-      color: '#A0A7B0',
+      name: 'Остальное',
+      color: REST_COLOR,
       share_bp: small.reduce((s, r) => s + r.share_bp, 0),
       amount: {
         amount: small.reduce((s, r) => s + r.amount.amount, 0),
@@ -148,7 +154,7 @@ export function Donut({ rows, onPick }: { rows: Breakdown[]; onPick?: (categoryI
             textAnchor={x < C - 6 ? 'end' : x > C + 6 ? 'start' : 'middle'}
             dominantBaseline="middle"
           >
-            {bp(a.share_bp)}
+            {bpTight(a.share_bp)}
           </text>
         );
       })}
@@ -167,8 +173,10 @@ export function DonutChips({
 }) {
   const shown = rows.slice(0, limit);
   const restCount = rows.length - shown.length;
+  // Чипы по содержимому с переносом, а не жёсткая сетка в две колонки: в колонке половинной
+  // ширины имя категории резалось многоточием почти у каждого чипа (B3б).
   return (
-    <div className="grid grid-cols-2 gap-2">
+    <div className="flex flex-wrap gap-2">
       {shown.map((r) => (
         <CategoryChip
           key={r.category_id ?? r.source_id ?? r.name}
@@ -180,7 +188,8 @@ export function DonutChips({
         />
       ))}
       {restCount > 0 ? (
-        <span className="flex h-[34px] items-center justify-center rounded-full bg-inset text-[13px] font-medium text-hint">
+        // Было #8B9096 на #F4F5F6 = 2,95:1 — ниже порога чек-листа п. 16 (M5).
+        <span className="flex h-[34px] items-center justify-center rounded-full bg-insetbg px-3 text-[13px] font-medium text-text">
           Ещё {restCount}
         </span>
       ) : null}
@@ -188,19 +197,34 @@ export function DonutChips({
   );
 }
 
-/** Двенадцать пар столбиков: доход зелёный, расход тёмный. Осей и сетки нет. */
+/**
+ * Двенадцать пар столбиков. Расход — нейтральный `--c-bar` в ОБЕИХ темах: на `--c-text` он
+ * в тёмной становился почти белым и перевешивал зелёный доход, то есть акцент инвертировался
+ * при смене темы (M7а). Строка значений стоит НАД графиком (DESIGN_SPEC 4.3, M7в).
+ */
 export function MonthBars({
   data,
   selected,
   onSelect,
+  caption = true,
 }: {
   data: { month: string; income: Money; expense: Money }[];
   selected: string;
   onSelect: (month: string) => void;
+  caption?: boolean;
 }) {
   const max = Math.max(1, ...data.flatMap((d) => [d.income.amount, d.expense.amount]));
   const H = 110;
+  const current = data.find((d) => d.month === selected);
   return (
+    <>
+    {caption && current ? (
+      <div className="mb-3 text-[13px] leading-4 text-hint">
+        {monthLong(current.month)} · доходы{' '}
+        <span className="nums text-text">{moneyWhole(current.income, 'none')}</span> · расходы{' '}
+        <span className="nums text-text">{moneyWhole(current.expense, 'none')}</span>
+      </div>
+    ) : null}
     <div className="flex items-end justify-between gap-[9px]">
       {data.map((d, i) => {
         const active = d.month === selected;
@@ -217,22 +241,8 @@ export function MonthBars({
             }}
           >
             <span className="flex h-[110px] items-end gap-[2px]">
-              <span
-                className="w-2 rounded-t"
-                style={{
-                  height: Math.max(2, (d.expense.amount / max) * H),
-                  background: 'var(--c-text)',
-                  opacity: active ? 1 : 0.75,
-                }}
-              />
-              <span
-                className="w-2 rounded-t"
-                style={{
-                  height: Math.max(2, (d.income.amount / max) * H),
-                  background: 'var(--c-income)',
-                  opacity: active ? 1 : 0.75,
-                }}
-              />
+              <Bar value={d.expense.amount} max={max} h={H} color="var(--c-bar)" active={active} />
+              <Bar value={d.income.amount} max={max} h={H} color="var(--c-income)" active={active} />
             </span>
             <span className={`text-[11px] ${active ? 'font-semibold text-text' : 'text-hint'}`}>
               {labelled ? monthTiny(d.month) : ' '}
@@ -241,5 +251,22 @@ export function MonthBars({
         );
       })}
     </div>
+    </>
+  );
+}
+
+/**
+ * Столбик месяца. Месяц без данных не рисуется вовсе (M7б): огрызки в 2–3 px у самой оси
+ * читались как мусор, а не как «данных нет».
+ */
+function Bar({
+  value, max, h, color, active,
+}: { value: number; max: number; h: number; color: string; active: boolean }) {
+  if (value <= 0) return <span className="w-2" />;
+  return (
+    <span
+      className="w-2 rounded-t"
+      style={{ height: Math.max(3, (value / max) * h), background: color, opacity: active ? 1 : 0.75 }}
+    />
   );
 }

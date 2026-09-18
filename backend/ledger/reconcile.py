@@ -245,9 +245,25 @@ def _op_from_inbox(conn: sqlite3.Connection, row: sqlite3.Row, category=None) ->
                            source=source, raw_input=row["raw_text"])
 
 
+def _check_new_row(conn: sqlite3.Connection, row: sqlite3.Row, op: ParsedOperation) -> None:
+    """Проверка строки ДО записи: пачка применяется целиком или никак (§4.5, грабля 38)."""
+    if int(row["amount"]) == 0:
+        raise LedgerError("bad_request", "Строка с нулевой суммой не заносится",
+                          {"inbox_id": int(row["id"]), "raw_text": row["raw_text"] or ""})
+    resolve_account(conn, op.from_account if op.kind == "expense" else op.to_account,
+                    field="account")
+    if op.kind == "expense" and op.category is not None:
+        resolve_account(conn, op.category, field="category")
+
+
 def apply_reconcile(decisions: list[ReconcileDecision], *, actor: str = "bot",
                     currency_view: str = "RUB") -> dict:
-    """Порядок строгий: сначала все new, потом выравнивание остатка (§4.5)."""
+    """Порядок строгий: сначала все new, потом выравнивание остатка (§4.5).
+
+    Пачка — одна единица: сначала проверяются ВСЕ строки, потом одна транзакция на весь занос.
+    Иначе плохая строка в середине оставляла половину скрина в журнале, а пользователь видел
+    только ошибку (грабля 38). Карточка §7.4 подводит итог всей пачки одним сообщением — значит
+    и результат у пачки должен быть один."""
     from backend.ledger import api
     conn = _conn()
     applied: list[dict] = []
@@ -256,48 +272,57 @@ def apply_reconcile(decisions: list[ReconcileDecision], *, actor: str = "bot",
     aligns = [d for d in decisions if d.decision == "align"]
     others = [d for d in decisions if d.decision != "align"]
 
+    prepared: list[tuple[ReconcileDecision, sqlite3.Row, ParsedOperation | None]] = []
     for decision in others:
         row = conn.execute("SELECT * FROM inbox WHERE id = ?", (int(decision.inbox_id),)).fetchone()
         if row is None:
             raise LedgerError("not_found", "Строка сверки не найдена", {"id": decision.inbox_id})
-        if row["status"] != "pending":
-            applied.append({"inbox_id": int(row["id"]), "status": row["status"], "skipped": True})
-            continue
-        if decision.decision == "new":
-            op = _op_from_inbox(conn, row, decision.category)
-            result = api.post_operation(op, actor=actor, currency_view=currency_view,
-                                        external_ref=_ref_for_inbox(conn, row))
-            with db.transaction(conn):
-                conn.execute("UPDATE inbox SET status = 'accepted', entry_id = ?, resolved_at = ?"
-                             " WHERE id = ?", (result["id"], utc_now(), int(row["id"])))
-            warnings.extend(result.get("warnings") or [])
-            touched.extend(a["id"] for a in result["effects"]["accounts"])
-            applied.append({"inbox_id": int(row["id"]), "status": "accepted",
-                            "entry_id": result["id"]})
-        elif decision.decision == "same":
-            with db.transaction(conn):
-                conn.execute("UPDATE inbox SET status = 'merged', match_entry_id = COALESCE(?,"
-                             " match_entry_id), resolved_at = ? WHERE id = ?",
-                             (decision.match_entry_id, utc_now(), int(row["id"])))
-            applied.append({"inbox_id": int(row["id"]), "status": "merged"})
-        elif decision.decision == "skip":
-            with db.transaction(conn):
-                conn.execute("UPDATE inbox SET status = 'skipped', resolved_at = ? WHERE id = ?",
-                             (utc_now(), int(row["id"])))
-            applied.append({"inbox_id": int(row["id"]), "status": "skipped"})
-        else:
+        if decision.decision not in ("new", "same", "skip"):
             raise LedgerError("bad_request", "Неизвестное решение сверки",
                               {"decision": decision.decision})
-
+        op = None
+        if row["status"] == "pending" and decision.decision == "new":
+            op = _op_from_inbox(conn, row, decision.category)
+            _check_new_row(conn, row, op)
+        prepared.append((decision, row, op))
     for decision in aligns:
         row = conn.execute("SELECT * FROM inbox WHERE id = ?", (int(decision.inbox_id),)).fetchone()
         if row is None:
             raise LedgerError("not_found", "Строка сверки не найдена", {"id": decision.inbox_id})
-        result = align(row["batch_id"], bank_balance=None, actor=actor,
-                       currency_view=currency_view)
-        warnings.extend(result.get("warnings") or [])
-        applied.append({"batch_id": row["batch_id"], "status": "aligned",
-                        "entry_id": result.get("entry_id")})
+
+    with db.transaction(conn):
+        for decision, row, op in prepared:
+            if row["status"] != "pending":
+                applied.append({"inbox_id": int(row["id"]), "status": row["status"],
+                                "skipped": True})
+                continue
+            if decision.decision == "new":
+                result = api.post_operation(op, actor=actor, currency_view=currency_view,
+                                            external_ref=_ref_for_inbox(conn, row))
+                conn.execute("UPDATE inbox SET status = 'accepted', entry_id = ?, resolved_at = ?"
+                             " WHERE id = ?", (result["id"], utc_now(), int(row["id"])))
+                warnings.extend(result.get("warnings") or [])
+                touched.extend(a["id"] for a in result["effects"]["accounts"])
+                applied.append({"inbox_id": int(row["id"]), "status": "accepted",
+                                "entry_id": result["id"]})
+            elif decision.decision == "same":
+                conn.execute("UPDATE inbox SET status = 'merged', match_entry_id = COALESCE(?,"
+                             " match_entry_id), resolved_at = ? WHERE id = ?",
+                             (decision.match_entry_id, utc_now(), int(row["id"])))
+                applied.append({"inbox_id": int(row["id"]), "status": "merged"})
+            else:
+                conn.execute("UPDATE inbox SET status = 'skipped', resolved_at = ? WHERE id = ?",
+                             (utc_now(), int(row["id"])))
+                applied.append({"inbox_id": int(row["id"]), "status": "skipped"})
+
+        for decision in aligns:
+            row = conn.execute("SELECT * FROM inbox WHERE id = ?",
+                               (int(decision.inbox_id),)).fetchone()
+            result = align(row["batch_id"], bank_balance=None, actor=actor,
+                           currency_view=currency_view)
+            warnings.extend(result.get("warnings") or [])
+            applied.append({"batch_id": row["batch_id"], "status": "aligned",
+                            "entry_id": result.get("entry_id")})
 
     return {"applied": applied,
             "effects": build_effects(conn, account_ids=touched, currency_view=currency_view),

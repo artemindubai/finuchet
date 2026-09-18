@@ -18,9 +18,10 @@ from backend.ledger.recipes import build as build_recipe
 from backend.money import fmt_amount
 from backend.tz import human_day, iso_utc, today_dubai, utc_now
 from backend.ledger.balances import effects as build_effects, family_debt as family_debt_of
-from backend.ledger.tranches import (guard_no_releases, open_rows as open_tranche_rows,
-                                     open_tranche, release_fifo, tranche_of_entry,
-                                     unvoid_for_entry, view as tranche_view, void_for_entry)
+from backend.ledger.tranches import (RELEASE_KINDS, guard_no_releases,
+                                     open_rows as open_tranche_rows, open_tranche,
+                                     rebuild_releases, releases_of_entry, shortfall_warning,
+                                     touches_freeze, tranche_of_entry, view as tranche_view)
 
 DIRECTION = {
     "expense": "out", "income": "in", "transfer": "neutral", "exchange": "neutral",
@@ -276,12 +277,26 @@ def entry_full(conn: sqlite3.Connection, entry_id: int, *, currency_view: str = 
 
 
 def _validate_postings(conn: sqlite3.Connection, postings: list[dict],
-                       accounts: dict[int, sqlite3.Row]) -> None:
+                       accounts: dict[int, sqlite3.Row], *, source: str = "manual") -> list[dict]:
+    """Проверки перед записью. Возвращает предупреждения (архивный счёт при заносе истории)."""
+    warnings: list[dict] = []
     by_currency: dict[str, int] = {}
     for posting in postings:
         account = accounts.get(int(posting["account_id"]))
         if account is None:
             raise LedgerError("unknown_account", "Счёт не найден", {"id": posting["account_id"]})
+        if account["archived"]:
+            # Занос истории (скрин, выписка) на архивный счёт — это прошлое, его пропускаем
+            # с предупреждением. Новая операция руками или голосом — ошибка (§5.11, грабля 37).
+            if source in ("screenshot", "statement"):
+                warnings.append(warn(
+                    "archived_account_used",
+                    f"Счёт {account['name']} в архиве — операция занесена как есть",
+                    {"account": account["slug"]}))
+            else:
+                raise LedgerError("account_archived",
+                                  f"Счёт {account['name']} в архиве: операции по нему не заносятся",
+                                  {"account": account["slug"]})
         if account["currency"] and account["currency"] != posting["currency"]:
             raise LedgerError("currency_mismatch",
                               f"Счёт {account['name']} ведётся в {account['currency']}",
@@ -295,6 +310,7 @@ def _validate_postings(conn: sqlite3.Connection, postings: list[dict],
         if total != 0:
             raise LedgerError("unbalanced_entry", f"Проводки не сходятся по {currency}: {total}",
                               {"currency": currency, "diff": total})
+    return warnings
 
 
 def _rate_for_freeze(conn: sqlite3.Connection, op: ParsedOperation, amount: int,
@@ -319,7 +335,7 @@ def _write_entry(conn: sqlite3.Connection, op: ParsedOperation, *, actor: str,
     warnings = list(built["warnings"])
     meta = built["meta"]
     accounts = _accounts(conn)
-    _validate_postings(conn, postings, accounts)
+    warnings.extend(_validate_postings(conn, postings, accounts, source=op.source))
 
     snapshot = rates.snapshot(conn=conn)
     quote = None
@@ -353,17 +369,24 @@ def _write_entry(conn: sqlite3.Connection, op: ParsedOperation, *, actor: str,
 
     tranche_block = None
     released: list[dict] = []
+    tranche_id = None
     if op.kind == "family_withdrawal" and meta.get("freeze") and quote is not None:
         tranche_id, freeze_warnings = open_tranche(
             conn, entry_id=entry_id, op_date=op.op_date, aed_taken=int(op.amount),
             quote=quote, account_ref=op.freeze_account)
         warnings.extend(freeze_warnings)
-        row = conn.execute("SELECT * FROM family_tranches WHERE id = ?", (tranche_id,)).fetchone()
-        tranche_block = tranche_view(conn, row)
-    if meta.get("release"):
-        released, release_warnings = release_fifo(
-            conn, entry_id=entry_id, aed_amount=int(meta["release"]))
-        warnings.extend(release_warnings)
+    if tranche_id is not None or op.kind in RELEASE_KINDS:
+        # Транши пересчитываются целиком: их состояние — функция журнала (§4.3, грабля 28).
+        shortfall = rebuild_releases(conn)
+        if tranche_id is not None:
+            row = conn.execute("SELECT * FROM family_tranches WHERE id = ?",
+                               (tranche_id,)).fetchone()
+            tranche_block = tranche_view(conn, row)
+        if op.kind in RELEASE_KINDS:
+            released = releases_of_entry(conn, entry_id)
+            extra = shortfall_warning(op.kind, shortfall.get(entry_id, 0))
+            if extra:
+                warnings.append(extra)
 
     if op.due_date and op.kind in PLANNED_KINDS:
         _ensure_planned_from_due(conn, entry_id, op)
@@ -448,9 +471,11 @@ def void_entry(entry_id: int, *, actor: str = "bot", reason: str | None = None,
             raise LedgerError("not_found", "Операция не найдена", {"entry_id": entry_id})
         if entry["status"] == "void":
             raise LedgerError("already_void", "Операция уже отменена", {"entry_id": entry_id})
-        void_for_entry(conn, entry_id)
+        guard_no_releases(conn, entry_id)        # §4.3 б: сначала отменяется возврат
         conn.execute("UPDATE entries SET status = 'void', void_reason = ?, voided_at = ? WHERE id = ?",
                      (reason, utc_now(), entry_id))
+        if touches_freeze(conn, entry_id):
+            rebuild_releases(conn)
         accounts = [int(row["account_id"]) for row in
                     conn.execute("SELECT account_id FROM postings WHERE entry_id = ?",
                                  (entry_id,)).fetchall()]
@@ -473,9 +498,10 @@ def unvoid_entry(entry_id: int, *, actor: str = "api", currency_view: str = "RUB
                               "Эту операцию заменила правка — отмените сначала новую версию",
                               {"entry_id": entry_id,
                                "replaced_by": int(entry["replaced_by_entry_id"])})
-        unvoid_for_entry(conn, entry_id)
         conn.execute("UPDATE entries SET status = 'posted', void_reason = NULL, voided_at = NULL"
                      " WHERE id = ?", (entry_id,))
+        if touches_freeze(conn, entry_id):
+            rebuild_releases(conn)
         accounts = [int(row["account_id"]) for row in
                     conn.execute("SELECT account_id FROM postings WHERE entry_id = ?",
                                  (entry_id,)).fetchall()]
@@ -542,9 +568,10 @@ def amend_entry(entry_id: int, patch: OperationPatch, *, actor: str = "bot",
         new_op.source = old_op.source
 
         changed = _changes(conn, old_op, new_op)
-        void_for_entry(conn, entry_id)
         conn.execute("UPDATE entries SET status = 'void', voided_at = ?, void_reason = 'amend'"
                      " WHERE id = ?", (utc_now(), entry_id))
+        if touches_freeze(conn, entry_id):
+            rebuild_releases(conn)               # старая версия ушла из журнала
         written = _write_entry(conn, new_op, actor=actor,
                                external_ref=entry["external_ref"],
                                version=int(entry["version"]) + 1, replaces_entry_id=entry_id)
@@ -716,13 +743,18 @@ def check_invariants() -> list[str]:
 
     debt = family_debt_of(conn)["debt"]["amount"]
     open_aed = sum(int(row["aed_left"]) for row in open_tranche_rows(conn))
-    no_freeze = conn.execute(
-        "SELECT COUNT(*) AS n FROM entries e WHERE e.kind = 'family_withdrawal'"
-        " AND e.status = 'posted' AND NOT EXISTS"
-        " (SELECT 1 FROM family_tranches t WHERE t.entry_id = e.id AND t.status != 'void')"
-    ).fetchone()["n"]
-    if debt >= 0 and not no_freeze and open_aed != debt:
-        problems.append(f"заморозка {open_aed} AED не равна долгу семье {debt} AED")
+    # Взятое «без заморозки» увеличивает долг, но не заморозку: его вычитаем ЧИСЛОМ, а не
+    # выключаем проверку флагом — иначе одно такое взятие глушит её навсегда (грабля 29).
+    unfrozen = -int(conn.execute(
+        "SELECT COALESCE(SUM(p.amount), 0) AS aed FROM entries e"
+        " JOIN postings p ON p.entry_id = e.id JOIN accounts a ON a.id = p.account_id"
+        " WHERE e.kind = 'family_withdrawal' AND e.status = 'posted' AND e.sealed = 1"
+        "   AND a.type = 'asset_family' AND p.currency = 'AED' AND NOT EXISTS"
+        "   (SELECT 1 FROM family_tranches t WHERE t.entry_id = e.id AND t.status != 'void')"
+    ).fetchone()["aed"])
+    if debt >= 0 and open_aed != debt - unfrozen:
+        problems.append(f"заморозка {open_aed} AED не равна долгу семье {debt} AED"
+                        + (f" за вычетом взятого без заморозки {unfrozen} AED" if unfrozen else ""))
 
     rows = conn.execute(
         "SELECT e.id AS id FROM entries e WHERE e.status = 'void'"

@@ -10,6 +10,7 @@ from backend import ledger
 from backend.api.deps import currency_param, require_user, run
 from backend.contracts import (EntryFilters, LedgerError, OpeningBalanceItem, OperationPatch,
                                ParsedOperation)
+from backend.ledger.common import minor_amount
 from backend.tz import today_dubai
 
 router = APIRouter(prefix="/api", tags=["entries"])
@@ -26,6 +27,10 @@ def _parsed_from_body(body: dict) -> ParsedOperation:
         raise LedgerError("bad_request", "Не указан вид операции", {"field": "kind"})
     if data.get("amount") is None:
         raise LedgerError("bad_request", "Не указана сумма", {"field": "amount"})
+    # Минорные единицы целые: 4300.99 — ошибка клиента, а не «4300 и хвостик» (грабля 36).
+    data["amount"] = minor_amount(data["amount"], field="amount")
+    if data.get("amount_to") is not None:
+        data["amount_to"] = minor_amount(data["amount_to"], field="amount_to")
     data["source"] = "manual"          # поле source в теле игнорируется (§5.5)
     data["raw_input"] = None
     data["confidence"] = None

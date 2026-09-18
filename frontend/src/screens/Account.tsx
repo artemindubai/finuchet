@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { api } from '../lib/api';
 import { dropCache, useResource } from '../app/data';
-import { money, num } from '../lib/format';
+import { money, moneyWhole, num } from '../lib/format';
 import { Button, Card, CardHead, Empty, LoadError, Screen } from '../components/ui';
-import { EntryRow, TrancheRow } from '../components/rows';
+import { DayBlock, TrancheRow } from '../components/rows';
 import { FeedSkeleton } from '../components/Skeleton';
 import { Sheet } from '../components/Sheet';
 import { useToast } from '../components/Toast';
@@ -107,17 +107,21 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
 
         <div className="pt-2">
           <div className="nums text-[34px] font-bold leading-10 tracking-[-0.02em]">{money(shown, 'none')}</div>
-          <div className="mt-1 text-[13px] text-hint">
-            {acc.name} · {CURRENCY_WORD[acc.currency] ?? acc.currency}
-          </div>
+          {/* Имя счёта уже стоит в шапке экрана — дважды в 100 px (m6). */}
+          <div className="mt-1 text-[13px] text-hint">{CURRENCY_WORD[acc.currency] ?? acc.currency}</div>
         </div>
 
         {acc.frozen && acc.frozen.amount > 0 ? (
           <div className="mt-4">
             <Card>
+              {/* При одном транше итог в шапке — то же число строкой ниже (m7). */}
               <CardHead
                 title="Заморожено"
-                action={<span className="nums text-[15px] font-medium">{money(acc.frozen, 'none')}</span>}
+                action={
+                  data.tranches.length > 1 ? (
+                    <span className="nums text-[15px] font-medium">{moneyWhole(acc.frozen, 'none')}</span>
+                  ) : undefined
+                }
               />
               {data.tranches.length === 0 ? (
                 <Empty text="Ничего не заморожено" />
@@ -125,23 +129,26 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
                 data.tranches.map((t) => <TrancheRow key={t.id} t={t} onClick={openEntry} />)
               )}
               {acc.free ? (
-                <div className="nums pt-2 text-[13px] text-hint">свободно {money(acc.free, 'none')}</div>
+                <div className="nums pt-2 text-[13px] text-hint">свободно {moneyWhole(acc.free, 'none')}</div>
               ) : null}
             </Card>
           </div>
         ) : null}
 
-        <div className="mt-3">
-          <Card>
-            <div className="flex flex-col gap-2">
-              <Button kind="secondary" onClick={() => setAlign(true)}>
-                Выровнять остаток
-              </Button>
-              <Button kind="secondary" onClick={() => onAdd(acc.slug)}>
-                Добавить операцию
-              </Button>
-            </div>
-          </Card>
+        {/* Кнопки в ряд по 50 %: столбик из двух одинаковых серых плашек во всю ширину читался
+            как «два варианта одного и того же» и съедал 200 CSS над лентой (M13). Карточка вокруг
+            них — третья вложенная поверхность подряд, поэтому её нет. */}
+        <div className="mt-4 flex gap-2">
+          <span className="min-w-0 flex-1">
+            <Button kind="secondary" onClick={() => setAlign(true)}>
+              Выровнять
+            </Button>
+          </span>
+          <span className="min-w-0 flex-1">
+            <Button kind="secondary" onClick={() => onAdd(acc.slug)}>
+              Добавить
+            </Button>
+          </span>
         </div>
 
         <div className="mt-6">
@@ -150,23 +157,19 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
               <Empty text="По счёту пока пусто" />
             </Card>
           ) : (
-            data.entries.days.map((d) => (
-              <section key={d.date} className="mb-3">
-                <div className="mb-1 flex items-baseline justify-between px-1">
-                  <h2 className="text-[15px] font-bold leading-5">{d.title}</h2>
-                  {d.total_out.amount > 0 ? (
-                    <span className="nums text-[15px] leading-5 text-hint">{money(d.total_out, 'minus')}</span>
-                  ) : null}
-                </div>
-                <Card>
-                  {data.entries.items
-                    .filter((e) => d.ids.includes(e.id))
-                    .map((e) => (
-                      <EntryRow key={e.id} e={e} onClick={openEntry} />
-                    ))}
-                </Card>
-              </section>
-            ))
+            <Card>
+              {data.entries.days.map((d, i) => (
+                <DayBlock
+                  key={d.date}
+                  first={i === 0}
+                  title={d.title}
+                  total={d.total_out}
+                  totalIn={d.total_in}
+                  items={data.entries.items.filter((e) => d.ids.includes(e.id))}
+                  onOpen={openEntry}
+                />
+              ))}
+            </Card>
           )}
         </div>
       </Screen>

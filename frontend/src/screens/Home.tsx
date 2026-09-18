@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { api } from '../lib/api';
 import { useResource } from '../app/data';
-import { dateLong, money, monthPrep } from '../lib/format';
-import { Button, Card, CardHead, Empty, LinkAction, LoadError, Row, Screen, SectionTitle, Segment } from '../components/ui';
+import { dateLong, humanizeDates, money, moneyWhole, monthPrep } from '../lib/format';
+import { Button, Card, CardHead, Empty, GroupTitle, LinkAction, LoadError, Row, Screen, Segment } from '../components/ui';
 import { AccountRow, EntryRow } from '../components/rows';
 import { CategoryChip, ShareBar } from '../components/Charts';
 import { HomeSkeleton } from '../components/Skeleton';
@@ -45,24 +45,24 @@ export function Home() {
         <div className="text-[13px] leading-4 text-hint">Мои деньги</div>
         <div
           className={`nums mt-1 font-bold tracking-[-0.02em] ${
-            money(total, 'none').length > 12 ? 'text-[32px] leading-9' : 'text-[40px] leading-[44px]'
+            moneyWhole(total, 'none').length > 12 ? 'text-[32px] leading-9' : 'text-[40px] leading-[44px]'
           }`}
         >
-          {money(total, 'none')}
+          {moneyWhole(total, 'none')}
         </div>
         <div className="mt-3">
           <Segment options={VIEWS} value={view} onChange={setView} />
         </div>
         {frozen ? (
           <div className="nums mt-3 text-[15px] leading-5 text-hint">
-            свободно в рублях {money(data.free_rub, 'none')} · заморожено {money(data.frozen_rub, 'none')}
+            свободно в рублях {moneyWhole(data.free_rub, 'none')}
           </div>
         ) : null}
       </div>
 
       {data.groups.map((g) => (
         <section key={g.key}>
-          <SectionTitle title={g.title} right={money(data.totals_by_view.groups[g.key][view], 'none')} />
+          <GroupTitle title={g.title} right={moneyWhole(data.totals_by_view.groups[g.key][view], 'none')} />
           <Card>
             {g.accounts.map((a) => (
               <AccountRow key={a.id} a={a} onClick={openAccount} />
@@ -89,18 +89,19 @@ export function Home() {
               {family.debt.amount !== 0 ? (
                 <>
                   <Row
+                    indent
                     wrap
                     title={family.direction === 'i_owe' ? 'Долг семье' : 'Семья должна вам'}
                     subtitle={
                       family.frozen_note
-                        ? `заморожено ${money(family.frozen_rub, 'none')} ${family.frozen_note}`
+                        ? `заморожено ${moneyWhole(family.frozen_rub, 'none')} ${humanizeDates(family.frozen_note)}`
                         : undefined
                     }
                     right={money({ ...family.debt, amount: Math.abs(family.debt.amount) }, 'none')}
                   />
                   {family.today_repay_rub ? (
-                    <div className="nums pt-1 text-[13px] leading-4 text-hint">
-                      по курсу сегодня на возврат нужно {money(family.today_repay_rub, 'none')}
+                    <div className="nums pl-[56px] text-[13px] leading-4 text-hint">
+                      На возврат сегодня {moneyWhole(family.today_repay_rub, 'none')}
                     </div>
                   ) : null}
                 </>
@@ -145,7 +146,7 @@ export function Home() {
         <Card>
           <CardHead
             title={`Траты в ${monthPrep(data.month.month)}`}
-            action={<span className="nums text-[15px] font-medium">{money(data.month.expense_total, 'none')}</span>}
+            action={<span className="nums text-[15px] font-medium">{moneyWhole(data.month.expense_total, 'none')}</span>}
           />
           <ShareBar parts={data.month.top_categories} />
           <div className="mt-3 flex flex-wrap gap-2">

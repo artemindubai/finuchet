@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from 'lucide-react';
+import { BarChart3, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, PieChart } from 'lucide-react';
 import { api } from '../lib/api';
 import { useResource } from '../app/data';
-import { bp, money, monthLong, monthPrep } from '../lib/format';
+import { bp, moneyWhole, monthLong, monthPrep } from '../lib/format';
 import { Card, CardHead, Empty, LoadError, ProgressBar, Row, Screen, Segment } from '../components/ui';
 import { CircleIcon } from '../components/Icon';
 import { Donut, DonutChips, MonthBars } from '../components/Charts';
@@ -89,21 +89,21 @@ export function Analytics() {
 
         <div className="flex items-end justify-between">
           <div>
-            <div className="nums text-[32px] font-bold leading-9 tracking-[-0.02em]">{money(total, 'none')}</div>
+            <div className="nums text-[32px] font-bold leading-9 tracking-[-0.02em]">{moneyWhole(total, 'none')}</div>
             <div className="mt-0.5 text-[13px] text-hint">
               {isExpense ? 'Траты' : 'Доходы'} в {monthPrep(month)}
             </div>
           </div>
-          <button
-            type="button"
-            className="pb-1 text-[15px] font-medium text-blue"
-            onClick={() => {
-              haptic.select();
-              setChart((c) => (c === 'donut' ? 'bars' : 'donut'));
-            }}
-          >
-            {chart === 'donut' ? 'столбики' : 'кольцо'}
-          </button>
+          <div className="pb-0.5">
+            <Segment
+              options={[
+                { value: 'donut' as const, label: 'Кольцо', icon: <PieChart size={20} strokeWidth={1.8} /> },
+                { value: 'bars' as const, label: 'Столбики', icon: <BarChart3 size={20} strokeWidth={1.8} /> },
+              ]}
+              value={chart}
+              onChange={setChart}
+            />
+          </div>
         </div>
 
         {total.amount === 0 ? (
@@ -142,7 +142,7 @@ export function Analytics() {
                 key={r.category_id ?? r.source_id}
                 left={<CircleIcon name={iconOf(data, r)} color={r.color} />}
                 title={r.name}
-                right={money(r.amount, 'none')}
+                right={moneyWhole(r.amount, 'none')}
                 rightSub={bp(r.share_bp)}
                 onClick={
                   r.category_id
@@ -158,10 +158,6 @@ export function Analytics() {
           <Card>
             <CardHead title="Доходы и расходы по месяцам" />
             <MonthBars data={data.by_month} selected={month} onSelect={setMonth} />
-            <div className="nums mt-3 text-[13px] text-hint">
-              {monthLong(month)} · доходы {money(data.income_total, 'none')} · расходы{' '}
-              {money(data.expense_total, 'none')}
-            </div>
           </Card>
         </div>
 
@@ -179,15 +175,8 @@ export function Analytics() {
                   }}
                 >
                   <CircleIcon name={s.icon} color={s.color} />
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-[16px] font-medium leading-5">{s.name}</span>
-                    {s.tax_accrued ? (
-                      <span className="nums mt-0.5 block text-[13px] leading-4 text-hint">
-                        налог начислен {money(s.tax_accrued, 'none')}
-                      </span>
-                    ) : null}
-                  </span>
-                  <span className="nums shrink-0 text-[16px] font-medium">{money(s.amount, 'none')}</span>
+                  <span className="min-w-0 flex-1 truncate text-[16px] font-medium leading-5">{s.name}</span>
+                  <span className="nums shrink-0 text-[16px] font-medium">{moneyWhole(s.amount, 'none')}</span>
                   {s.projects.length > 0 ? (
                     openSource === s.source_id ? (
                       <ChevronUp size={18} className="shrink-0 text-hint" />
@@ -201,7 +190,7 @@ export function Analytics() {
                     {s.projects.map((p) => (
                       <div key={p.project} className="flex items-baseline justify-between py-1.5">
                         <span className="truncate text-[15px]">{p.project}</span>
-                        <span className="nums text-[15px]">{money(p.amount, 'none')}</span>
+                        <span className="nums text-[15px]">{moneyWhole(p.amount, 'none')}</span>
                       </div>
                     ))}
                   </div>
@@ -222,11 +211,16 @@ export function Analytics() {
                     <div className="flex items-baseline justify-between">
                       <span className="text-[16px] font-medium">{l.name}</span>
                       <span className={`nums text-[15px] ${over ? 'text-danger' : 'text-hint'}`}>
-                        {money(l.spent, 'none')} из {money(l.limit, 'none')}
+                        {moneyWhole(l.spent, 'none')} из {moneyWhole(l.limit, 'none')}
                       </span>
                     </div>
                     <div className="mt-2">
-                      <ProgressBar value={l.spent.amount} max={l.limit.amount} danger={over} />
+                      <ProgressBar
+                        value={l.spent.amount}
+                        max={l.limit.amount}
+                        danger={over}
+                        color={data.categories.find((c) => c.category_id === l.category_id)?.color}
+                      />
                     </div>
                   </div>
                 );
@@ -277,7 +271,7 @@ function CategorySheet({
       ) : (
         <>
           <div className="nums pb-2 text-[13px] text-hint">
-            {monthLong(month)} · {money(data.total, 'none')}
+            {monthLong(month)} · {moneyWhole(data.total, 'none')}
           </div>
           {data.items.map((e) => (
             <EntryRow

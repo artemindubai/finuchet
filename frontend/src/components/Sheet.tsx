@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ReactNode } from 'react';
-import { haptic, sheetMaxHeight } from '../app/telegram';
+import { haptic, pushBackLayer, sheetMaxHeight } from '../app/telegram';
 
 /** Шторка снизу — в ней живут все формы (DESIGN_SPEC 4.3). Свайп вниз закрывает. */
 export function Sheet({
@@ -19,11 +19,17 @@ export function Sheet({
   const heightRef = useRef(0);
   const sheetRef = useRef<HTMLDivElement | null>(null);
 
+  const closeRef = useRef(onClose);
+  closeRef.current = onClose;
+
   useEffect(() => {
     haptic.tap();
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
+    // Верхний слой для кнопки «Назад» Телеграма: вложенный список выбора закроется первым (4.7 п. 25).
+    const release = pushBackLayer(() => closeRef.current());
     return () => {
+      release();
       document.body.style.overflow = prev;
     };
   }, []);
@@ -52,7 +58,7 @@ export function Sheet({
       />
       <div
         ref={sheetRef}
-        className="sheet-enter relative w-full overflow-y-auto rounded-t-sheet bg-card px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-2"
+        className="sheet-enter relative w-full overflow-y-auto rounded-t-sheet bg-sheet px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-2"
         style={{ maxHeight: sheetMaxHeight(), transform: drag ? `translateY(${drag}px)` : undefined }}
         onTouchStart={onStart}
         onTouchMove={onMove}

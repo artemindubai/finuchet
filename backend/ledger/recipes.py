@@ -9,7 +9,7 @@ import sqlite3
 from backend import money, settings_store
 from backend.contracts import LedgerError, ParsedOperation
 from backend.ledger.common import (account_row, ensure_counterparty, freeze_account_slug,
-                                   resolve_account, warn)
+                                   minor_amount, resolve_account, warn)
 from backend.tz import today_dubai
 
 MONEY_KINDS = {"expense", "income", "transfer", "exchange", "tax_payment"}
@@ -108,7 +108,8 @@ def defaults(conn: sqlite3.Connection, op: ParsedOperation) -> ParsedOperation:
 def build(conn: sqlite3.Connection, op: ParsedOperation) -> dict:
     """Возвращает {'postings': [...], 'warnings': [...], 'meta': {...}} по рецепту вида операции."""
     op = defaults(conn, op)
-    amount = int(op.amount or 0)
+    amount = minor_amount(op.amount, field="amount") or 0
+    op.amount = amount
     cur = op.currency
     warnings: list[dict] = []
     meta: dict = {}
@@ -170,7 +171,13 @@ def build(conn: sqlite3.Connection, op: ParsedOperation) -> dict:
     elif op.kind == "exchange":
         src = _money_account(conn, op.from_account, "from_account", op)
         dst = _money_account(conn, op.to_account, "to_account", op)
-        amount_to = int(_need(op, "amount_to", op.amount_to))
+        amount_to = minor_amount(_need(op, "amount_to", op.amount_to), field="amount_to")
+        if amount_to <= 0:
+            # Без этой проверки «обменял 10 000 ₽ и получил 0» падает CHECK-ом БД (HTTP 500),
+            # а «получил −5 000 ₽» ЗАПИСЫВАЕТСЯ и сжигает обе стороны обмена (грабля 27).
+            raise LedgerError("bad_request", "Полученная сумма должна быть больше нуля",
+                              {"field": "amount_to"})
+        op.amount_to = amount_to
         cur_to = _need(op, "currency_to", op.currency_to)
         swap = _acc(conn, "eq_exchange", "exchange")
         postings = [_posting(dst, +amount_to, cur_to),
