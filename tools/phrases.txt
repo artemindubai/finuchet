@@ -1,6 +1,8 @@
-# Фразы приёмки ТЗ 11.1: шесть из ответа Артёма №13 плюс обмен и возврат в семейный.
+# Фразы приёмки ТЗ 11.1: шесть из ответа Артёма №13 плюс обмен и возврат в семейный,
+# следом блок числительных словами.
 # Формат строки: фраза | поле=значение поле=значение …  (ожидаемый разбор, проверяется автоматически)
 # Строки с # — комментарии. Прогон: python -X utf8 tools\offline_check.py
+# Устойчивость разбора: python -X utf8 tools\offline_check.py --repeat 3
 
 Сходил в кафе, поел на 43 дирхама | kind=expense amount=4300 currency=AED from_account=mashreq_personal category=exp_cafe
 Взял с семейного счёта 500 дирхам, заморозь эквивалент в рублях на моём счёте | kind=family_withdrawal amount=50000 currency=AED from_account=mashreq_family to_account=mashreq_personal freeze=true
@@ -10,3 +12,15 @@
 Отдал на благотворительность 200 дирхам | kind=expense amount=20000 currency=AED category=exp_charity
 Перевёл 50 тысяч рублей на Bybit, вышло 500 USDT | kind=exchange amount=5000000 currency=RUB from_account=tbank amount_to=50000 currency_to=USDT to_account=bybit
 Вернул 200 дирхам в семейный | kind=family_repayment amount=20000 currency=AED from_account=mashreq_personal to_account=mashreq_family
+
+# Числительные словами — грабля 39 (модель приписывала лишний ноль). Проверяется прогоном --repeat.
+Заплатил за квартиру полторы тысячи дирхам | kind=expense amount=150000 currency=AED category=exp_housing
+Пришло пятьдесят тысяч рублей за проект | kind=income amount=5000000 currency=RUB to_account=tbank income_source=inc_projects
+Получил зарплату две с половиной тысячи дирхам | kind=income amount=250000 currency=AED to_account=mashreq_personal income_source=inc_uae_job
+Кофе с круассаном 43,50 дирхама | kind=expense amount=4350 currency=AED from_account=mashreq_personal category=exp_cafe
+Отдал за интернет сто пятьдесят дирхам | kind=expense amount=15000 currency=AED from_account=mashreq_personal category=exp_comm
+Закинул полтинник на телефон со Сбера | kind=expense amount=5000 currency=RUB from_account=sber category=exp_comm
+Подарил другу косарь на день рождения с Т-Банка | kind=expense amount=100000 currency=RUB from_account=tbank category=exp_gifts
+Перевёл 50к со Сбера на Т-Банк | kind=transfer amount=5000000 currency=RUB from_account=sber to_account=tbank
+Занял у Игоря тыщу дирхам наличными | kind=loan_taken amount=100000 currency=AED counterparty=Игорь
+На Т-Банке сто пятьдесят тысяч | kind=opening_balance amount=15000000 currency=RUB to_account=tbank

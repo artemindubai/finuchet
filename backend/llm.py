@@ -40,6 +40,17 @@ class LLMError(RuntimeError):
     """Модель не ответила или ответила не по схеме."""
 
 
+_LAST_CALL: dict[str, Any] = {}
+
+
+def last_call() -> dict[str, Any]:
+    """Провайдер, модель, токены и секунды последнего вызова — для приёмки и сравнения моделей.
+
+    Фраза сюда не попадает, только счётчики. Читает `tools/offline_check.py`.
+    """
+    return dict(_LAST_CALL)
+
+
 # ---------------------------------------------------------------- настройки
 
 def provider() -> str:
@@ -51,7 +62,8 @@ def _model(kind: str) -> str:
     if provider() == "openai":
         if kind == "vision":
             return os.getenv("LLM_MODEL_VISION_OPENAI") or "gpt-4o"
-        return os.getenv("LLM_MODEL_PARSE_OPENAI") or "gpt-4o-mini"
+        # gpt-5.4-mini: 53 верных разбора из 54 против 45 у gpt-4o-mini (сравнение 18.09, грабля 39)
+        return os.getenv("LLM_MODEL_PARSE_OPENAI") or "gpt-5.4-mini"
     if kind == "vision":
         return os.getenv("LLM_MODEL_VISION") or "claude-opus-5"
     return os.getenv("LLM_MODEL_PARSE") or "claude-haiku-4-5"
@@ -197,6 +209,9 @@ async def _json_call(
         prov, model, schema_name,
         usage.get("input"), usage.get("output"), usage.get("cached"), took,
     )
+    _LAST_CALL.clear()
+    _LAST_CALL.update({"provider": prov, "model": model, "schema": schema_name,
+                       "took_sec": round(took, 2), **usage})
     try:
         data = json.loads(raw)
     except json.JSONDecodeError as exc:
@@ -285,6 +300,11 @@ async def _call_openai(
     headers = {"Authorization": f"Bearer {_api_key()}", "content-type": "application/json"}
     async with httpx.AsyncClient(timeout=_TIMEOUT) as client:
         resp = await client.post(OPENAI_URL, json=body, headers=headers)
+        if resp.status_code == 400 and "max_completion_tokens" in (resp.text or ""):
+            # модели, которые считают лимит вместе с рассуждением, называют его иначе
+            body.pop("max_tokens", None)
+            body["max_completion_tokens"] = _MAX_TOKENS
+            resp = await client.post(OPENAI_URL, json=body, headers=headers)
     if resp.status_code >= 400:
         raise LLMError(f"модель ответила {resp.status_code}: {_short(resp.text)}")
     data = resp.json()
