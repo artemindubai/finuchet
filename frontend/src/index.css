@@ -10,6 +10,9 @@
   --c-inset: #f4f5f6;
   /* Та же роль, но на фоне страницы: #f4f5f6 на #f2f3f5 — контраст 1,01:1, дорожка невидима (B4). */
   --c-inset-on-bg: #e7e9ec;
+  /* Третья ступень — вставка ВНУТРИ шторки. В светлой теме шторка = карточка, значение то же,
+     что у --c-inset; ступень существует ради тёмной темы (Н3). */
+  --c-inset-on-sheet: #f4f5f6;
   --c-separator: #e6e8eb;
 
   --c-text: var(--tg-theme-text-color, #17181a);
@@ -23,7 +26,7 @@
 
   --c-income: #1fa855;
   --c-danger: #e5484d;
-  --c-frozen: #6f7a87;
+  --c-frozen: #626c79; /* было #6f7a87 — 3,85:1 на плашке заморозки, ниже AA при кегле 13 (Н2) */
   --c-frozen-bg: #edf1f5;
   --c-bar: #8e939a; /* столбик расхода: нейтральный в обеих темах (M7) */
 
@@ -37,6 +40,9 @@
   --c-sheet: #242629; /* шторка на ступень выше карточки, иначе модальность не читается (m17) */
   --c-inset: #2a2c30;
   --c-inset-on-bg: #2a2c30;
+  /* Поверхность шторки поднята до #242629 (m17), а вставка осталась #2A2C30 — Δ 6/255,
+     транш и кнопки сливались с полотном. Третья ступень (Н3). */
+  --c-inset-on-sheet: #303338;
   --c-separator: #2a2c30;
   --c-text: var(--tg-theme-text-color, #ffffff);
   --c-hint: var(--tg-theme-hint-color, #8e939a);
@@ -92,6 +98,13 @@ select {
   font-variant-numeric: tabular-nums;
 }
 
+/* Внутри шторки вставки живут на своей ступени: и --c-inset, и --c-inset-on-bg подменяются
+   на --c-inset-on-sheet, поэтому кнопки, поля и транши поднимаются сами, без правок в компонентах (Н3). */
+.on-sheet {
+  --c-inset: var(--c-inset-on-sheet);
+  --c-inset-on-bg: var(--c-inset-on-sheet);
+}
+
 :focus-visible {
   outline: 2px solid var(--c-blue);
   outline-offset: 2px;
@@ -113,8 +126,13 @@ select {
 .skeleton {
   /* Скелетон лежит и на карточке, и на фоне страницы: на --c-inset верхние полосы были невидимы (B4). */
   background: var(--c-inset-on-bg);
-  border-radius: 8px;
   animation: pulse 1.4s ease-in-out infinite;
+}
+
+/* Радиус по умолчанию — с нулевой специфичностью, иначе он побеждал rounded-full у плейсхолдеров
+   иконок, и круги 40/44 подменялись квадратами r 8: при замене скелетона контентом форма прыгала (Н11). */
+:where(.skeleton) {
+  border-radius: 8px;
 }
 
 @keyframes pulse {

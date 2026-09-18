@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { api } from '../lib/api';
 import { useResource } from '../app/data';
-import { dateLong, humanizeDates, money, moneyWhole, monthPrep } from '../lib/format';
+import { dateLong, frozenNote, money, moneyWhole, monthPrep } from '../lib/format';
 import { Button, Card, CardHead, Empty, GroupTitle, LinkAction, LoadError, Row, Screen, Segment } from '../components/ui';
 import { AccountRow, EntryRow } from '../components/rows';
 import { CategoryChip, ShareBar } from '../components/Charts';
@@ -90,15 +90,16 @@ export function Home() {
                 <>
                   <Row
                     indent
-                    wrap
                     title={family.direction === 'i_owe' ? 'Долг семье' : 'Семья должна вам'}
-                    subtitle={
-                      family.frozen_note
-                        ? `заморожено ${moneyWhole(family.frozen_rub, 'none')} ${humanizeDates(family.frozen_note)}`
-                        : undefined
-                    }
                     right={money({ ...family.debt, amount: Math.abs(family.debt.amount) }, 'none')}
                   />
+                  {/* Подпись заморозки — отдельной строкой во всю ширину, а не подписью строки: рядом с
+                      колонкой суммы она переносилась на вторую строку и на 390, и на 360 (M8). */}
+                  {family.frozen_rub.amount > 0 ? (
+                    <div className="nums pl-[56px] text-[13px] leading-4 text-hint">
+                      {frozenNote(family.frozen_rub, family.frozen_note)}
+                    </div>
+                  ) : null}
                   {family.today_repay_rub ? (
                     <div className="nums pl-[56px] text-[13px] leading-4 text-hint">
                       На возврат сегодня {moneyWhole(family.today_repay_rub, 'none')}

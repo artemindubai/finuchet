@@ -8,7 +8,7 @@ import {
 import {
   Button, Card, CardHead, Empty, GroupTitle, LoadError, MenuRow, PageTitle, ProgressBar, Row, Screen, Segment,
 } from '../components/ui';
-import { accountColor, accountGlyph, accountRing, CircleIcon } from '../components/Icon';
+import { accountColor, accountGlyph, accountRing, CircleIcon, dataColor } from '../components/Icon';
 import { TrancheRow } from '../components/rows';
 import { PickerLayer, Sheet } from '../components/Sheet';
 import { useToast } from '../components/Toast';
@@ -237,6 +237,9 @@ function Calendar() {
     () => api.calendar(today(), plusMonths(today(), 3)),
   );
   const [busy, setBusy] = useState<number | null>(null);
+  // «Оплачено» появляется по тапу на строку (DESIGN_SPEC 4.4). Три постоянные пилюли делали синий
+  // цветом данных и растягивали строку до 76 CSS — четвёртый ритм строки в приложении (M3, Н9).
+  const [armed, setArmed] = useState<number | null>(null);
   const toast = useToast();
   if (loading) return <span className="skeleton skeleton-wrap mt-4 block h-24 w-full rounded-card" />;
   if (error || !data) return <LoadError onRetry={reload} />;
@@ -260,6 +263,7 @@ function Calendar() {
       dropCache('home');
       dropCache('entries');
       haptic.success();
+      setArmed(null);
       toast({ text: 'Записано' });
     } catch {
       haptic.error();
@@ -272,24 +276,33 @@ function Calendar() {
   return (
     <Card>
       {data.items.map((p) => (
-        <div key={p.id} className="flex items-center gap-3 py-2.5">
-          <div className="min-w-0 flex-1">
-            <div className="truncate text-[16px] font-medium leading-5">{p.title}</div>
-            <div className={`mt-0.5 truncate text-[13px] leading-4 ${p.overdue ? 'text-danger' : 'text-hint'}`}>
-              {dateLong(p.next_date)} · {REPEAT_LABEL[p.repeat] ?? p.repeat}
-            </div>
-          </div>
-          <div className="shrink-0 text-right">
-            <div className="nums text-[16px] font-medium leading-5">{money(p.amount, 'none')}</div>
+        <div key={p.id} className="flex items-center gap-2">
+          <button
+            type="button"
+            className="-mx-2 flex min-h-[64px] flex-1 items-center gap-3 rounded-inset px-2 text-left transition-colors duration-[80ms] active:bg-inset"
+            onClick={() => {
+              haptic.tap();
+              setArmed(armed === p.id ? null : p.id);
+            }}
+          >
+            <span className="min-w-0 flex-1">
+              <span className="block truncate text-[16px] font-medium leading-5">{p.title}</span>
+              <span className={`mt-0.5 block truncate text-[13px] leading-4 ${p.overdue ? 'text-danger' : 'text-hint'}`}>
+                {dateLong(p.next_date)} · {REPEAT_LABEL[p.repeat] ?? p.repeat}
+              </span>
+            </span>
+            <span className="nums shrink-0 text-[16px] font-medium leading-5">{money(p.amount, 'none')}</span>
+          </button>
+          {armed === p.id ? (
             <button
               type="button"
               disabled={busy === p.id}
-              className="mt-1 inline-flex h-8 items-center rounded-full bg-insetbg px-3 text-[13px] font-medium text-blue"
+              className="inline-flex h-8 shrink-0 items-center rounded-full bg-insetbg px-3 text-[13px] font-medium text-blue"
               onClick={() => void pay(p)}
             >
               {busy === p.id ? 'Записываю' : 'Оплачено'}
             </button>
-          </div>
+          ) : null}
         </div>
       ))}
     </Card>
@@ -339,7 +352,7 @@ function Limits() {
   const [busy, setBusy] = useState(false);
   const [pick, setPick] = useState(false);
   const toast = useToast();
-  const colorOf = (categoryId: number) => refs.data?.categories.find((c) => c.id === categoryId)?.color;
+  const colorOf = (categoryId: number) => dataColor(refs.data?.categories.find((c) => c.id === categoryId)?.color);
 
   if (loading) return <span className="skeleton skeleton-wrap mt-4 block h-24 w-full rounded-card" />;
   if (error || !data) return <LoadError onRetry={reload} />;
@@ -553,7 +566,9 @@ function Opening() {
         {accounts.map((a) => (
           <div key={a.slug} className="flex items-center gap-3 py-2">
             <CircleIcon name={accountGlyph(a)} color={accountColor(a.currency, a.icon)} ring={accountRing(a)} />
-            <span className="min-w-0 flex-1 truncate text-[16px] font-medium">{a.name}</span>
+            {/* Имя переносится, а не режется: «Наличные AED сем…» было последней обрезкой-многоточием
+                на комплекте экранов (B3). Ширина поля ввода 96 — под «1 842,50». */}
+            <span className="min-w-0 flex-1 text-[16px] font-medium leading-5">{a.name}</span>
             <span className="flex h-11 w-[96px] shrink-0 items-center gap-1 rounded-inset bg-inset px-3">
               <input
                 inputMode="decimal"

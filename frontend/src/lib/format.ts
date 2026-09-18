@@ -79,11 +79,6 @@ export function bp(value: number): string {
   return `${percent}${NBSP}%`;
 }
 
-/** Доля без пробела — только для подписей вокруг кольца, где места нет (критик, m3). */
-export function bpTight(value: number): string {
-  return `${Math.round(value / 100)}%`;
-}
-
 export function bpExact(value: number): string {
   const whole = Math.floor(value / 100);
   const frac = value % 100;
@@ -127,6 +122,17 @@ export function humanizeDates(text: string | null | undefined): string {
     const tail = year === currentYear() ? '' : `${NBSP}${year}`;
     return `${Number(d)}${NBSP}${MONTHS_GEN[mi]}${tail}`;
   });
+}
+
+/**
+ * Подпись заморозки в блоке «Семейные»: «12 250 ₽ по 24,50 · 17 сентября».
+ * Слово «заморожено» уже стоит плашкой у счёта выше и строкой в «Долгах», предлог «от» тянул
+ * строку на вторую — подпись переносилась прямо в семейном блоке Главной (M8).
+ */
+export function frozenNote(rub: Money | null | undefined, note?: string | null): string {
+  const sum = moneyWhole(rub, 'none');
+  const tail = humanizeDates(note).replace(/\s+от\s+/u, ' · ');
+  return tail ? `${sum} ${tail}` : sum;
 }
 
 /** '2026-09' → «Сентябрь 2026» */

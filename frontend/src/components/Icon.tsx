@@ -1,5 +1,5 @@
 import {
-  ArrowLeftRight, Banknote, Bitcoin, Briefcase, Car, Clapperboard, Coffee, CreditCard,
+  ArrowLeftRight, Banknote, Briefcase, CandlestickChart, Car, Clapperboard, Coffee, CreditCard,
   Dumbbell, FileText, Gift, GraduationCap, Heart, HeartPulse, Home, Landmark, MoreHorizontal,
   Plane, Receipt, Shirt, ShoppingCart, SlidersHorizontal, Sofa, Sun, User, Users, Wifi,
 } from 'lucide-react';
@@ -32,7 +32,8 @@ const MAP: Record<string, LucideIcon> = {
   cash: Banknote,
   card: CreditCard,
   credit: CreditCard,
-  crypto: Bitcoin,
+  // «₿» у счёта Bybit читался как «тут биткойн», хотя на нём лежит USDT: биржа — свечи (Н13).
+  crypto: CandlestickChart,
   person: User,
   sport: Dumbbell,
 };
@@ -126,9 +127,28 @@ export function accountGlyph(a: { icon: string; type?: string; role?: string; cu
   return 'bank';
 }
 
-/** Контурное кольцо: у семейных счетов (опека) и у кредитки — единственного счёта «в минус» (M9). */
+/**
+ * Контурное кольцо — ТОЛЬКО у семейных счетов (DESIGN_SPEC 4.2.3). Кольцо у кредитки (M9) дало
+ * один знак на два разных смысла: на Главной рядом стояли «Кредитка Сбер» и «Mashreq семейный»
+ * с одинаковой врезкой (Н1). Кредитку отличает своя пиктограмма `credit-card`.
+ */
 export function accountRing(a: { type?: string; role?: string }): boolean {
-  return a.type === 'asset_family' || a.type === 'liability' || a.role === 'liability';
+  return a.type === 'asset_family';
+}
+
+/**
+ * Цвет данных не повторяет синий действия. Seed отдаёт «Проектам» и «Учёбе» `#3E7BFA` — на кольце
+ * «Доходов» это 59 % экрана в шаге от `--c-blue` `#2E6AE6`, которым тут же горит активный таб, и глаз
+ * читает крупный сегмент как действие (чек-лист 4.7 п. 6). Правило показа: данные не меняются, для
+ * диаграмм, чипов и полос долей синий уводится на две ступени в глубину. Правка seed — задача ядра.
+ */
+const DATA_COLOR: Record<string, string> = { '#3E7BFA': '#274C8C' };
+
+export function dataColor(hex: string): string;
+export function dataColor(hex: string | undefined | null): string | undefined;
+export function dataColor(hex?: string | null): string | undefined {
+  if (!hex) return undefined;
+  return DATA_COLOR[hex.toUpperCase()] ?? hex;
 }
 
 /** Текст на цветной плашке: тёмный на светлой заливке, белый на тёмной (контраст ≥ 4.5). */

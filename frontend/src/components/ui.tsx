@@ -193,7 +193,6 @@ export function Row({
   onClick,
   chevron = false,
   muted = false,
-  wrap = false,
   indent = false,
 }: {
   left?: ReactNode;
@@ -204,21 +203,22 @@ export function Row({
   onClick?: () => void;
   chevron?: boolean;
   muted?: boolean;
-  wrap?: boolean;
   /** Строка без круга внутри карточки, где у соседей круг есть: держит одну левую колонку (M8). */
   indent?: boolean;
 }) {
   // Левая и правая колонки выровнены по верху и имеют одну интерлиньяж-ступень (leading-5):
   // первые строки обеих колонок садятся на одну кэп-линию. Круг при этом центрирован по строке (M4).
+  // Минимум 56 — ритм строки списка из 4.2.5: однослойная строка «Долгов» занимала 36,5 CSS,
+  // ниже зоны нажатия 44 и вдвое ниже соседних двухслойных (Н8).
   const body = (
-    <div className="flex w-full items-center gap-3 py-2">
+    <div className="flex min-h-[56px] w-full items-center gap-3 py-2">
       {left}
       {indent && !left ? <span className="w-[44px] shrink-0" aria-hidden /> : null}
       <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
         <div className="min-w-0 flex-1">
           <div className={`truncate text-[16px] font-medium leading-5 ${muted ? 'text-hint' : ''}`}>{title}</div>
           {subtitle ? (
-            <div className={`mt-0.5 text-[13px] leading-4 text-hint ${wrap ? '' : 'truncate'}`}>{subtitle}</div>
+            <div className="mt-0.5 truncate text-[13px] leading-4 text-hint">{subtitle}</div>
           ) : null}
         </div>
         {right || rightSub ? (

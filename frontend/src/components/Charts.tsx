@@ -1,13 +1,13 @@
 import { useMemo } from 'react';
 import { haptic } from '../app/telegram';
-import { bpTight, moneyWhole, monthLong, monthTiny } from '../lib/format';
-import { Glyph, onColor } from './Icon';
+import { bp, moneyWhole, monthLong, monthTiny } from '../lib/format';
+import { dataColor, Glyph, onColor } from './Icon';
 import type { Breakdown, Money } from '../lib/types';
 
 /** Чип категории: заливка цветом категории, внутри круг 20 с пиктограммой и сумма. */
 export function CategoryChip({
   name,
-  color,
+  color: raw,
   icon,
   amount,
   onClick,
@@ -18,6 +18,7 @@ export function CategoryChip({
   amount: Money;
   onClick?: () => void;
 }) {
+  const color = dataColor(raw);
   const ink = onColor(color);
   // Чип по содержимому: имя не режется многоточием, сумма — целая (B3, M2).
   return (
@@ -50,7 +51,7 @@ export function ShareBar({ parts, height = 8 }: { parts: { color: string; share_
   return (
     <div className="flex w-full overflow-hidden rounded-full" style={{ height }}>
       {parts.map((p, i) => (
-        <span key={i} style={{ width: `${(p.share_bp / total) * 100}%`, background: p.color }} />
+        <span key={i} style={{ width: `${(p.share_bp / total) * 100}%`, background: dataColor(p.color) }} />
       ))}
     </div>
   );
@@ -63,6 +64,7 @@ interface Slice {
   key: string;
   name: string;
   color: string;
+  icon?: string;
   share_bp: number;
   amount: Money;
   category_id?: number;
@@ -74,7 +76,8 @@ function toSlices(rows: Breakdown[]): Slice[] {
   const slices: Slice[] = big.map((r) => ({
     key: String(r.category_id ?? r.source_id ?? r.name),
     name: r.name,
-    color: r.color,
+    color: dataColor(r.color),
+    icon: r.icon,
     share_bp: r.share_bp,
     amount: r.amount,
     category_id: r.category_id,
@@ -86,6 +89,7 @@ function toSlices(rows: Breakdown[]): Slice[] {
       key: 'rest',
       name: 'Остальное',
       color: REST_COLOR,
+      icon: 'dots',
       share_bp: small.reduce((s, r) => s + r.share_bp, 0),
       amount: {
         amount: small.reduce((s, r) => s + r.amount.amount, 0),
@@ -154,7 +158,9 @@ export function Donut({ rows, onPick }: { rows: Breakdown[]; onPick?: (categoryI
             textAnchor={x < C - 6 ? 'end' : x > C + 6 ? 'start' : 'middle'}
             dominantBaseline="middle"
           >
-            {bpTight(a.share_bp)}
+            {/* Формат процента один на всё приложение: «24 %» и у кольца, и в списке под ним. Сжатое
+                «24%» (m3) давало два формата на одном экране в 1000 px друг от друга (Н7). */}
+            {bp(a.share_bp)}
           </text>
         );
       })}
@@ -162,37 +168,27 @@ export function Donut({ rows, onPick }: { rows: Breakdown[]; onPick?: (categoryI
   );
 }
 
-export function DonutChips({
-  rows,
-  onPick,
-  limit = 7,
-}: {
-  rows: Breakdown[];
-  onPick?: (categoryId: number) => void;
-  limit?: number;
-}) {
-  const shown = rows.slice(0, limit);
-  const restCount = rows.length - shown.length;
+/**
+ * Чипы повторяют группировку кольца ровно: столько же долей, те же имена, те же цвета, и служебный
+ * сегмент назван «Остальное» со своей суммой. Прежние «семь + Ещё 4» давали на одном экране три
+ * разные группировки одних данных, и самый заметный серый сегмент 9 % не был назван нигде (Н5).
+ */
+export function DonutChips({ rows, onPick }: { rows: Breakdown[]; onPick?: (categoryId: number) => void }) {
+  const slices = useMemo(() => toSlices(rows), [rows]);
   // Чипы по содержимому с переносом, а не жёсткая сетка в две колонки: в колонке половинной
   // ширины имя категории резалось многоточием почти у каждого чипа (B3б).
   return (
     <div className="flex flex-wrap gap-2">
-      {shown.map((r) => (
+      {slices.map((s) => (
         <CategoryChip
-          key={r.category_id ?? r.source_id ?? r.name}
-          name={r.name}
-          color={r.color}
-          icon={r.icon}
-          amount={r.amount}
-          onClick={r.category_id && onPick ? () => onPick(r.category_id!) : undefined}
+          key={s.key}
+          name={s.name}
+          color={s.color}
+          icon={s.icon}
+          amount={s.amount}
+          onClick={s.category_id && onPick ? () => onPick(s.category_id!) : undefined}
         />
       ))}
-      {restCount > 0 ? (
-        // Было #8B9096 на #F4F5F6 = 2,95:1 — ниже порога чек-листа п. 16 (M5).
-        <span className="flex h-[34px] items-center justify-center rounded-full bg-insetbg px-3 text-[13px] font-medium text-text">
-          Ещё {restCount}
-        </span>
-      ) : null}
     </div>
   );
 }
@@ -213,9 +209,16 @@ export function MonthBars({
   onSelect: (month: string) => void;
   caption?: boolean;
 }) {
-  const max = Math.max(1, ...data.flatMap((d) => [d.income.amount, d.expense.amount]));
+  // Месяцы без данных не занимают слот: раньше двенадцать слотов делили ширину карточки, столбики
+  // жались вправо, а над пустой левой третью висели подписи «ноя» и «янв» (Н6). Шаг пары считается
+  // от месяцев с данными; выбранный месяц остаётся в ряду, даже если в нём пусто.
+  const shown = useMemo(() => {
+    const withData = data.filter((d) => d.income.amount > 0 || d.expense.amount > 0 || d.month === selected);
+    return withData.length ? withData : data;
+  }, [data, selected]);
+  const max = Math.max(1, ...shown.flatMap((d) => [d.income.amount, d.expense.amount]));
   const H = 110;
-  const current = data.find((d) => d.month === selected);
+  const current = shown.find((d) => d.month === selected);
   return (
     <>
     {caption && current ? (
@@ -226,10 +229,10 @@ export function MonthBars({
       </div>
     ) : null}
     <div className="flex items-end justify-between gap-[9px]">
-      {data.map((d, i) => {
+      {shown.map((d, i) => {
         const active = d.month === selected;
         // Подписи через один, последний месяц и выбранный — всегда (DESIGN_SPEC 4.3).
-        const labelled = active || (data.length - 1 - i) % 2 === 0;
+        const labelled = active || (shown.length - 1 - i) % 2 === 0;
         return (
           <button
             key={d.month}

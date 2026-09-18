@@ -64,8 +64,9 @@ export function EntrySheet({ id, onClose }: { id: number; onClose: () => void })
       setEntry({ ...entry, ...res, status: next });
       refresh();
       if (next === 'void') {
+        // Тоста нет: шторка остаётся открытой и сама показывает отмену — зачёркнутая сумма и кнопка
+        // «Вернуть» внизу. Тост ложился поверх этой кнопки, два одинаковых действия в 60 px (Н10).
         haptic.warning();
-        toast({ text: 'Операция отменена', action: { label: 'Вернуть', run: () => void setStatus('posted') } });
       } else {
         haptic.success();
         toast({ text: 'Операция возвращена' });
@@ -176,7 +177,7 @@ export function EntrySheet({ id, onClose }: { id: number; onClose: () => void })
             </span>
             <span className="min-w-0 flex-1">
               <Button kind="danger" onClick={() => void setStatus('void')} loading={busy}>
-                Отменить
+                Отменить операцию
               </Button>
             </span>
           </div>

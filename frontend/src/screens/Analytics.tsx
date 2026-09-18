@@ -4,7 +4,7 @@ import { api } from '../lib/api';
 import { useResource } from '../app/data';
 import { bp, moneyWhole, monthLong, monthPrep } from '../lib/format';
 import { Card, CardHead, Empty, LoadError, ProgressBar, Row, Screen, Segment } from '../components/ui';
-import { CircleIcon } from '../components/Icon';
+import { CircleIcon, dataColor } from '../components/Icon';
 import { Donut, DonutChips, MonthBars } from '../components/Charts';
 import { AnalyticsSkeleton } from '../components/Skeleton';
 import { Sheet } from '../components/Sheet';
@@ -140,7 +140,7 @@ export function Analytics() {
             {rows.map((r) => (
               <Row
                 key={r.category_id ?? r.source_id}
-                left={<CircleIcon name={iconOf(data, r)} color={r.color} />}
+                left={<CircleIcon name={iconOf(data, r)} color={dataColor(r.color)} />}
                 title={r.name}
                 right={moneyWhole(r.amount, 'none')}
                 rightSub={bp(r.share_bp)}
@@ -174,7 +174,7 @@ export function Analytics() {
                     setOpenSource(openSource === s.source_id ? null : s.source_id);
                   }}
                 >
-                  <CircleIcon name={s.icon} color={s.color} />
+                  <CircleIcon name={s.icon} color={dataColor(s.color)} />
                   <span className="min-w-0 flex-1 truncate text-[16px] font-medium leading-5">{s.name}</span>
                   <span className="nums shrink-0 text-[16px] font-medium">{moneyWhole(s.amount, 'none')}</span>
                   {s.projects.length > 0 ? (
@@ -219,7 +219,7 @@ export function Analytics() {
                         value={l.spent.amount}
                         max={l.limit.amount}
                         danger={over}
-                        color={data.categories.find((c) => c.category_id === l.category_id)?.color}
+                        color={dataColor(data.categories.find((c) => c.category_id === l.category_id)?.color)}
                       />
                     </div>
                   </div>

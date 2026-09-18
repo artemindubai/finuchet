@@ -138,15 +138,16 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
         {/* Кнопки в ряд по 50 %: столбик из двух одинаковых серых плашек во всю ширину читался
             как «два варианта одного и того же» и съедал 200 CSS над лентой (M13). Карточка вокруг
             них — третья вложенная поверхность подряд, поэтому её нет. */}
+        {/* Тексты полные, как в 4.4: «Выровнять» само по себе не говорит, что выравнивают (Н12). */}
         <div className="mt-4 flex gap-2">
           <span className="min-w-0 flex-1">
             <Button kind="secondary" onClick={() => setAlign(true)}>
-              Выровнять
+              Выровнять остаток
             </Button>
           </span>
           <span className="min-w-0 flex-1">
             <Button kind="secondary" onClick={() => onAdd(acc.slug)}>
-              Добавить
+              Добавить операцию
             </Button>
           </span>
         </div>

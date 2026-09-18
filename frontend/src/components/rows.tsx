@@ -63,6 +63,9 @@ export function EntryRow({ e, onClick }: { e: EntryShort; onClick: (id: number) 
  * девяти в образце `sb_ios_40`. Заголовок дня — строка внутри этой поверхности, между днями
  * воздух 24 без разрыва фона. Итог дня «—», если трат в этот день не было (m11): пустое место
  * там, где глаз ждёт число, рвёт колонку итогов.
+ *
+ * Итога нет вовсе, когда в дне ровно одна операция: её сумма стоит строкой ниже, и одно и то же
+ * число печаталось дважды в 40 px по вертикали — на «Счёте» три дня подряд (Н4).
  */
 export function DayBlock({
   title,
@@ -79,6 +82,7 @@ export function DayBlock({
   first?: boolean;
   onOpen: (id: number) => void;
 }) {
+  const single = items.length === 1;
   const sum =
     total && total.amount > 0
       ? moneyWhole(total, 'minus')
@@ -89,7 +93,7 @@ export function DayBlock({
     <section className={first ? '' : 'mt-6'}>
       <div className="mb-1 flex items-baseline justify-between">
         <h2 className="text-[17px] font-bold leading-[22px]">{title}</h2>
-        <span className="nums text-[15px] leading-5 text-hint">{sum}</span>
+        {single ? null : <span className="nums text-[15px] leading-5 text-hint">{sum}</span>}
       </div>
       {items.map((e) => (
         <EntryRow key={e.id} e={e} onClick={onOpen} />

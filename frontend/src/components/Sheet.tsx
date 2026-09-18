@@ -58,7 +58,7 @@ export function Sheet({
       />
       <div
         ref={sheetRef}
-        className="sheet-enter relative w-full overflow-y-auto rounded-t-sheet bg-sheet px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-2"
+        className="on-sheet sheet-enter relative w-full overflow-y-auto rounded-t-sheet bg-sheet px-4 pb-[calc(env(safe-area-inset-bottom)+16px)] pt-2"
         style={{ maxHeight: sheetMaxHeight(), transform: drag ? `translateY(${drag}px)` : undefined }}
         onTouchStart={onStart}
         onTouchMove={onMove}
