@@ -13,7 +13,7 @@ node_modules/
 .venv/
 reports/
 docs/
-design/refs/
+design/
 .git/
 tools/create_bot.py
 # Документы проекта — поимённо. Слепое «*.md» уносило backend/prompts/system_parse.md
