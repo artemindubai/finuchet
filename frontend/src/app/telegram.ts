@@ -44,17 +44,26 @@ function forcedTheme(): 'light' | 'dark' | null {
 function applyTheme() {
   const app = tg();
   const forced = forcedTheme();
-  const scheme = forced
-    ?? app?.colorScheme
-    ?? (window.matchMedia?.('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  // 25.09 Артём: светлая тема по умолчанию, как в Т-Банке, даже если Телеграм тёмный. Тёмная — только ?theme=dark.
+  const scheme = forced ?? 'light';
   document.documentElement.setAttribute('data-theme', scheme);
   document.documentElement.style.colorScheme = scheme;
 
-  const params = app?.themeParams ?? {};
+  // Цвета Телеграма берём только в тёмной теме: в светлой тёмные themeParams перекрасили бы экран.
+  const params = scheme === 'dark' ? (app?.themeParams ?? {}) : {};
   for (const [key, cssVar] of CSS_VARS) {
-    const value = params[key];
+    const value = (params as Record<string, string | undefined>)[key];
     if (value) document.documentElement.style.setProperty(cssVar, value);
     else document.documentElement.style.removeProperty(cssVar);
+  }
+  const ui = app as unknown as { setHeaderColor?: (c: string) => void; setBackgroundColor?: (c: string) => void } | null;
+  if (scheme === 'light') {
+    try {
+      ui?.setHeaderColor?.('#f2f3f5');
+      ui?.setBackgroundColor?.('#f2f3f5');
+    } catch {
+      /* старый клиент Телеграма без этих методов */
+    }
   }
 }
 

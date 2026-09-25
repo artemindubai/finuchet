@@ -115,12 +115,7 @@ export function AccountRow({ a, onClick }: { a: AccountView; onClick: (id: numbe
         onClick(a.id);
       }}
     >
-      <CircleIcon
-        name={accountGlyph(a)}
-        color={accountColor(a.currency, a.icon)}
-        size={44}
-        ring={accountRing(a)}
-      />
+      <BankMark a={a} size={44} />
       <span className="min-w-0 flex-1">
         <span className="nums block truncate text-[20px] font-bold leading-6">{money(shown, 'none')}</span>
         <span className="mt-0.5 block truncate text-[13px] leading-4 text-hint">
@@ -191,30 +186,74 @@ export function TrancheRow({
   );
 }
 
-/** Знак банка: цвет и буква своего банка вместо одинаковых кружков (25.09, «как в Т-Банке»). */
-const BANK_MARK: Record<string, { bg: string; fg: string; text: string }> = {
-  tbank: { bg: '#FFDD2D', fg: '#17181A', text: 'Т' },
-  sber: { bg: '#21A038', fg: '#FFFFFF', text: 'С' },
-  sber_credit: { bg: '#21A038', fg: '#FFFFFF', text: 'С' },
-  mashreq_personal: { bg: '#FF5F00', fg: '#FFFFFF', text: 'M' },
-  mashreq_family: { bg: '#FF5F00', fg: '#FFFFFF', text: 'M' },
-  kopilka_mashrek: { bg: '#FF5F00', fg: '#FFFFFF', text: 'M' },
-  bybit: { bg: '#17181A', fg: '#F7A600', text: 'B' },
-};
+/** Знаки банков векторными фигурами, похожими на настоящие логотипы (25.09, Артём: «отрисуй через полигоны»). */
+function Logo({ slug, size }: { slug: string; size: number }) {
+  const s = size;
+  if (slug === 'tbank') {
+    // Жёлтый щит с тёмной «Т», как у Т-Банка.
+    return (
+      <svg width={s} height={s} viewBox="0 0 48 48" aria-hidden>
+        <rect width="48" height="48" rx="24" fill="#FFDD2D" />
+        <path d="M13 11h22v13.5c0 6.2-4.6 10.4-11 12.8-6.4-2.4-11-6.6-11-12.8z" fill="#FFFFFF" />
+        <path d="M16.5 15.5h15v4.6h-5.2v12.2h-4.6V20.1h-5.2z" fill="#333333" />
+      </svg>
+    );
+  }
+  if (slug === 'sber' || slug === 'sber_credit') {
+    // Зелёный круг с белой «галочкой» и дугами, как у Сбера.
+    return (
+      <svg width={s} height={s} viewBox="0 0 48 48" aria-hidden>
+        <defs>
+          <linearGradient id="sbg" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stopColor="#F2E913" />
+            <stop offset="0.35" stopColor="#21A038" />
+            <stop offset="1" stopColor="#0FA8E0" />
+          </linearGradient>
+        </defs>
+        <circle cx="24" cy="24" r="24" fill="url(#sbg)" />
+        <circle cx="24" cy="24" r="13" fill="none" stroke="#FFFFFF" strokeWidth="3.4" strokeDasharray="60 22" transform="rotate(-30 24 24)" />
+        <path d="M17.5 23.5l5 4.6 11-10.6" fill="none" stroke="#FFFFFF" strokeWidth="3.6" strokeLinecap="round" strokeLinejoin="round" />
+        {slug === 'sber_credit' ? <circle cx="38" cy="38" r="7" fill="#E5484D" stroke="#FFFFFF" strokeWidth="2" /> : null}
+      </svg>
+    );
+  }
+  if (slug.startsWith('mashreq') || slug === 'kopilka_mashrek') {
+    // Оранжевый с белым цветком-лотосом NEO, как у Машрека.
+    return (
+      <svg width={s} height={s} viewBox="0 0 48 48" aria-hidden>
+        <rect width="48" height="48" rx="24" fill={slug === 'mashreq_family' ? '#E8590C' : '#FF6A13'} />
+        <g fill="#FFFFFF">
+          <path d="M24 33c-2.2-4.8-2.2-10.8 0-17 2.2 6.2 2.2 12.2 0 17z" />
+          <path d="M22.8 33.2c-4.4-2.4-7.4-7-8-12.8 4.6 2.9 7.3 7.6 8 12.8z" />
+          <path d="M25.2 33.2c4.4-2.4 7.4-7 8-12.8-4.6 2.9-7.3 7.6-8 12.8z" />
+          <path d="M21.6 34c-4.8-.3-8.6-2.8-10.6-6.6 4.3.1 8 2.6 10.6 6.6z" />
+          <path d="M26.4 34c4.8-.3 8.6-2.8 10.6-6.6-4.3.1-8 2.6-10.6 6.6z" />
+        </g>
+        {slug === 'kopilka_mashrek' ? <circle cx="38" cy="38" r="7" fill="#1FA855" stroke="#FFFFFF" strokeWidth="2" /> : null}
+      </svg>
+    );
+  }
+  if (slug === 'bybit') {
+    // Чёрный с надписью BYBIT и оранжевой «I».
+    return (
+      <svg width={s} height={s} viewBox="0 0 48 48" aria-hidden>
+        <rect width="48" height="48" rx="24" fill="#17181A" />
+        <text x="24" y="28.5" textAnchor="middle" fontFamily="Onest, Arial, sans-serif" fontWeight="800" fontSize="11" fill="#FFFFFF">
+          BYB<tspan fill="#F7A600">I</tspan>T
+        </text>
+      </svg>
+    );
+  }
+  return null;
+}
+
+const LOGO_SLUGS = new Set(['tbank', 'sber', 'sber_credit', 'mashreq_personal', 'mashreq_family', 'kopilka_mashrek', 'bybit']);
 
 export function BankMark({ a, size = 48 }: { a: AccountView; size?: number }) {
-  const m = BANK_MARK[a.slug];
-  if (!m) {
+  if (!LOGO_SLUGS.has(a.slug)) {
     return <CircleIcon name={accountGlyph(a)} color={accountColor(a.currency, a.icon)} size={size} ring={accountRing(a)} />;
   }
-  return (
-    <span
-      className="flex shrink-0 items-center justify-center rounded-full font-extrabold"
-      style={{ width: size, height: size, background: m.bg, color: m.fg, fontSize: size * 0.42 }}
-    >
-      {m.text}
-    </span>
-  );
+  return <span className="flex shrink-0">{<Logo slug={a.slug} size={size} />}</span>;
 }
 
 /** Сумма крупно, копейки мельче и светлее — как в банковских приложениях. */

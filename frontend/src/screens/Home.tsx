@@ -54,7 +54,10 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
     );
   }
 
-  const my = data.totals_by_view.my_money?.[view] ?? data.totals_by_view.net_worth[view];
+  const base = data.totals_by_view.my_money?.[view] ?? data.totals_by_view.net_worth[view];
+  const hiddenTotal = data.hidden?.total?.[view];
+  // Кнопка «Копилка»: открыта — копилка входит в итог, закрыта — нет (25.09, Артём).
+  const my = showHidden && hiddenTotal ? { ...base, amount: base.amount + hiddenTotal.amount } : base;
   const family = data.family;
   const accounts = data.groups.flatMap((g) => g.accounts);
   const visible = accounts.filter((a) => showEmpty || !isEmpty(a));
@@ -70,7 +73,7 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
   return (
     <Screen>
       <div className="pt-6">
-        <div className="text-[15px] font-medium leading-5 text-hint">Мои деньги</div>
+        <div className="text-[15px] font-medium leading-5 text-hint">{showHidden ? 'Мои деньги с копилкой' : 'Мои деньги'}</div>
         <div
           className={`nums mt-1 font-extrabold tracking-[-0.03em] ${
             moneyWhole(my, 'none').length > 12 ? 'text-[36px] leading-10' : 'text-[44px] leading-[48px]'
