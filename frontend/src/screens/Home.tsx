@@ -151,7 +151,7 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
           {hidden.map((a) => (
             <AccountCard key={a.id} a={a} onClick={openAccount} />
           ))}
-          <div className="mt-2 px-1 text-[13px] leading-4 text-hint">В «Мои деньги» не входит</div>
+          <div className="mt-2 px-1 text-[13px] leading-4 text-hint">Пока копилка открыта, она входит в итог. Закроешь — снова спрячется</div>
         </section>
       ) : null}
 
