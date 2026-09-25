@@ -5,7 +5,7 @@ import { useResource } from '../app/data';
 import { haptic } from '../app/telegram';
 import { dateLong, frozenNote, money, moneyWhole, monthPrep } from '../lib/format';
 import { Card, CardHead, Empty, LinkAction, LoadError, Row, Screen, Segment } from '../components/ui';
-import { AccountCard, AccountRow, EntryRow } from '../components/rows';
+import { AccountCard, EntryRow } from '../components/rows';
 import { ShareBar } from '../components/Charts';
 import { HomeSkeleton } from '../components/Skeleton';
 import { goMoreSub, goTab, openAccount, openEntry } from '../app/router';
@@ -108,7 +108,10 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
         <button
           type="button"
           className="card-lift flex min-h-[132px] flex-col rounded-[24px] bg-card p-4 text-left"
-          onClick={toggleFamily}
+          onClick={() => {
+            if (!family.visible) toggleFamily();
+            setTimeout(() => document.getElementById('family')?.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+          }}
         >
           <span className="text-[17px] font-bold leading-[22px]">Семейные</span>
           <span className="nums mt-1 text-[17px] font-semibold">{moneyWhole(family.total, 'none')}</span>
@@ -156,37 +159,63 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
       ) : null}
 
       {family.visible ? (
-        <section className="mt-6">
+        <section className="mt-6" id="family">
           <Card className="card-lift rounded-[24px] p-5">
             <button type="button" className="flex w-full items-center justify-between" onClick={toggleFamily}>
-              <span className="text-[19px] font-bold">Семейные</span>
+              <span className="text-[19px] font-bold">Семейные деньги</span>
               <ChevronUp size={20} className="text-hint" />
             </button>
-            <div className="mt-2">
-              {family.accounts.map((a) => (
-                <AccountRow key={a.id} a={a} onClick={openAccount} />
-              ))}
-              {family.frozen_rub.amount > 0 ? (
+            {(() => {
+              // 25.09 Артём: «зайти внутрь семейных и видеть, где они лежат на самом деле» —
+              // карта, наличные, взаимозачёт (рубли на Т-Банке под взятые дирхамы). Всё в AED.
+              const parts = family.accounts.map((a) => ({ key: String(a.id), name: a.name, aed: a.balance.currency === 'AED' ? a.balance.amount : 0, a }));
+              const offsetAed = family.frozen_rub.amount > 0 ? Math.abs(family.debt.amount) : 0;
+              const total = parts.reduce((s, p) => s + p.aed, 0) + offsetAed;
+              const colors = ['#FF6A13', '#8E939A', '#2E6AE6'];
+              const share = (v: number) => (total ? Math.max(2, Math.round((v / total) * 100)) : 0);
+              return (
                 <>
-                  <Row
-                    indent
-                    title="Взаимозачёт"
-                    right={`${money({ ...family.debt, amount: Math.abs(family.debt.amount) }, 'none')}`}
-                  />
-                  <div className="nums pl-[56px] text-[13px] leading-4 text-hint">
-                    {frozenNote(family.frozen_rub, family.frozen_note)}
+                  <div className="nums mt-2 text-[28px] font-extrabold leading-8">{money({ amount: total, currency: 'AED' }, 'none')}</div>
+                  <div className="mt-3 flex h-2.5 w-full overflow-hidden rounded-full bg-inset">
+                    {parts.map((p, i) => (
+                      <span key={p.key} style={{ width: `${share(p.aed)}%`, background: colors[i % 3] }} />
+                    ))}
+                    {offsetAed ? <span style={{ width: `${share(offsetAed)}%`, background: colors[2] }} /> : null}
                   </div>
-                  <div className="nums pl-[56px] pt-1 text-[13px] leading-4 text-hint">
-                    Дирхамы взяты из семейного, рубли на Т-Банке за них заморожены
+                  <div className="mt-3">
+                    {parts.map((p, i) => (
+                      <button
+                        key={p.key}
+                        type="button"
+                        className="flex w-full items-center gap-3 py-2.5 text-left"
+                        onClick={() => openAccount(p.a.id)}
+                      >
+                        <span className="h-3 w-3 shrink-0 rounded-full" style={{ background: colors[i % 3] }} />
+                        <span className="min-w-0 flex-1 truncate text-[16px]">{p.name}</span>
+                        <span className="nums text-[16px] font-semibold">{money({ amount: p.aed, currency: 'AED' }, 'none')}</span>
+                      </button>
+                    ))}
+                    {offsetAed ? (
+                      <div className="flex items-start gap-3 py-2.5">
+                        <span className="mt-1.5 h-3 w-3 shrink-0 rounded-full" style={{ background: colors[2] }} />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-[16px]">Взаимозачёт, рубли на Т-Банке</span>
+                          <span className="nums block text-[13px] leading-4 text-hint">
+                            {frozenNote(family.frozen_rub, family.frozen_note)}
+                          </span>
+                        </span>
+                        <span className="nums text-[16px] font-semibold">{money({ amount: offsetAed, currency: 'AED' }, 'none')}</span>
+                      </div>
+                    ) : null}
                   </div>
                 </>
-              ) : null}
-            </div>
+              );
+            })()}
           </Card>
         </section>
       ) : (
         <button type="button" className="mt-6 flex w-full items-center justify-between px-1" onClick={toggleFamily}>
-          <span className="text-[17px] font-bold">Семейные</span>
+          <span className="text-[17px] font-bold">Семейные деньги</span>
           <ChevronDown size={20} className="text-hint" />
         </button>
       )}
