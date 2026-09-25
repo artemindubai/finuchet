@@ -249,7 +249,28 @@ function Logo({ slug, size }: { slug: string; size: number }) {
 
 const LOGO_SLUGS = new Set(['tbank', 'sber', 'sber_credit', 'mashreq_personal', 'mashreq_family', 'kopilka_mashrek', 'bybit']);
 
+/** 25.09 Артём: «иконки кривоваты, возьми исходники» — настоящие картинки логотипов из /logos. */
+const LOGO_IMG: Record<string, string> = {
+  tbank: '/logos/tbank.png',
+  sber: '/logos/sber.png',
+  sber_credit: '/logos/sber.png',
+  mashreq_personal: '/logos/mashreq.png',
+  mashreq_family: '/logos/mashreq.png',
+  kopilka_mashrek: '/logos/mashreq.png',
+};
+
 export function BankMark({ a, size = 48 }: { a: AccountView; size?: number }) {
+  const img = LOGO_IMG[a.slug];
+  if (img) {
+    return (
+      <span className="relative flex shrink-0">
+        <img src={img} alt="" width={size} height={size} className="rounded-full object-cover" style={{ width: size, height: size, boxShadow: '0 0 0 1px rgba(0,0,0,0.06)' }} />
+        {a.slug === 'kopilka_mashrek' || a.slug === 'sber_credit' ? (
+          <span className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white" style={{ background: a.slug === 'sber_credit' ? '#E5484D' : '#1FA855' }} />
+        ) : null}
+      </span>
+    );
+  }
   if (!LOGO_SLUGS.has(a.slug)) {
     return <CircleIcon name={accountGlyph(a)} color={accountColor(a.currency, a.icon)} size={size} ring={accountRing(a)} />;
   }
