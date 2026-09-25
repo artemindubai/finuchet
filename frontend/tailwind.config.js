@@ -30,6 +30,7 @@ export default {
       },
       fontFamily: {
         sans: [
+          'Onest',
           '-apple-system',
           'BlinkMacSystemFont',
           '"SF Pro Text"',

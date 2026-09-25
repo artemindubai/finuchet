@@ -31,7 +31,9 @@ def test_home_shape(client):
     body = client.get("/api/home?currency=RUB").json()
     assert set(body) == {"currency", "as_of", "net_worth", "free_rub", "frozen_rub", "groups",
                          "totals_by_view", "family", "upcoming", "recent", "month", "rates",
-                         "warnings"}
+                         "warnings", "my_money", "shortfall_rub", "hidden"}
+    assert is_money(body["my_money"])
+    assert set(body["hidden"]) == {"accounts", "total"}
     assert body["currency"] == "RUB"
     assert all(is_money(body[key]) for key in ("net_worth", "free_rub", "frozen_rub"))
 
@@ -45,7 +47,7 @@ def test_home_shape(client):
             assert is_money(account["balance"]) and is_money(account["in_view"])
             assert account["frozen"] is None or is_money(account["frozen"])
 
-    assert set(body["totals_by_view"]) == {"net_worth", "groups"}
+    assert set(body["totals_by_view"]) == {"net_worth", "groups", "my_money"}
     assert set(body["totals_by_view"]["net_worth"]) == {"RUB", "USD", "AED"}
     assert set(body["family"]) == {"visible", "total", "accounts", "debt", "direction",
                                    "frozen_rub", "frozen_note", "today_repay_rub"}
@@ -262,3 +264,13 @@ def test_analytics_shape(client):
     source = body["income_sources"][0]
     assert {"source_id", "name", "icon", "color", "amount", "share_bp", "tax_accrued",
             "projects"} == set(source)
+
+
+def test_my_money_excludes_frozen_and_hidden(client):
+    """25.09 Артём: «Мои деньги» = видимые личные счета минус замороженные рубли; копилка — отдельно."""
+    prepare()
+    body = client.get("/api/home?currency=RUB").json()
+    visible = sum(a["in_view"]["amount"] for g in body["groups"] for a in g["accounts"])
+    assert body["my_money"]["amount"] == visible - body["frozen_rub"]["amount"]
+    slugs = {a["slug"] for g in body["groups"] for a in g["accounts"]}
+    assert not slugs & {a["slug"] for a in body["hidden"]["accounts"]}

@@ -64,7 +64,7 @@ body {
   margin: 0;
   background: var(--c-bg);
   color: var(--c-text);
-  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family: 'Onest', -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   line-height: 20px;
   -webkit-font-smoothing: antialiased;
@@ -198,3 +198,7 @@ select {
     opacity: 0.8;
   }
 }
+
+/* 25.09 «как Т-Банк»: мягкая тень карточек на светлом фоне; в тёмной теме тень не нужна. */
+.card-lift { box-shadow: 0 6px 24px rgba(23, 24, 26, 0.06); }
+:root[data-theme='dark'] .card-lift { box-shadow: none; }

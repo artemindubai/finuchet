@@ -175,7 +175,14 @@ export interface HomeResponse {
   totals_by_view: {
     net_worth: Record<ViewCurrency, Money>;
     groups: Record<string, Record<ViewCurrency, Money>>;
+    my_money: Record<ViewCurrency, Money>;
   };
+  /** «Мои деньги» (25.09): видимые личные счета минус рубли, замороженные под семейные дирхамы. */
+  my_money: Money;
+  /** Рублей меньше, чем заморожено под семью — только тогда это настоящий долг. */
+  shortfall_rub: Money | null;
+  /** Скрытые из итога счета (личная копилка) — показываются по кнопке. */
+  hidden: { accounts: AccountView[]; total: Record<ViewCurrency, Money> };
   family: {
     visible: boolean;
     total: Money;

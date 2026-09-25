@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import sqlite3
 
-from backend import rates
+from backend import rates, settings_store
 from backend.ledger.common import (VIEW_CURRENCIES, account_row, money_dict, natural_sign,
                                    resolve_account, role_of, to_view)
 from backend.money import fmt_rate
@@ -184,12 +184,17 @@ def balances(conn: sqlite3.Connection, *, as_of: str | None = None,
         "SELECT * FROM accounts WHERE type = 'asset_family' AND archived = 0 ORDER BY sort, id"
     ).fetchall()
 
+    hidden_slugs = set(settings_store.get("hidden_accounts", [], conn=conn) or [])
     views: dict[int, dict] = {}
     groups: dict[str, list[dict]] = {}
+    hidden_views: list[dict] = []
     for row in money_rows:
         view = account_view(conn, row, currency_view=currency_view, as_of=as_of,
                             snapshot=snapshot, bmap=bmap, frozen=frozen)
         views[int(row["id"])] = view
+        if row["slug"] in hidden_slugs:
+            hidden_views.append(view)       # копилка и т.п.: не в группах и не в «Моих деньгах»
+            continue
         groups.setdefault(_group_of(row), []).append(view)
 
     ordered = [key for key in GROUP_ORDER if key in groups] + \
@@ -227,6 +232,15 @@ def balances(conn: sqlite3.Connection, *, as_of: str | None = None,
 
     nw_by_view, groups_by_view = totals_by_view(conn, group_list, total_nw, currency_view, snapshot)
 
+    # «Мои деньги» (25.09, Артём): видимые личные счета и кредитки минус рубли, замороженные под взятые
+    # из семейного дирхамы. Семейный фонд и «долг» сюда не входят: пока рубли покрывают, это взаимозачёт.
+    visible_rub = sum(to_view(a["in_view"]["amount"], currency_view, "RUB", snapshot)
+                      for g in group_list for a in g["accounts"])
+    my_rub = visible_rub - free["frozen"]["amount"]
+    my_by_view = {v: money_dict(to_view(my_rub, "RUB", v, snapshot), v) for v in VIEW_CURRENCIES}
+    hidden_total_rub = sum(to_view(a["in_view"]["amount"], currency_view, "RUB", snapshot)
+                           for a in hidden_views)
+
     return {
         "currency": currency_view,
         "as_of": iso_utc(),
@@ -234,7 +248,12 @@ def balances(conn: sqlite3.Connection, *, as_of: str | None = None,
         "free_rub": free["free"],
         "frozen_rub": free["frozen"],
         "groups": group_list,
-        "totals_by_view": {"net_worth": nw_by_view, "groups": groups_by_view},
+        "totals_by_view": {"net_worth": nw_by_view, "groups": groups_by_view, "my_money": my_by_view},
+        "my_money": my_by_view.get(currency_view, money_dict(my_rub, "RUB")),
+        "shortfall_rub": free["shortfall"],
+        "hidden": {"accounts": hidden_views,
+                   "total": {v: money_dict(to_view(hidden_total_rub, "RUB", v, snapshot), v)
+                             for v in VIEW_CURRENCIES}},
         "family": family_block,
         "accounts": list(views.values()) + family_views,
         "rates": {"at": snapshot.get("at"), "source": snapshot.get("source"),

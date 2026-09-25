@@ -190,3 +190,72 @@ export function TrancheRow({
     </button>
   );
 }
+
+/** Знак банка: цвет и буква своего банка вместо одинаковых кружков (25.09, «как в Т-Банке»). */
+const BANK_MARK: Record<string, { bg: string; fg: string; text: string }> = {
+  tbank: { bg: '#FFDD2D', fg: '#17181A', text: 'Т' },
+  sber: { bg: '#21A038', fg: '#FFFFFF', text: 'С' },
+  sber_credit: { bg: '#21A038', fg: '#FFFFFF', text: 'С' },
+  mashreq_personal: { bg: '#FF5F00', fg: '#FFFFFF', text: 'M' },
+  mashreq_family: { bg: '#FF5F00', fg: '#FFFFFF', text: 'M' },
+  kopilka_mashrek: { bg: '#FF5F00', fg: '#FFFFFF', text: 'M' },
+  bybit: { bg: '#17181A', fg: '#F7A600', text: 'B' },
+};
+
+export function BankMark({ a, size = 48 }: { a: AccountView; size?: number }) {
+  const m = BANK_MARK[a.slug];
+  if (!m) {
+    return <CircleIcon name={accountGlyph(a)} color={accountColor(a.currency, a.icon)} size={size} ring={accountRing(a)} />;
+  }
+  return (
+    <span
+      className="flex shrink-0 items-center justify-center rounded-full font-extrabold"
+      style={{ width: size, height: size, background: m.bg, color: m.fg, fontSize: size * 0.42 }}
+    >
+      {m.text}
+    </span>
+  );
+}
+
+/** Сумма крупно, копейки мельче и светлее — как в банковских приложениях. */
+export function BigMoney({ v, className = '' }: { v: Money; className?: string }) {
+  const s = money(v, 'none');
+  const m = s.match(/^(.*?)(,\d{2})(\s.*)$/);
+  if (!m) return <span className={`nums ${className}`}>{s}</span>;
+  return (
+    <span className={`nums ${className}`}>
+      {m[1]}
+      <span className="text-[0.62em] font-bold opacity-60">{m[2]}</span>
+      {m[3]}
+    </span>
+  );
+}
+
+/** Счёт отдельной карточкой с воздухом (25.09: «сделай как Т-Банк»). */
+export function AccountCard({ a, onClick }: { a: AccountView; onClick: (id: number) => void }) {
+  const liability = a.role === 'liability';
+  const shown = liability ? a.natural : a.balance;
+  return (
+    <button
+      type="button"
+      className="card-lift mt-3 flex w-full items-center gap-4 rounded-[24px] bg-card px-5 py-5 text-left transition-transform duration-100 active:scale-[0.985]"
+      onClick={() => {
+        haptic.tap();
+        onClick(a.id);
+      }}
+    >
+      <BankMark a={a} />
+      <span className="min-w-0 flex-1">
+        <BigMoney v={shown} className="block truncate text-[24px] font-extrabold leading-7 tracking-[-0.01em]" />
+        <span className="mt-1 block truncate text-[15px] leading-5 text-hint">
+          {liability && shown.amount > 0 ? `Долг · ${a.name}` : a.name}
+        </span>
+        {a.frozen ? (
+          <span className="nums mt-2 inline-block rounded-full px-2.5 py-1 text-[12px] font-semibold leading-4" style={{ background: 'var(--c-frozen-bg)', color: 'var(--c-frozen)' }}>
+            ❄ {moneyWhole(a.frozen, 'none')} под семейные
+          </span>
+        ) : null}
+      </span>
+    </button>
+  );
+}

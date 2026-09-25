@@ -63,7 +63,7 @@ export function App() {
       case 'more':
         return <More sub={moreSub} setSub={setMoreSub} />;
       default:
-        return <Home />;
+        return <Home onAdd={() => openAdd()} />;
     }
   };
 
