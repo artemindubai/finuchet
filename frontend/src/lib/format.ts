@@ -135,6 +135,14 @@ export function frozenNote(rub: Money | null | undefined, note?: string | null):
   return tail ? `${sum} ${tail}` : sum;
 }
 
+/** Заморозка двумя валютами: «108 577 ₽ + 1 248 AED»; нулевая часть не пишется. */
+export function frozenBoth(rub: Money | null | undefined, aed: Money | null | undefined): string {
+  const parts: string[] = [];
+  if (rub && rub.amount > 0) parts.push(moneyWhole(rub, 'none'));
+  if (aed && aed.amount > 0) parts.push(moneyWhole(aed, 'none'));
+  return parts.length ? parts.join(' + ') : moneyWhole({ amount: 0, currency: 'RUB' }, 'none');
+}
+
 /** '2026-09' → «Сентябрь 2026» */
 export function monthLong(month: string): string {
   const [y, m] = month.split('-').map(Number);

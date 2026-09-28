@@ -14,6 +14,7 @@ import backend.ledger.planned as _planned
 import backend.ledger.reconcile as _reconcile
 import backend.ledger.tranches as _tranches
 from backend.ledger.api import (amend_entry, check_invariants, get_entry, list_entries,  # noqa: F401
+                                freeze_move, freeze_moves, void_freeze_move,
                                 post_opening_balances, post_operation, unvoid_entry, void_entry)
 from backend.ledger.bot_bridge import (ai_quota_take, bot_hints, pending_clear,  # noqa: F401
                                        pending_get, pending_set, refs, transcript_find,

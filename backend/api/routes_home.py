@@ -2,7 +2,7 @@
 """Главная и карточка счёта (ARCHITECTURE §5.4, §5.6)."""
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends, Query, Request
+from fastapi import APIRouter, Body, Depends, Query, Request
 
 from backend import db, ledger, settings_store
 from backend.api.deps import currency_param, require_user, run
@@ -12,7 +12,8 @@ from backend.ledger.analytics import analytics_month, period_flows
 from backend.ledger.common import money_dict, resolve_account
 from backend.tz import month_bounds, today_dubai
 from backend.ledger.balances import account_view as account_view_of, balances as balances_of
-from backend.ledger.tranches import freeze_account_id, open_rows as open_tranche_rows, view as tranche_view
+from backend.ledger.tranches import (freeze_account_id, move_rows, move_view,
+                                     open_rows as open_tranche_rows, view as tranche_view)
 
 router = APIRouter(prefix="/api", tags=["home"])
 
@@ -77,7 +78,8 @@ def _account(account_ref, currency_view: str, limit: int, cursor: str | None) ->
     currency = row["currency"] or currency_view
     return {
         "account": view,
-        "tranches": [tranche_view(conn, t) for t in tranche_rows],
+        "tranches": [tranche_view(conn, t) for t in tranche_rows]
+        + [move_view(conn, m) for m in move_rows(conn) if int(m["account_id"]) == int(row["id"])],
         "entries": {"items": feed["items"], "days": feed["days"],
                     "next_cursor": feed["next_cursor"], "has_more": feed["has_more"]},
         "month": {"in": money_dict(int(flows["inflow"] or 0), currency),
@@ -110,3 +112,23 @@ async def analytics_category(category_id: int, month: str | None = None,
 @router.get("/debts")
 async def debts(currency: str | None = None, user: int = Depends(require_user)):
     return await run(ledger.debts, currency_view=currency_param(currency))
+
+
+@router.get("/family/freeze_moves")
+async def freeze_moves(status: str = "all", user: int = Depends(require_user)):
+    return await run(lambda: {"items": ledger.freeze_moves(status=status)})
+
+
+@router.post("/family/freeze_move")
+async def freeze_move(body: dict = Body(default={}), user: int = Depends(require_user)):
+    """Перенос заморозки в дирхамы. Тело: rub_amount (копейки; нет — вся нехватка покрытия),
+    account (по умолчанию mashreq_personal), rate_e6 (нет — курс траншей), op_date, note."""
+    return await run(lambda: ledger.freeze_move(
+        rub_amount=body.get("rub_amount"), account=body.get("account") or "mashreq_personal",
+        rate_e6=body.get("rate_e6"), op_date=body.get("op_date"), note=body.get("note")))
+
+
+@router.post("/family/freeze_move/{move_id}/void")
+async def void_freeze_move(move_id: int, body: dict = Body(default={}),
+                           user: int = Depends(require_user)):
+    return await run(lambda: ledger.void_freeze_move(move_id, reason=body.get("reason")))

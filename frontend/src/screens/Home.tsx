@@ -3,7 +3,7 @@ import { BarChart3, ChevronDown, ChevronUp, Eye, EyeOff, List, Plus, Snowflake }
 import { api } from '../lib/api';
 import { useResource } from '../app/data';
 import { haptic } from '../app/telegram';
-import { dateLong, frozenNote, money, moneyWhole, monthPrep } from '../lib/format';
+import { dateLong, frozenBoth, frozenNote, money, moneyWhole, monthPrep } from '../lib/format';
 import { Card, CardHead, Empty, LinkAction, LoadError, Row, Screen, Segment } from '../components/ui';
 import { AccountCard, EntryRow } from '../components/rows';
 import { ShareBar } from '../components/Charts';
@@ -84,9 +84,25 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
         <div className="mt-3">
           <Segment options={VIEWS} value={view} onChange={setView} />
         </div>
+        {data.frozen_rub.amount > 0 || (data.frozen_aed?.amount ?? 0) > 0 ? (
+          <div className="nums mt-3 flex items-start gap-1.5 text-[15px] leading-5 text-hint">
+            <Snowflake size={16} className="mt-0.5 shrink-0" />
+            <span>
+              Заморожено под семью: {frozenBoth(data.frozen_rub, data.frozen_aed)}
+              {data.frozen_aed && data.frozen_aed.amount > 0 && data.free_aed ? (
+                <span className="block">Свободно дирхамов: {moneyWhole(data.free_aed, 'auto')}</span>
+              ) : null}
+            </span>
+          </div>
+        ) : null}
         {data.shortfall_rub ? (
           <div className="nums mt-3 text-[15px] font-medium leading-5 text-danger">
             Рублей меньше, чем заморожено под семью, на {moneyWhole(data.shortfall_rub, 'none')}
+          </div>
+        ) : null}
+        {data.shortfall_aed ? (
+          <div className="nums mt-1 text-[15px] font-medium leading-5 text-danger">
+            Дирхамов меньше, чем заблокировано, на {moneyWhole(data.shortfall_aed, 'none')}
           </div>
         ) : null}
       </div>
@@ -116,7 +132,7 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
           <span className="text-[17px] font-bold leading-[22px]">Семейные</span>
           <span className="nums mt-1 text-[17px] font-semibold">{moneyWhole(family.total, 'none')}</span>
           <span className="mt-auto flex items-center gap-1.5 pt-3 text-[13px] leading-4 text-hint">
-            <Snowflake size={14} /> {data.frozen_rub.amount > 0 ? `взаимозачёт ${moneyWhole(data.frozen_rub, 'none')}` : 'взаимозачёта нет'}
+            <Snowflake size={14} /> {data.frozen_rub.amount > 0 || (data.frozen_aed?.amount ?? 0) > 0 ? `взаимозачёт ${frozenBoth(data.frozen_rub, data.frozen_aed)}` : 'взаимозачёта нет'}
           </span>
         </button>
       </div>
@@ -169,8 +185,10 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
               // 25.09 Артём: «зайти внутрь семейных и видеть, где они лежат на самом деле» —
               // карта, наличные, взаимозачёт (рубли на Т-Банке под взятые дирхамы). Всё в AED.
               const parts = family.accounts.map((a) => ({ key: String(a.id), name: a.name, aed: a.balance.currency === 'AED' ? a.balance.amount : 0, a }));
-              const offsetAed = family.frozen_rub.amount > 0 ? Math.abs(family.debt.amount) : 0;
-              const total = parts.reduce((s, p) => s + p.aed, 0) + offsetAed;
+              // 28.09: часть взаимозачёта может стоять не рублями, а блоком дирхамов на Машреке.
+              const blockAed = family.frozen_aed?.amount ?? 0;
+              const offsetAed = family.frozen_rub.amount > 0 ? Math.max(0, Math.abs(family.debt.amount) - blockAed) : 0;
+              const total = parts.reduce((s, p) => s + p.aed, 0) + offsetAed + blockAed;
               const colors = ['#FF6A13', '#8E939A', '#2E6AE6'];
               const share = (v: number) => (total ? Math.max(2, Math.round((v / total) * 100)) : 0);
               return (
@@ -181,6 +199,7 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
                       <span key={p.key} style={{ width: `${share(p.aed)}%`, background: colors[i % 3] }} />
                     ))}
                     {offsetAed ? <span style={{ width: `${share(offsetAed)}%`, background: colors[2] }} /> : null}
+                    {blockAed ? <span style={{ width: `${share(blockAed)}%`, background: 'var(--c-frozen)' }} /> : null}
                   </div>
                   <div className="mt-3">
                     {parts.map((p, i) => (
@@ -205,6 +224,16 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
                           </span>
                         </span>
                         <span className="nums text-[16px] font-semibold">{money({ amount: offsetAed, currency: 'AED' }, 'none')}</span>
+                      </div>
+                    ) : null}
+                    {blockAed ? (
+                      <div className="flex items-start gap-3 py-2.5">
+                        <span className="mt-1.5 h-3 w-3 shrink-0 rounded-full" style={{ background: 'var(--c-frozen)' }} />
+                        <span className="min-w-0 flex-1">
+                          <span className="block text-[16px]">Заблокировано на Машреке</span>
+                          <span className="block text-[13px] leading-4 text-hint">вместо потраченных рублей</span>
+                        </span>
+                        <span className="nums text-[16px] font-semibold">{money({ amount: blockAed, currency: 'AED' }, 'none')}</span>
                       </div>
                     ) : null}
                   </div>

@@ -254,8 +254,17 @@ def _tranche_line(result: dict) -> str:
 
 def _released_line(result: dict) -> str:
     released = _effects(result).get("released") or []
+    unlocked = _effects(result).get("unlocked") or []
+    aed = sum(int(u["unlocked"]["amount"]) for u in unlocked if u.get("unlocked"))
+    aed_part = f"Снят блок {format_amount({'amount': aed, 'currency': 'AED'})} на дирхамах" if aed else ""
     if not released:
-        return ""
+        return aed_part
+    if aed_part:
+        return _released_rub_line(released) + ". " + aed_part
+    return _released_rub_line(released)
+
+
+def _released_rub_line(released: list[dict]) -> str:
     total = sum(int(r["rub"]["amount"]) for r in released if r.get("rub"))
     money = format_amount({"amount": total, "currency": "RUB"})
     if len(released) == 1:

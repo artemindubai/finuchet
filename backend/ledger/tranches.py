@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Заморозка рублей за балансом: транши и FIFO-разморозка (ARCHITECTURE §4.3).
+"""Заморозка за балансом (рубли; с 28.09 и перенос в дирхамы): транши и FIFO-разморозка (ARCHITECTURE §4.3).
 
 Ключевое правило: возврат, гасящий транш целиком, забирает ВЕСЬ остаток рублей транша — иначе
 на пропорции теряются копейки (грабля 4 журнала).
@@ -52,7 +52,8 @@ def frozen_on_account(conn: sqlite3.Connection, account_id: int,
 
 
 def frozen_by_account(conn: sqlite3.Connection) -> dict[int, int]:
-    """Сколько заморожено на каждом рублёвом счёте; транш без привязки — на freeze_account."""
+    """Сколько заморожено на каждом счёте в ЕГО валюте: рублёвые транши (без привязки — на
+    freeze_account) и блоки в дирхамах от переносов заморозки."""
     default_id = freeze_account_id(conn)
     out: dict[int, int] = {}
     rows = conn.execute(
@@ -62,6 +63,10 @@ def frozen_by_account(conn: sqlite3.Connection) -> dict[int, int]:
         if acc is None:
             continue
         out[acc] = out.get(acc, 0) + int(row["rub_left"])
+    for row in conn.execute(
+            "SELECT account_id, locked_left FROM freeze_moves WHERE status = 'open'").fetchall():
+        acc = int(row["account_id"])
+        out[acc] = out.get(acc, 0) + int(row["locked_left"])
     return out
 
 
@@ -144,12 +149,16 @@ def release_amount_of(conn: sqlite3.Connection, entry_id: int) -> int:
 
 
 def rebuild_releases(conn: sqlite3.Connection) -> dict[int, int]:
-    """Пересчитывает транши и разморозку заново по живому журналу (§4.3, грабля 28).
+    """Пересчитывает транши, переносы и разморозку заново по живому журналу (§4.3, грабля 28).
 
     Транш жив ровно пока жива операция-основание; погашения (возвраты и «заплатил за семью»)
-    применяются по FIFO в порядке `op_date, id`. Возвращает {entry_id: сколько AED не нашло транша}
-    — это те самые «вернул больше, чем брал»."""
+    применяются по FIFO в порядке `op_date, id`. Перенос заморозки (freeze_moves) в свою дату
+    забирает рубли у траншей по FIFO и блокирует дирхамы; погашение сначала снимает блок в
+    дирхамах — ими и возвращают семье, — потом рублёвые транши. Возвращает {entry_id: сколько AED
+    не нашло транша} — это те самые «вернул больше, чем брал»."""
     conn.execute("DELETE FROM tranche_releases")
+    conn.execute("DELETE FROM freeze_move_parts")
+    conn.execute("DELETE FROM freeze_move_releases")
     live: list[dict] = []
     for row in conn.execute(
             "SELECT t.id AS id, t.aed_taken AS aed_taken, t.rub_frozen AS rub_frozen,"
@@ -163,15 +172,50 @@ def rebuild_releases(conn: sqlite3.Connection) -> dict[int, int]:
         live.append({"id": int(row["id"]), "aed_left": int(row["aed_taken"]),
                      "rub_left": int(row["rub_frozen"])})
 
+    events: list[tuple] = []
+    moves: list[dict] = []
+    for row in conn.execute("SELECT * FROM freeze_moves ORDER BY op_date, id").fetchall():
+        if row["status"] == "void":
+            conn.execute("UPDATE freeze_moves SET rub_moved = 0, aed_taken = 0, aed_left = 0,"
+                         " locked = 0, locked_left = 0 WHERE id = ?", (int(row["id"]),))
+            continue
+        move = {"id": int(row["id"]), "rub_requested": int(row["rub_requested"]),
+                "rate_e6": int(row["rate_e6"]) if row["rate_e6"] else None,
+                "rub_moved": 0, "aed_taken": 0, "aed_left": 0, "locked": 0, "locked_left": 0}
+        moves.append(move)
+        events.append((row["op_date"], int(row["created_at"]), "move", move))
+
+    marks = ",".join("?" * len(RELEASE_KINDS))
+    for row in conn.execute(
+            f"SELECT id, op_date, created_at FROM entries WHERE status = 'posted' AND sealed = 1"
+            f" AND kind IN ({marks}) ORDER BY op_date, id", RELEASE_KINDS).fetchall():
+        events.append((row["op_date"], int(row["created_at"]), "release", int(row["id"])))
+    events.sort(key=lambda ev: (ev[0], ev[1]))   # sort стабилен: внутри секунды порядок id
+
     now = utc_now()
     shortfall: dict[int, int] = {}
-    marks = ",".join("?" * len(RELEASE_KINDS))
-    rows = conn.execute(
-        f"SELECT id FROM entries WHERE status = 'posted' AND sealed = 1 AND kind IN ({marks})"
-        " ORDER BY op_date, id", RELEASE_KINDS).fetchall()
-    for row in rows:
-        entry_id = int(row["id"])
+    for _, _, what, obj in events:
+        if what == "move":
+            _apply_move(conn, obj, live, now)
+            continue
+        entry_id = obj
         left = release_amount_of(conn, entry_id)
+        for move in moves:
+            if left <= 0:
+                break
+            take = min(left, move["aed_left"])
+            if take <= 0:
+                continue
+            if take == move["aed_left"]:
+                lock = move["locked_left"]
+            else:
+                lock = move["locked_left"] * take // move["aed_left"]
+            move["aed_left"] -= take
+            move["locked_left"] -= lock
+            conn.execute(
+                "INSERT INTO freeze_move_releases (move_id, entry_id, aed_released, locked_released,"
+                " created_at) VALUES (?,?,?,?,?)", (move["id"], entry_id, take, lock, now))
+            left -= take
         for tranche in live:
             if left <= 0:
                 break
@@ -195,7 +239,91 @@ def rebuild_releases(conn: sqlite3.Connection) -> dict[int, int]:
             "UPDATE family_tranches SET aed_left = ?, rub_left = ?, status = ? WHERE id = ?",
             (tranche["aed_left"], tranche["rub_left"],
              "closed" if tranche["aed_left"] == 0 else "open", tranche["id"]))
+    for move in moves:
+        conn.execute(
+            "UPDATE freeze_moves SET rub_moved = ?, aed_taken = ?, aed_left = ?, locked = ?,"
+            " locked_left = ?, status = ? WHERE id = ?",
+            (move["rub_moved"], move["aed_taken"], move["aed_left"], move["locked"],
+             move["locked_left"], "open" if move["aed_left"] > 0 else "closed", move["id"]))
     return shortfall
+
+
+def _apply_move(conn: sqlite3.Connection, move: dict, live: list[dict], now: int) -> None:
+    """Перенос: забрать рубли у траншей по FIFO и заблокировать дирхамы.
+
+    Курс не задан — блокируется ровно та часть долга семье, что стояла за рублями (курс траншей).
+    Задан — дирхамы = перенесённые рубли / курс."""
+    left_rub = move["rub_requested"]
+    for tranche in live:
+        if left_rub <= 0:
+            break
+        take_rub = min(left_rub, tranche["rub_left"])
+        if take_rub <= 0:
+            continue
+        if take_rub == tranche["rub_left"]:
+            aed = tranche["aed_left"]            # весь остаток транша — без потери копеек
+        else:
+            aed = tranche["aed_left"] * take_rub // tranche["rub_left"]
+        tranche["aed_left"] -= aed
+        tranche["rub_left"] -= take_rub
+        conn.execute(
+            "INSERT INTO freeze_move_parts (move_id, tranche_id, aed_moved, rub_moved, created_at)"
+            " VALUES (?,?,?,?,?)", (move["id"], tranche["id"], aed, take_rub, now))
+        move["rub_moved"] += take_rub
+        move["aed_taken"] += aed
+        left_rub -= take_rub
+    if move["rate_e6"]:
+        locked = money.round_half_up(move["rub_moved"] * 1_000_000, move["rate_e6"])
+    else:
+        locked = move["aed_taken"]
+    move["aed_left"] = move["aed_taken"]
+    move["locked"] = move["locked_left"] = locked
+
+
+def move_rows(conn: sqlite3.Connection, *, status: str = "open") -> list[sqlite3.Row]:
+    if status == "all":
+        return conn.execute("SELECT * FROM freeze_moves ORDER BY op_date, id").fetchall()
+    return conn.execute("SELECT * FROM freeze_moves WHERE status = ? ORDER BY op_date, id",
+                        (status,)).fetchall()
+
+
+def frozen_total_aed(conn: sqlite3.Connection) -> int:
+    row = conn.execute("SELECT COALESCE(SUM(locked_left), 0) AS total FROM freeze_moves"
+                       " WHERE status = 'open'").fetchone()
+    return int(row["total"])
+
+
+def move_view(conn: sqlite3.Connection, row: sqlite3.Row) -> dict:
+    """Перенос в форме транша: рядом с рублёвыми траншами на экранах счёта и семьи.
+
+    rub_frozen/rub_left здесь несут дирхамы (валюта в самой сумме) — так их без правок рисует
+    та же строка транша в мини-аппе; frozen_currency говорит, что это блок в AED."""
+    account = account_row(conn, int(row["account_id"]))
+    cur = row["currency"]
+    rate = f" по курсу {fmt_rate(int(row['rate_e6']))}" if row["rate_e6"] else ""
+    return {
+        "id": int(row["id"]),
+        "move_id": int(row["id"]),
+        "kind": "freeze_move",
+        "op_date": row["op_date"],
+        "frozen_currency": cur,
+        "rub_requested": money_dict(int(row["rub_requested"]), "RUB"),
+        "rub_moved": money_dict(int(row["rub_moved"]), "RUB"),
+        "aed_taken": money_dict(int(row["aed_taken"]), "AED"),
+        "aed_left": money_dict(int(row["aed_left"]), "AED"),
+        "rub_frozen": money_dict(int(row["locked"]), cur),
+        "rub_left": money_dict(int(row["locked_left"]), cur),
+        "rate_e6": int(row["rate_e6"]) if row["rate_e6"] else (
+            money.round_half_up(int(row["rub_moved"]) * 1_000_000, int(row["aed_taken"]))
+            if int(row["aed_taken"]) else 0),
+        "rate_source": "freeze_move",
+        "account_id": int(account["id"]) if account is not None else None,
+        "account_name": account["name"] if account is not None else None,
+        "status": row["status"],
+        "note": row["note"],
+        "label": (f"заблокировано вместо рублей {fmt_amount(int(row['rub_moved']), 'RUB')}"
+                  f" (перенос от {human_date(row['op_date'])}{rate})"),
+    }
 
 
 def shortfall_warning(kind: str, extra: int) -> dict | None:
@@ -252,3 +380,15 @@ def releases_of_entry(conn: sqlite3.Connection, entry_id: int) -> list[dict]:
              "aed": money_dict(int(row["aed_released"]), "AED"),
              "rub": money_dict(int(row["rub_released"]), "RUB"),
              "op_date": row["tranche_date"], "rate_e6": int(row["rate_e6"])} for row in rows]
+
+
+def unlocks_of_entry(conn: sqlite3.Connection, entry_id: int) -> list[dict]:
+    """Сколько дирхамов разблокировало погашение (блоки от переносов заморозки)."""
+    rows = conn.execute(
+        "SELECT r.*, m.op_date AS move_date, m.currency AS currency, m.account_id AS account_id"
+        " FROM freeze_move_releases r JOIN freeze_moves m ON m.id = r.move_id"
+        " WHERE r.entry_id = ? ORDER BY m.op_date, m.id", (entry_id,)).fetchall()
+    return [{"move_id": int(row["move_id"]), "account_id": int(row["account_id"]),
+             "aed": money_dict(int(row["aed_released"]), "AED"),
+             "unlocked": money_dict(int(row["locked_released"]), row["currency"]),
+             "op_date": row["move_date"]} for row in rows]

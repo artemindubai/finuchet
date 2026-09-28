@@ -171,6 +171,46 @@ CREATE TABLE IF NOT EXISTS tranche_releases (
 CREATE INDEX IF NOT EXISTS ix_releases_tranche ON tranche_releases(tranche_id);
 CREATE INDEX IF NOT EXISTS ix_releases_entry   ON tranche_releases(entry_id);
 
+-- Перенос заморозки в другую валюту (28.09, Артём): часть рублёвых траншей закрывается, взамен
+-- блокируются дирхамы на счёте. Забалансовая запись, как и сами транши: проводок нет, остатки не
+-- меняются. Поля rub_moved/aed_taken/aed_left/locked/locked_left — функция журнала (rebuild_releases).
+CREATE TABLE IF NOT EXISTS freeze_moves (
+  id            INTEGER PRIMARY KEY AUTOINCREMENT,
+  op_date       TEXT    NOT NULL,
+  rub_requested INTEGER NOT NULL CHECK (rub_requested > 0),
+  rate_e6       INTEGER,
+  account_id    INTEGER NOT NULL REFERENCES accounts(id),
+  currency      TEXT    NOT NULL DEFAULT 'AED' CHECK (currency IN ('AED')),
+  rub_moved     INTEGER NOT NULL DEFAULT 0,
+  aed_taken     INTEGER NOT NULL DEFAULT 0,
+  aed_left      INTEGER NOT NULL DEFAULT 0,
+  locked        INTEGER NOT NULL DEFAULT 0,
+  locked_left   INTEGER NOT NULL DEFAULT 0,
+  status        TEXT    NOT NULL DEFAULT 'open' CHECK (status IN ('open','closed','void')),
+  note          TEXT,
+  created_at    INTEGER NOT NULL,
+  voided_at     INTEGER,
+  void_reason   TEXT
+);
+CREATE TABLE IF NOT EXISTS freeze_move_parts (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  move_id     INTEGER NOT NULL REFERENCES freeze_moves(id),
+  tranche_id  INTEGER NOT NULL REFERENCES family_tranches(id),
+  aed_moved   INTEGER NOT NULL,
+  rub_moved   INTEGER NOT NULL,
+  created_at  INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_move_parts_tranche ON freeze_move_parts(tranche_id);
+CREATE TABLE IF NOT EXISTS freeze_move_releases (
+  id              INTEGER PRIMARY KEY AUTOINCREMENT,
+  move_id         INTEGER NOT NULL REFERENCES freeze_moves(id),
+  entry_id        INTEGER NOT NULL REFERENCES entries(id),
+  aed_released    INTEGER NOT NULL,
+  locked_released INTEGER NOT NULL,
+  created_at      INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS ix_move_releases_entry ON freeze_move_releases(entry_id);
+
 CREATE TABLE IF NOT EXISTS planned_payments (
   id                 INTEGER PRIMARY KEY AUTOINCREMENT,
   title              TEXT    NOT NULL,

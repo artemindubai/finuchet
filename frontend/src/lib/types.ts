@@ -83,6 +83,8 @@ export interface TrancheView {
   entry_id?: number;
   status: string;
   label: string;
+  /** 28.09: блок дирхамов от переноса заморозки; rub_* тогда в AED. */
+  kind?: 'freeze_move';
 }
 
 // В примере §5.5 у одной операции нет icon/color (они описаны только для ленты) —
@@ -181,6 +183,10 @@ export interface HomeResponse {
   my_money: Money;
   /** Рублей меньше, чем заморожено под семью — только тогда это настоящий долг. */
   shortfall_rub: Money | null;
+  /** Перенос заморозки (28.09): дирхамы, заблокированные вместо потраченных рублей, и свободный остаток AED. */
+  frozen_aed?: Money;
+  free_aed?: Money;
+  shortfall_aed?: Money | null;
   /** Скрытые из итога счета (личная копилка) — показываются по кнопке. */
   hidden: { accounts: AccountView[]; total: Record<ViewCurrency, Money> };
   family: {
@@ -190,6 +196,7 @@ export interface HomeResponse {
     debt: Money;
     direction: 'i_owe' | 'family_owes';
     frozen_rub: Money;
+    frozen_aed?: Money;
     frozen_note: string | null;
     today_repay_rub: Money | null;
   };

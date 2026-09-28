@@ -21,7 +21,8 @@ from backend.ledger.balances import effects as build_effects, family_debt as fam
 from backend.ledger.tranches import (RELEASE_KINDS, guard_no_releases,
                                      open_rows as open_tranche_rows, open_tranche,
                                      rebuild_releases, releases_of_entry, shortfall_warning,
-                                     touches_freeze, tranche_of_entry, view as tranche_view)
+                                     touches_freeze, tranche_of_entry, unlocks_of_entry,
+                                     move_rows, move_view, view as tranche_view)
 
 DIRECTION = {
     "expense": "out", "income": "in", "transfer": "neutral", "exchange": "neutral",
@@ -369,6 +370,7 @@ def _write_entry(conn: sqlite3.Connection, op: ParsedOperation, *, actor: str,
 
     tranche_block = None
     released: list[dict] = []
+    unlocked: list[dict] = []
     tranche_id = None
     if op.kind == "family_withdrawal" and meta.get("freeze") and quote is not None:
         tranche_id, freeze_warnings = open_tranche(
@@ -384,6 +386,7 @@ def _write_entry(conn: sqlite3.Connection, op: ParsedOperation, *, actor: str,
             tranche_block = tranche_view(conn, row)
         if op.kind in RELEASE_KINDS:
             released = releases_of_entry(conn, entry_id)
+            unlocked = unlocks_of_entry(conn, entry_id)
             extra = shortfall_warning(op.kind, shortfall.get(entry_id, 0))
             if extra:
                 warnings.append(extra)
@@ -403,8 +406,9 @@ def _write_entry(conn: sqlite3.Connection, op: ParsedOperation, *, actor: str,
                            (release["tranche_id"],)).fetchone()
         if row is not None and row["account_id"]:
             touched.append(int(row["account_id"]))
+    touched.extend(item["account_id"] for item in unlocked)
     return {"entry_id": entry_id, "warnings": warnings, "tranche": tranche_block,
-            "released": released, "accounts": touched}
+            "released": released, "unlocked": unlocked, "accounts": touched}
 
 
 def _ensure_planned_from_due(conn: sqlite3.Connection, entry_id: int, op: ParsedOperation) -> None:
@@ -428,7 +432,8 @@ def _result(conn: sqlite3.Connection, written: dict, *, currency_view: str = "RU
     out["effects"] = build_effects(conn, account_ids=written["accounts"],
                                           currency_view=currency_view,
                                           tranche=written.get("tranche"),
-                                          released=written.get("released"))
+                                          released=written.get("released"),
+                                          unlocked=written.get("unlocked"))
     return out
 
 
@@ -736,13 +741,30 @@ def check_invariants() -> list[str]:
             "SELECT COALESCE(SUM(r.aed_released), 0) AS aed, COALESCE(SUM(r.rub_released), 0) AS rub"
             " FROM tranche_releases r JOIN entries e ON e.id = r.entry_id"
             " WHERE r.tranche_id = ? AND e.status = 'posted'", (int(row["id"]),)).fetchone()
-        if int(row["aed_left"]) != int(row["aed_taken"]) - int(released["aed"]):
+        moved = conn.execute(
+            "SELECT COALESCE(SUM(p.aed_moved), 0) AS aed, COALESCE(SUM(p.rub_moved), 0) AS rub"
+            " FROM freeze_move_parts p JOIN freeze_moves m ON m.id = p.move_id"
+            " WHERE p.tranche_id = ? AND m.status != 'void'", (int(row["id"]),)).fetchone()
+        if int(row["aed_left"]) != int(row["aed_taken"]) - int(released["aed"]) - int(moved["aed"]):
             problems.append(f"транш {row['id']}: aed_left не сходится с релизами")
-        if int(row["rub_left"]) != int(row["rub_frozen"]) - int(released["rub"]):
+        if int(row["rub_left"]) != int(row["rub_frozen"]) - int(released["rub"]) - int(moved["rub"]):
             problems.append(f"транш {row['id']}: rub_left не сходится с релизами")
 
+    for row in move_rows(conn, status="all"):
+        if row["status"] == "void":
+            continue
+        released = conn.execute(
+            "SELECT COALESCE(SUM(r.aed_released), 0) AS aed,"
+            " COALESCE(SUM(r.locked_released), 0) AS locked FROM freeze_move_releases r"
+            " JOIN entries e ON e.id = r.entry_id WHERE r.move_id = ? AND e.status = 'posted'",
+            (int(row["id"]),)).fetchone()
+        if int(row["aed_left"]) != int(row["aed_taken"]) - int(released["aed"]) \
+                or int(row["locked_left"]) != int(row["locked"]) - int(released["locked"]):
+            problems.append(f"перенос заморозки {row['id']}: остаток не сходится с погашениями")
+
     debt = family_debt_of(conn)["debt"]["amount"]
-    open_aed = sum(int(row["aed_left"]) for row in open_tranche_rows(conn))
+    open_aed = sum(int(row["aed_left"]) for row in open_tranche_rows(conn)) \
+        + sum(int(row["aed_left"]) for row in move_rows(conn))
     # Взятое «без заморозки» увеличивает долг, но не заморозку: его вычитаем ЧИСЛОМ, а не
     # выключаем проверку флагом — иначе одно такое взятие глушит её навсегда (грабля 29).
     unfrozen = -int(conn.execute(
@@ -762,3 +784,79 @@ def check_invariants() -> list[str]:
     for row in rows:
         problems.append(f"отменённая операция {row['id']} потеряла проводки")
     return problems
+
+
+# --------------------------------------------------------------------------------------
+# перенос заморозки в дирхамы (28.09, Артём: потраченные замороженные рубли — «в зачёт моих
+# дирхамов, заблокировать эти суммы на дирхамовском счёте»). Забалансовая запись без проводок.
+
+
+def freeze_move(*, rub_amount: int | None = None, account="mashreq_personal",
+                rate_e6: int | None = None, op_date: str | None = None, note: str | None = None,
+                actor: str = "api") -> dict:
+    """Закрывает часть рублёвой заморозки и блокирует дирхамы на счёте.
+
+    rub_amount не задан — переносится ровно нехватка покрытия (рублей заморожено больше, чем
+    есть). rate_e6 не задан — блокируется та часть долга семье, что стояла за рублями."""
+    from backend.ledger.balances import free_rub as free_rub_of
+    from backend.ledger.common import minor_amount
+    conn = _conn()
+    with db.transaction(conn):
+        acc = resolve_account(conn, account, field="account")
+        if acc["currency"] != "AED" or acc["type"] != "asset_personal":
+            raise LedgerError("bad_request", "Блокировать можно только на личном счёте в дирхамах",
+                              {"field": "account", "value": acc["slug"]})
+        if rub_amount is None:
+            short = free_rub_of(conn)["shortfall"]
+            if not short:
+                raise LedgerError("nothing_to_move", "Рублей хватает, переносить нечего", {})
+            rub = int(short["amount"])
+        else:
+            rub = minor_amount(rub_amount, field="rub_amount") or 0
+        if rub <= 0:
+            raise LedgerError("bad_request", "Сумма должна быть больше нуля", {"field": "rub_amount"})
+        if rate_e6 is not None and int(rate_e6) <= 0:
+            raise LedgerError("bad_request", "Курс должен быть больше нуля", {"field": "rate_e6"})
+        open_rub = int(conn.execute(
+            "SELECT COALESCE(SUM(rub_left), 0) AS s FROM family_tranches WHERE status = 'open'"
+        ).fetchone()["s"])
+        if rub > open_rub:
+            raise LedgerError("bad_request",
+                              f"Заморожено всего {fmt_amount(open_rub, 'RUB')}, больше не перенести",
+                              {"field": "rub_amount", "open_rub": money_dict(open_rub, "RUB")})
+        cur = conn.execute(
+            "INSERT INTO freeze_moves (op_date, rub_requested, rate_e6, account_id, currency, note,"
+            " created_at) VALUES (?,?,?,?,'AED',?,?)",
+            (op_date or today_dubai(), rub, int(rate_e6) if rate_e6 else None, int(acc["id"]),
+             note, utc_now()))
+        move_id = int(cur.lastrowid)
+        rebuild_releases(conn)
+        audit(conn, actor, "freeze_move", "freeze_move", move_id,
+              {"rub": rub, "rate_e6": rate_e6, "account": acc["slug"]})
+        row = conn.execute("SELECT * FROM freeze_moves WHERE id = ?", (move_id,)).fetchone()
+        out = {"move": move_view(conn, row)}
+    out["effects"] = build_effects(conn, account_ids=[int(acc["id"])])
+    return out
+
+
+def void_freeze_move(move_id: int, *, reason: str | None = None, actor: str = "api") -> dict:
+    conn = _conn()
+    with db.transaction(conn):
+        row = conn.execute("SELECT * FROM freeze_moves WHERE id = ?", (move_id,)).fetchone()
+        if row is None:
+            raise LedgerError("not_found", "Перенос не найден", {"move_id": move_id})
+        if row["status"] == "void":
+            raise LedgerError("already_void", "Перенос уже отменён", {"move_id": move_id})
+        conn.execute("UPDATE freeze_moves SET status = 'void', voided_at = ?, void_reason = ?"
+                     " WHERE id = ?", (utc_now(), reason, move_id))
+        rebuild_releases(conn)
+        audit(conn, actor, "void", "freeze_move", move_id, {"reason": reason})
+        row = conn.execute("SELECT * FROM freeze_moves WHERE id = ?", (move_id,)).fetchone()
+        out = {"move": move_view(conn, row)}
+    out["effects"] = build_effects(conn, account_ids=[int(row["account_id"])])
+    return out
+
+
+def freeze_moves(*, status: str = "all") -> list[dict]:
+    conn = _conn()
+    return [move_view(conn, row) for row in move_rows(conn, status=status)]

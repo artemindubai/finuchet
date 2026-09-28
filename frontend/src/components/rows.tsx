@@ -151,8 +151,9 @@ export function TrancheRow({
             : money(t.rub_left, 'none')}
         </div>
         <div className="mt-0.5 text-[13px] leading-4 text-hint">
-          в счёт {money(t.aed_left, 'none')} от {dateLong(t.op_date)}
-          {compact ? '' : ` по ${rate(t.rate_e6)}`}
+          {t.kind === 'freeze_move'
+            ? `блок на дирхамах вместо рублей, перенос от ${dateLong(t.op_date)}`
+            : `в счёт ${money(t.aed_left, 'none')} от ${dateLong(t.op_date)}${compact ? '' : ` по ${rate(t.rate_e6)}`}`}
         </div>
         {partial && t.rub_frozen ? (
           <div className="mt-2 h-1 w-full overflow-hidden rounded-sm" style={{ background: 'var(--c-frozen-bg)' }}>
@@ -166,7 +167,7 @@ export function TrancheRow({
           </div>
         ) : null}
       </div>
-      {compact ? null : (
+      {compact || t.kind === 'freeze_move' ? null : (
         <div className="shrink-0 pt-0.5 text-[13px] leading-4 text-hint">{rateSource(t.rate_source)}</div>
       )}
     </div>

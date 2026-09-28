@@ -9,7 +9,7 @@ ENTRY_SHORT_KEYS = {"id", "kind", "direction", "amount", "amount_in_view", "titl
                     "category_id", "icon", "color", "version", "op_date", "created_at", "status",
                     "source", "description", "counterparty", "project"}
 EFFECTS_KEYS = {"accounts", "net_worth", "free_rub", "frozen_rub", "family_debt",
-                "family_direction", "tranche", "released"}
+                "family_direction", "tranche", "released", "free_aed", "frozen_aed", "unlocked"}
 
 
 def is_money(value) -> bool:
@@ -31,7 +31,8 @@ def test_home_shape(client):
     body = client.get("/api/home?currency=RUB").json()
     assert set(body) == {"currency", "as_of", "net_worth", "free_rub", "frozen_rub", "groups",
                          "totals_by_view", "family", "upcoming", "recent", "month", "rates",
-                         "warnings", "my_money", "shortfall_rub", "hidden"}
+                         "warnings", "my_money", "shortfall_rub", "hidden",
+                         "free_aed", "frozen_aed", "shortfall_aed"}
     assert is_money(body["my_money"])
     assert set(body["hidden"]) == {"accounts", "total"}
     assert body["currency"] == "RUB"
@@ -50,7 +51,7 @@ def test_home_shape(client):
     assert set(body["totals_by_view"]) == {"net_worth", "groups", "my_money"}
     assert set(body["totals_by_view"]["net_worth"]) == {"RUB", "USD", "AED"}
     assert set(body["family"]) == {"visible", "total", "accounts", "debt", "direction",
-                                   "frozen_rub", "frozen_note", "today_repay_rub"}
+                                   "frozen_rub", "frozen_aed", "frozen_note", "today_repay_rub"}
     assert body["family"]["direction"] in ("i_owe", "family_owes")
     assert set(body["month"]) == {"month", "expense_total", "income_total", "top_categories"}
     assert set(body["rates"]) == {"at", "source", "rub_per_aed_e6", "rub_per_usd_e6",
@@ -240,7 +241,7 @@ def test_debts_and_account_shape(client):
                           "owed_to_me_by_currency", "i_owe_by_currency"}
     assert set(debts["owed_to_me"][0]) == {"counterparty_id", "name", "amounts", "in_view",
                                            "due_date", "since", "entry_ids"}
-    assert set(debts["family"]) == {"debt", "direction", "frozen_rub", "today_repay_rub",
+    assert set(debts["family"]) == {"debt", "direction", "frozen_rub", "frozen_aed", "today_repay_rub",
                                     "tranches"}
 
     account = client.get("/api/accounts/tbank").json()

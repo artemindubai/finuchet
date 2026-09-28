@@ -9,7 +9,8 @@ from backend.ledger.common import (VIEW_CURRENCIES, account_row, money_dict, nat
                                    resolve_account, role_of, to_view)
 from backend.money import fmt_rate
 from backend.tz import human_date, iso_utc
-from backend.ledger.tranches import (frozen_by_account, frozen_total, open_rows as open_tranche_rows,
+from backend.ledger.tranches import (frozen_by_account, frozen_total, frozen_total_aed,
+                                     move_rows, move_view, open_rows as open_tranche_rows,
                                      view as tranche_view)
 
 GROUP_TITLES = {"RUB": "Рубли", "AED": "Дирхамы", "USDT": "USDT", "FAMILY": "Семейные"}
@@ -67,7 +68,7 @@ def account_view(conn: sqlite3.Connection, account, *, currency_view: str = "RUB
         "balance": money_dict(balance, cur),
         "natural": money_dict(balance * sign, cur),
         "in_view": money_dict(to_view(balance, cur, currency_view, snapshot), currency_view),
-        "frozen": money_dict(frozen_amount, "RUB") if frozen_amount else None,
+        "frozen": money_dict(frozen_amount, cur) if frozen_amount else None,
         "archived": bool(row["archived"]),
     }
     return out
@@ -126,6 +127,25 @@ def free_rub(conn: sqlite3.Connection, *, as_of: str | None = None,
             "shortfall": money_dict(frozen - total, "RUB") if frozen > total else None}
 
 
+def aed_personal_total(conn: sqlite3.Connection, *, as_of: str | None = None,
+                       bmap: dict | None = None) -> int:
+    bmap = bmap if bmap is not None else balance_map(conn, as_of=as_of)
+    ids = {int(r["id"]) for r in conn.execute(
+        "SELECT id FROM accounts WHERE type = 'asset_personal' AND is_money = 1"
+        " AND currency = 'AED'").fetchall()}
+    return sum(amount for (acc, cur), amount in bmap.items() if acc in ids and cur == "AED")
+
+
+def free_aed(conn: sqlite3.Connection, *, as_of: str | None = None,
+             bmap: dict | None = None) -> dict:
+    """Свободные дирхамы = личные AED-счета − блок от переносов заморозки (28.09)."""
+    total = aed_personal_total(conn, as_of=as_of, bmap=bmap)
+    frozen = frozen_total_aed(conn)
+    return {"aed_total": money_dict(total, "AED"), "frozen": money_dict(frozen, "AED"),
+            "free": money_dict(total - frozen, "AED"),
+            "shortfall": money_dict(frozen - total, "AED") if frozen > total else None}
+
+
 def family_debt(conn: sqlite3.Connection, *, as_of: str | None = None,
                 snapshot: dict | None = None, bmap: dict | None = None) -> dict:
     """Долг семье = Семейный фонд − Σ семейных активов, в AED. Может быть отрицательным."""
@@ -142,6 +162,7 @@ def family_debt(conn: sqlite3.Connection, *, as_of: str | None = None,
     debt = fund_natural - assets
     frozen = frozen_total(conn)
     open_tranches = open_tranche_rows(conn)
+    moves = move_rows(conn)
     today_repay = None
     if debt > 0:
         today_repay = money_dict(to_view(debt, "AED", "RUB", snapshot), "RUB")
@@ -151,8 +172,10 @@ def family_debt(conn: sqlite3.Connection, *, as_of: str | None = None,
         "fund": money_dict(fund_natural, "AED"),
         "family_assets": money_dict(assets, "AED"),
         "frozen_rub": money_dict(frozen if debt > 0 else frozen, "RUB"),
+        "frozen_aed": money_dict(frozen_total_aed(conn), "AED"),
         "today_repay_rub": today_repay,
-        "tranches": [tranche_view(conn, row) for row in open_tranches],
+        "tranches": [tranche_view(conn, row) for row in open_tranches]
+        + [move_view(conn, row) for row in moves],
     }
 
 
@@ -211,6 +234,7 @@ def balances(conn: sqlite3.Connection, *, as_of: str | None = None,
                     for row in family_rows]
     debt = family_debt(conn, as_of=as_of, snapshot=snapshot, bmap=bmap)
     free = free_rub(conn, as_of=as_of, bmap=bmap)
+    free_d = free_aed(conn, as_of=as_of, bmap=bmap)
     total_nw = net_worth(conn, currency_view=currency_view, as_of=as_of,
                          snapshot=snapshot, bmap=bmap)
 
@@ -222,11 +246,13 @@ def balances(conn: sqlite3.Connection, *, as_of: str | None = None,
         "direction": debt["direction"],
         "frozen_rub": debt["frozen_rub"] if debt["debt"]["amount"] > 0
         else money_dict(frozen_total(conn), "RUB"),
+        "frozen_aed": free_d["frozen"],
         "frozen_note": frozen_note(conn),
         "today_repay_rub": debt["today_repay_rub"],
     }
     if debt["debt"]["amount"] < 0:
         family_block["frozen_rub"] = money_dict(0, "RUB")
+        family_block["frozen_aed"] = money_dict(0, "AED")
         family_block["frozen_note"] = None
         family_block["today_repay_rub"] = None
 
@@ -236,7 +262,8 @@ def balances(conn: sqlite3.Connection, *, as_of: str | None = None,
     # из семейного дирхамы. Семейный фонд и «долг» сюда не входят: пока рубли покрывают, это взаимозачёт.
     visible_rub = sum(to_view(a["in_view"]["amount"], currency_view, "RUB", snapshot)
                       for g in group_list for a in g["accounts"])
-    my_rub = visible_rub - free["frozen"]["amount"]
+    my_rub = visible_rub - free["frozen"]["amount"] \
+        - to_view(free_d["frozen"]["amount"], "AED", "RUB", snapshot)
     my_by_view = {v: money_dict(to_view(my_rub, "RUB", v, snapshot), v) for v in VIEW_CURRENCIES}
     hidden_total_rub = sum(to_view(a["in_view"]["amount"], currency_view, "RUB", snapshot)
                            for a in hidden_views)
@@ -251,6 +278,9 @@ def balances(conn: sqlite3.Connection, *, as_of: str | None = None,
         "totals_by_view": {"net_worth": nw_by_view, "groups": groups_by_view, "my_money": my_by_view},
         "my_money": my_by_view.get(currency_view, money_dict(my_rub, "RUB")),
         "shortfall_rub": free["shortfall"],
+        "free_aed": free_d["free"],
+        "frozen_aed": free_d["frozen"],
+        "shortfall_aed": free_d["shortfall"],
         "hidden": {"accounts": hidden_views,
                    "total": {v: money_dict(to_view(hidden_total_rub, "RUB", v, snapshot), v)
                              for v in VIEW_CURRENCIES}},
@@ -354,10 +384,12 @@ def debts(conn: sqlite3.Connection, *, currency_view: str = "RUB") -> dict:
 
     family_block = {"debt": family["debt"], "direction": family["direction"],
                     "frozen_rub": family["frozen_rub"],
+                    "frozen_aed": family["frozen_aed"],
                     "today_repay_rub": family["today_repay_rub"],
                     "tranches": family["tranches"]}
     if family["debt"]["amount"] < 0:
         family_block["frozen_rub"] = money_dict(0, "RUB")
+        family_block["frozen_aed"] = money_dict(0, "AED")
         family_block["today_repay_rub"] = None
         family_block["tranches"] = []
     receivable = account_row(conn, "receivable")
@@ -371,7 +403,8 @@ def debts(conn: sqlite3.Connection, *, currency_view: str = "RUB") -> dict:
 
 
 def effects(conn: sqlite3.Connection, *, account_ids: list[int], currency_view: str = "RUB",
-            tranche: dict | None = None, released: list[dict] | None = None) -> dict:
+            tranche: dict | None = None, released: list[dict] | None = None,
+            unlocked: list[dict] | None = None) -> dict:
     """Единый объект effects для ядра, API и карточек бота (§5.5)."""
     snapshot = rates.snapshot(conn=conn)
     bmap = balance_map(conn)
@@ -402,14 +435,18 @@ def effects(conn: sqlite3.Connection, *, account_ids: list[int], currency_view: 
                          "by_counterparty": by_counterparty})
     debt = family_debt(conn, snapshot=snapshot, bmap=bmap)
     free = free_rub(conn, bmap=bmap)
+    free_d = free_aed(conn, bmap=bmap)
     return {
         "accounts": accounts,
         "net_worth": money_dict(net_worth(conn, currency_view=currency_view, snapshot=snapshot,
                                           bmap=bmap), currency_view),
         "free_rub": free["free"],
         "frozen_rub": free["frozen"],
+        "free_aed": free_d["free"],
+        "frozen_aed": free_d["frozen"],
         "family_debt": debt["debt"],
         "family_direction": debt["direction"],
         "tranche": tranche,
         "released": released or [],
+        "unlocked": unlocked or [],
     }
