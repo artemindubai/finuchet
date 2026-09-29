@@ -104,8 +104,9 @@ export function DayBlock({
 
 /** Строка счёта в группе: круг 44 в цвете валюты, остаток сверху, имя снизу. */
 export function AccountRow({ a, onClick }: { a: AccountView; onClick: (id: number) => void }) {
+  // 29.09 Артём: кредитка — минусом («−13 518 ₽»), подпись просто имя счёта, без «Долг ·».
   const liability = a.role === 'liability';
-  const shown = liability ? a.natural : a.balance;
+  const shown = a.balance;
   return (
     <button
       type="button"
@@ -117,9 +118,9 @@ export function AccountRow({ a, onClick }: { a: AccountView; onClick: (id: numbe
     >
       <BankMark a={a} size={44} />
       <span className="min-w-0 flex-1">
-        <span className="nums block truncate text-[20px] font-bold leading-6">{money(shown, 'none')}</span>
+        <span className="nums block truncate text-[20px] font-bold leading-6">{money(shown, liability ? 'auto' : 'none')}</span>
         <span className="mt-0.5 block truncate text-[13px] leading-4 text-hint">
-          {liability && shown.amount > 0 ? `Долг · ${a.name}` : a.name}
+          {a.name}
         </span>
       </span>
       {a.frozen ? (
@@ -279,8 +280,8 @@ export function BankMark({ a, size = 48 }: { a: AccountView; size?: number }) {
 }
 
 /** Сумма крупно, копейки мельче и светлее — как в банковских приложениях. */
-export function BigMoney({ v, className = '' }: { v: Money; className?: string }) {
-  const s = money(v, 'none');
+export function BigMoney({ v, className = '', signed = false }: { v: Money; className?: string; signed?: boolean }) {
+  const s = money(v, signed ? 'auto' : 'none');
   const m = s.match(/^(.*?)(,\d{2})(\s.*)$/);
   if (!m) return <span className={`nums ${className}`}>{s}</span>;
   return (
@@ -294,8 +295,9 @@ export function BigMoney({ v, className = '' }: { v: Money; className?: string }
 
 /** Счёт отдельной карточкой с воздухом (25.09: «сделай как Т-Банк»). */
 export function AccountCard({ a, onClick }: { a: AccountView; onClick: (id: number) => void }) {
+  // 29.09 Артём: кредитка — минусом («−13 518 ₽»), подпись просто имя счёта, без «Долг ·».
   const liability = a.role === 'liability';
-  const shown = liability ? a.natural : a.balance;
+  const shown = a.balance;
   return (
     <button
       type="button"
@@ -307,9 +309,9 @@ export function AccountCard({ a, onClick }: { a: AccountView; onClick: (id: numb
     >
       <BankMark a={a} />
       <span className="min-w-0 flex-1">
-        <BigMoney v={shown} className="block truncate text-[24px] font-extrabold leading-7 tracking-[-0.01em]" />
+        <BigMoney v={shown} signed={liability} className="block truncate text-[24px] font-extrabold leading-7 tracking-[-0.01em]" />
         <span className="mt-1 block truncate text-[15px] leading-5 text-hint">
-          {liability && shown.amount > 0 ? `Долг · ${a.name}` : a.name}
+          {a.name}
         </span>
         {a.frozen ? (
           <span className="nums mt-2 inline-block rounded-full px-2.5 py-1 text-[12px] font-semibold leading-4" style={{ background: 'var(--c-frozen-bg)', color: 'var(--c-frozen)' }}>

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ChevronLeft } from 'lucide-react';
 import { api } from '../lib/api';
 import { dropCache, useResource } from '../app/data';
-import { money, moneyWhole, num } from '../lib/format';
+import { dateLong, money, moneyWhole, num } from '../lib/format';
 import { Button, Card, CardHead, Empty, LoadError, Screen } from '../components/ui';
 import { DayBlock, TrancheRow } from '../components/rows';
 import { FeedSkeleton } from '../components/Skeleton';
@@ -22,6 +22,8 @@ const CURRENCY_WORD: Record<string, string> = {
 export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => void }) {
   const { data, error, loading, reload } = useResource<AccountResponse>(`account:${id}`, () => api.account(id));
   const [align, setAlign] = useState(false);
+  // 'fact' — ввод пересчёта для сверки (29.09): то же поле, но ядро ещё запоминает факт.
+  const [alignMode, setAlignMode] = useState<'align' | 'fact'>('align');
   const [factText, setFactText] = useState('');
   const [busy, setBusy] = useState(false);
   const toast = useToast();
@@ -65,12 +67,34 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
   }
 
   const acc = data.account;
-  const shown = acc.role === 'liability' ? acc.natural : acc.balance;
+  // 29.09 Артём: кредитка — минусом, как долг, а не положительным числом.
+  const liability = acc.role === 'liability';
+  const shown = acc.balance;
+  const check = data.check ?? null;
 
   const submitAlign = async () => {
     const minor = Math.round(Number(factText.replace(',', '.').replace(/\s/g, '')) * 100);
     if (!Number.isFinite(minor)) return;
     const delta = minor - acc.balance.amount;
+    if (alignMode === 'fact') {
+      setBusy(true);
+      try {
+        await api.checkFact(acc.slug, minor);
+        dropCache('home');
+        dropCache('entries');
+        dropCache('account');
+        haptic.success();
+        toast({ text: delta === 0 ? 'Факт записан, сходится' : 'Факт записан, остаток выровнен' });
+        setAlign(false);
+        reload();
+      } catch {
+        haptic.error();
+        toast({ text: 'Не сохранилось. Попробуйте ещё раз' });
+      } finally {
+        setBusy(false);
+      }
+      return;
+    }
     if (delta === 0) {
       setAlign(false);
       toast({ text: 'Уже сходится' });
@@ -106,7 +130,7 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
         {header(acc.name)}
 
         <div className="pt-2">
-          <div className="nums text-[34px] font-bold leading-10 tracking-[-0.02em]">{money(shown, 'none')}</div>
+          <div className="nums text-[34px] font-bold leading-10 tracking-[-0.02em]">{money(shown, liability ? 'auto' : 'none')}</div>
           {/* Имя счёта уже стоит в шапке экрана — дважды в 100 px (m6). */}
           <div className="mt-1 text-[13px] text-hint">{CURRENCY_WORD[acc.currency] ?? acc.currency}</div>
         </div>
@@ -135,13 +159,73 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
           </div>
         ) : null}
 
+        {check ? (
+          <div className="mt-4">
+            <Card>
+              <CardHead title="Сверка" />
+              <div className="flex items-baseline justify-between gap-3 py-1.5">
+                <span className="text-[16px]">Должно быть по учёту</span>
+                <span className="nums text-[17px] font-bold">{money(check.expected, 'none')}</span>
+              </div>
+              <div className="nums text-[13px] leading-5 text-hint">
+                <div>
+                  {money(check.base, 'none')}
+                  {check.base_note ? ` — ${check.base_note}` : ''}
+                </div>
+                {check.items.map((i) => (
+                  <button key={i.entry_id} type="button" className="block w-full truncate text-left" onClick={() => openEntry(i.entry_id)}>
+                    {money(i.amount, i.amount.amount < 0 ? 'auto' : 'plus')} · {dateLong(i.op_date)} · {i.description}
+                  </button>
+                ))}
+              </div>
+              {check.mismatch ? (
+                <div className="nums mt-1 text-[13px] leading-4 text-danger">
+                  Остаток в учёте {money(check.ledger, 'none')}, расходится на {money(check.mismatch, 'auto')}
+                </div>
+              ) : null}
+              <div className="mt-2 flex items-baseline justify-between gap-3 border-t border-inset py-2">
+                <span className="text-[16px]">По факту</span>
+                <span className="nums text-[17px] font-bold">
+                  {check.fact ? money(check.fact.amount, 'none') : '— пересчитать'}
+                </span>
+              </div>
+              {check.fact ? (
+                <div className="nums text-[13px] leading-4 text-hint">
+                  пересчитано {dateLong(check.fact.date)}
+                  {check.fact.diff.amount !== 0
+                    ? `, по учёту было ${money(check.fact.ledger_before, 'none')}, разница ${money(check.fact.diff, check.fact.diff.amount < 0 ? 'auto' : 'plus')}`
+                    : ', сошлось'}
+                </div>
+              ) : null}
+              <div className="mt-3">
+                <Button
+                  kind="secondary"
+                  onClick={() => {
+                    setAlignMode('fact');
+                    setFactText('');
+                    setAlign(true);
+                  }}
+                >
+                  Ввести факт
+                </Button>
+              </div>
+            </Card>
+          </div>
+        ) : null}
+
         {/* Кнопки в ряд по 50 %: столбик из двух одинаковых серых плашек во всю ширину читался
             как «два варианта одного и того же» и съедал 200 CSS над лентой (M13). Карточка вокруг
             них — третья вложенная поверхность подряд, поэтому её нет. */}
         {/* Тексты полные, как в 4.4: «Выровнять» само по себе не говорит, что выравнивают (Н12). */}
         <div className="mt-4 flex gap-2">
           <span className="min-w-0 flex-1">
-            <Button kind="secondary" onClick={() => setAlign(true)}>
+            <Button
+              kind="secondary"
+              onClick={() => {
+                setAlignMode('align');
+                setAlign(true);
+              }}
+            >
               Выровнять остаток
             </Button>
           </span>
@@ -177,11 +261,11 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
 
       {align ? (
         <Sheet
-          title="Выровнять остаток"
+          title={alignMode === 'fact' ? 'Сколько лежит по факту' : 'Выровнять остаток'}
           onClose={() => setAlign(false)}
           footer={
             <Button onClick={submitAlign} loading={busy}>
-              Выровнять
+              {alignMode === 'fact' ? 'Записать факт' : 'Выровнять'}
             </Button>
           }
         >

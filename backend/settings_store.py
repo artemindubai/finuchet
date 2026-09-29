@@ -18,12 +18,15 @@ DEFAULTS: dict = {
     "remind_enabled": True,
     # 25.09 Артём: личная копилка не входит в «Мои деньги», видна по кнопке.
     "hidden_accounts": ["kopilka_mashrek"],
+    # 29.09: сверка счёта с пересчётом по факту (backend/ledger/checks.py), slug → настройка.
+    "account_checks": {},
 }
 
 # Наружу отдаются только эти ключи плюс вычисляемые в API; секреты — никогда.
 PUBLIC_KEYS = (
     "default_currency_view", "family_block_visible", "freeze_account",
     "rate_markup_rub_per_aed_e6", "tax_rate_default_bp", "remind_enabled", "hidden_accounts",
+    "account_checks",
 )
 SECRET_KEYS = ("mashreq_pdf_password",)
 

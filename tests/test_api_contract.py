@@ -245,7 +245,7 @@ def test_debts_and_account_shape(client):
                                     "tranches"}
 
     account = client.get("/api/accounts/tbank").json()
-    assert set(account) == {"account", "tranches", "entries", "month"}
+    assert set(account) == {"account", "check", "tranches", "entries", "month"}
     assert ACCOUNT_KEYS | {"free"} == set(account["account"])
     assert set(account["entries"]) == {"items", "days", "next_cursor", "has_more"}
     assert set(account["month"]) == {"in", "out"}

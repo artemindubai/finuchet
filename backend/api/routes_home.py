@@ -8,6 +8,7 @@ from backend import db, ledger, settings_store
 from backend.api.deps import currency_param, require_user, run
 from backend.contracts import EntryFilters
 from backend.ledger import planned as planned_mod
+from backend.ledger.checks import check_view, enter_fact
 from backend.ledger.analytics import analytics_month, period_flows
 from backend.ledger.common import money_dict, resolve_account
 from backend.tz import month_bounds, today_dubai
@@ -78,6 +79,7 @@ def _account(account_ref, currency_view: str, limit: int, cursor: str | None) ->
     currency = row["currency"] or currency_view
     return {
         "account": view,
+        "check": check_view(conn, row),
         "tranches": [tranche_view(conn, t) for t in tranche_rows]
         + [move_view(conn, m) for m in move_rows(conn) if int(m["account_id"]) == int(row["id"])],
         "entries": {"items": feed["items"], "days": feed["days"],
@@ -92,6 +94,18 @@ async def account(account_ref: str, currency: str | None = None,
                   limit: int = Query(50, ge=1, le=200), cursor: str | None = None,
                   user: int = Depends(require_user)):
     return await run(_account, account_ref, currency_param(currency), limit, cursor)
+
+
+@router.post("/accounts/{account_ref}/check_fact")
+async def check_fact(account_ref: str, body: dict = Body(default={}),
+                     user: int = Depends(require_user)):
+    """Артём пересчитал наличку: {"amount": минорные единицы, "note": "…"} → выравнивание и запись факта."""
+    try:
+        amount = int(body.get("amount"))
+    except (TypeError, ValueError):
+        from backend.contracts import LedgerError
+        raise LedgerError("bad_request", "Нужна сумма факта в минорных единицах", {"amount": body.get("amount")})
+    return await run(enter_fact, account_ref, amount, note=body.get("note"))
 
 
 @router.get("/analytics/month")

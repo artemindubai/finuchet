@@ -174,6 +174,23 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
         </section>
       ) : null}
 
+      {/* 29.09 Артём: «должны быть наличные дирхамы мои и родительские» — семейные счета отдельной
+          группой карточек. В «Мои деньги» не входят. */}
+      {family.accounts.length > 0 ? (
+        <section className="mt-6">
+          <div className="flex items-baseline justify-between px-1">
+            <span className="text-[17px] font-bold">Семейные</span>
+            <span className="nums text-[15px] text-hint">
+              {moneyWhole({ amount: family.accounts.reduce((s, a) => s + (a.balance.currency === 'AED' ? a.balance.amount : 0), 0), currency: 'AED' }, 'none')}
+            </span>
+          </div>
+          <div className="mt-0.5 px-1 text-[13px] leading-4 text-hint">родительские деньги, в «Мои деньги» не входят</div>
+          {family.accounts.map((a) => (
+            <AccountCard key={a.id} a={a} onClick={openAccount} />
+          ))}
+        </section>
+      ) : null}
+
       {family.visible ? (
         <section className="mt-6" id="family">
           <Card className="card-lift rounded-[24px] p-5">

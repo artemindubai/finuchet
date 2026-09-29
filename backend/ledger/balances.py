@@ -117,12 +117,30 @@ def rub_personal_total(conn: sqlite3.Connection, *, as_of: str | None = None,
     return sum(amount for (acc, cur), amount in bmap.items() if acc in ids and cur == "RUB")
 
 
+def credit_debt_rub(conn: sqlite3.Connection, *, as_of: str | None = None,
+                    bmap: dict | None = None) -> int:
+    """Долг по рублёвым кредиткам (положительное число, если должен банку)."""
+    bmap = bmap if bmap is not None else balance_map(conn, as_of=as_of)
+    ids = {int(r["id"]) for r in conn.execute(
+        "SELECT id FROM accounts WHERE type = 'liability' AND is_money = 1"
+        " AND currency = 'RUB'").fetchall()}
+    return -sum(amount for (acc, cur), amount in bmap.items() if acc in ids and cur == "RUB")
+
+
 def free_rub(conn: sqlite3.Connection, *, as_of: str | None = None,
              bmap: dict | None = None) -> dict:
+    """Свободные рубли = рубли на личных счетах − заморозка под семью − долг по кредитке.
+
+    29.09 Артём: «12 000 свободных, а по кредитке долг 13 518 — свободных ноль». Может уйти в минус.
+    Нехватка (shortfall) по-прежнему сравнивает только рубли с заморозкой: кредитка не повод
+    переносить заморозку в дирхамы."""
+    bmap = bmap if bmap is not None else balance_map(conn, as_of=as_of)
     total = rub_personal_total(conn, as_of=as_of, bmap=bmap)
     frozen = frozen_total(conn)
-    free = total - frozen
+    credit = max(0, credit_debt_rub(conn, bmap=bmap))
+    free = total - frozen - credit
     return {"rub_total": money_dict(total, "RUB"), "frozen": money_dict(frozen, "RUB"),
+            "credit": money_dict(credit, "RUB"),
             "free": money_dict(free, "RUB"),
             "shortfall": money_dict(frozen - total, "RUB") if frozen > total else None}
 

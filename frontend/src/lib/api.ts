@@ -1,6 +1,6 @@
 // Клиент REST-контракта ARCHITECTURE.md §5. Единственная точка, где фронт знает про сеть.
 import type {
-  AccountResponse, AnalyticsResponse, ApiError, Currency, DebtsResponse, EntriesPage, EntryDraft,
+  AccountCheck, AccountResponse, AnalyticsResponse, ApiError, Currency, DebtsResponse, EntriesPage, EntryDraft,
   EntryFull, EntryResult, Goal, HomeResponse, LimitRow, Money, PlannedItem, RatesResponse, Refs,
   SettingsResponse, ViewCurrency,
 } from './types';
@@ -113,6 +113,10 @@ export const api = {
     Promise<AccountResponse> {
     if (USE_MOCKS) return (await mocks()).account(ref);
     return request<AccountResponse>(`/api/accounts/${ref}${qs(query)}`);
+  },
+
+  async checkFact(ref: number | string, amount: number): Promise<{ check: AccountCheck; entry_id: number | null }> {
+    return request(`/api/accounts/${ref}/check_fact`, { method: 'POST', body: JSON.stringify({ amount }) });
   },
 
   async analytics(month: string, currency: ViewCurrency = 'RUB'): Promise<AnalyticsResponse> {

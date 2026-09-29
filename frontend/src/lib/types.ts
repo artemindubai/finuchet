@@ -218,8 +218,20 @@ export interface HomeResponse {
   warnings: Warning[];
 }
 
+/** Сверка счёта с пересчётом по факту (29.09, семейная наличка). */
+export interface AccountCheck {
+  base: Money;
+  base_note: string;
+  items: { entry_id: number; op_date: string; kind: string; description: string; amount: Money }[];
+  expected: Money;
+  ledger: Money;
+  mismatch: Money | null;
+  fact: { amount: Money; date: string; ledger_before: Money; diff: Money; entry_id: number | null } | null;
+}
+
 export interface AccountResponse {
   account: AccountView;
+  check?: AccountCheck | null;
   tranches: TrancheView[];
   entries: EntriesPage;
   month: { in: Money; out: Money };
