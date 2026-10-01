@@ -216,6 +216,36 @@ export interface HomeResponse {
     rub_per_usdt_e6: number;
   };
   warnings: Warning[];
+  /** Копилка 10 % (01.10): сколько ещё перевести в копилку с поступлений. */
+  kopilka?: KopilkaView | null;
+}
+
+export interface KopilkaItem {
+  entry_id: number;
+  op_date: string;
+  description: string;
+  source: string;
+  amount: Money;
+  accrued: Money;
+  accrued_aed: Money;
+  covered: Money;
+  left: Money;
+  status: 'covered' | 'partial' | 'open';
+}
+
+export interface KopilkaView {
+  account: { id: number; slug: string; name: string };
+  percent_bp: number;
+  start: string;
+  rate: { rub_per_aed_e6: number; source: 'exchange' | 'market'; op_date: string | null };
+  accrued: Money;
+  transferred: Money;
+  due: Money;
+  due_rub: Money;
+  surplus: Money;
+  count: number;
+  items?: KopilkaItem[];
+  transfers?: { entry_id: number; op_date: string; kind: string; description: string; amount: Money }[];
 }
 
 /** Сверка счёта с пересчётом по факту (29.09, семейная наличка). */
@@ -232,6 +262,7 @@ export interface AccountCheck {
 export interface AccountResponse {
   account: AccountView;
   check?: AccountCheck | null;
+  kopilka?: KopilkaView | null;
   tranches: TrancheView[];
   entries: EntriesPage;
   month: { in: Money; out: Money };

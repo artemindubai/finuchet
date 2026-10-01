@@ -32,7 +32,7 @@ def test_home_shape(client):
     assert set(body) == {"currency", "as_of", "net_worth", "free_rub", "frozen_rub", "groups",
                          "totals_by_view", "family", "upcoming", "recent", "month", "rates",
                          "warnings", "my_money", "shortfall_rub", "hidden",
-                         "free_aed", "frozen_aed", "shortfall_aed"}
+                         "free_aed", "frozen_aed", "shortfall_aed", "kopilka"}
     assert is_money(body["my_money"])
     assert set(body["hidden"]) == {"accounts", "total"}
     assert body["currency"] == "RUB"
@@ -245,7 +245,7 @@ def test_debts_and_account_shape(client):
                                     "tranches"}
 
     account = client.get("/api/accounts/tbank").json()
-    assert set(account) == {"account", "check", "tranches", "entries", "month"}
+    assert set(account) == {"account", "check", "kopilka", "tranches", "entries", "month"}
     assert ACCOUNT_KEYS | {"free"} == set(account["account"])
     assert set(account["entries"]) == {"items", "days", "next_cursor", "has_more"}
     assert set(account["month"]) == {"in", "out"}

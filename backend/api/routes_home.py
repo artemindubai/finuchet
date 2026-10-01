@@ -9,6 +9,7 @@ from backend.api.deps import currency_param, require_user, run
 from backend.contracts import EntryFilters
 from backend.ledger import planned as planned_mod
 from backend.ledger.checks import check_view, enter_fact
+from backend.ledger import kopilka as kopilka_mod
 from backend.ledger.analytics import analytics_month, period_flows
 from backend.ledger.common import money_dict, resolve_account
 from backend.tz import month_bounds, today_dubai
@@ -47,6 +48,7 @@ def _home(currency_view: str) -> dict:
     data["upcoming"] = planned_mod.upcoming(3)
     data["month"] = _month_block(currency_view)
     data["warnings"] = []
+    data["kopilka"] = kopilka_mod.view(conn, with_items=False)
     data.pop("accounts", None)
     return data
 
@@ -80,6 +82,7 @@ def _account(account_ref, currency_view: str, limit: int, cursor: str | None) ->
     return {
         "account": view,
         "check": check_view(conn, row),
+        "kopilka": kopilka_mod.view(conn) if row["slug"] == kopilka_mod.rule(conn)["account"] else None,
         "tranches": [tranche_view(conn, t) for t in tranche_rows]
         + [move_view(conn, m) for m in move_rows(conn) if int(m["account_id"]) == int(row["id"])],
         "entries": {"items": feed["items"], "days": feed["days"],
@@ -94,6 +97,12 @@ async def account(account_ref: str, currency: str | None = None,
                   limit: int = Query(50, ge=1, le=200), cursor: str | None = None,
                   user: int = Depends(require_user)):
     return await run(_account, account_ref, currency_param(currency), limit, cursor)
+
+
+@router.get("/kopilka")
+async def kopilka(user: int = Depends(require_user)):
+    """Копилка 10 %: сколько начислено с поступлений, сколько переведено, сколько ещё перевести."""
+    return await run(lambda: kopilka_mod.view(db.get_conn()))
 
 
 @router.post("/accounts/{account_ref}/check_fact")

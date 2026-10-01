@@ -71,6 +71,7 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
   const liability = acc.role === 'liability';
   const shown = acc.balance;
   const check = data.check ?? null;
+  const kop = data.kopilka ?? null;
 
   const submitAlign = async () => {
     const minor = Math.round(Number(factText.replace(',', '.').replace(/\s/g, '')) * 100);
@@ -155,6 +156,45 @@ export function Account({ id, onAdd }: { id: number; onAdd: (slug: string) => vo
               {acc.free ? (
                 <div className="nums pt-2 text-[13px] text-hint">свободно {moneyWhole(acc.free, 'none')}</div>
               ) : null}
+            </Card>
+          </div>
+        ) : null}
+
+        {kop ? (
+          <div className="mt-4">
+            <Card>
+              <CardHead title={`${kop.percent_bp / 100} % с поступлений`} />
+              <div className="flex items-baseline justify-between gap-3 py-1.5">
+                <span className="text-[16px]">Перевести в копилку</span>
+                <span className="nums text-[17px] font-bold">{money(kop.due, 'none')}</span>
+              </div>
+              <div className="nums text-[13px] leading-5 text-hint">
+                <div>≈ {moneyWhole(kop.due_rub, 'none')} по курсу {kop.rate.source === 'exchange' && kop.rate.op_date ? `обмена ${dateLong(kop.rate.op_date)}` : 'дня'}</div>
+                <div>
+                  начислено {money(kop.accrued, 'none')}, переведено {money(kop.transferred, 'none')}
+                  {kop.surplus.amount > 0 ? `, запас ${money(kop.surplus, 'none')}` : ''}
+                </div>
+              </div>
+              <div className="mt-2 border-t border-inset pt-2">
+                {(kop.items ?? []).map((i) => (
+                  <button key={i.entry_id} type="button" className="block w-full py-1.5 text-left" onClick={() => openEntry(i.entry_id)}>
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className="nums truncate text-[15px]">
+                        {money(i.amount, 'plus')} · {dateLong(i.op_date)}
+                      </span>
+                      <span className={`nums shrink-0 text-[15px] font-medium ${i.status === 'covered' ? 'text-hint' : ''}`}>
+                        {i.status === 'covered' ? 'отложено' : `осталось ${money(i.left, 'none')}`}
+                      </span>
+                    </div>
+                    <div className="nums truncate text-[13px] leading-4 text-hint">
+                      10 % = {money(i.accrued, 'none')}
+                      {i.accrued.currency !== i.accrued_aed.currency ? ` ≈ ${money(i.accrued_aed, 'none')}` : ''}
+                      {i.status === 'partial' ? `, отложено ${money(i.covered, 'none')}` : ''}
+                      {i.description ? ` · ${i.description}` : ''}
+                    </div>
+                  </button>
+                ))}
+              </div>
             </Card>
           </div>
         ) : null}

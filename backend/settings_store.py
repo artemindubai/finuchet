@@ -20,13 +20,15 @@ DEFAULTS: dict = {
     "hidden_accounts": ["kopilka_mashrek"],
     # 29.09: сверка счёта с пересчётом по факту (backend/ledger/checks.py), slug → настройка.
     "account_checks": {},
+    # 01.10: копилка 10 % с каждого поступления (backend/ledger/kopilka.py).
+    "kopilka_rule": {"account": "kopilka_mashrek", "percent_bp": 1000, "start": "2026-09-23"},
 }
 
 # Наружу отдаются только эти ключи плюс вычисляемые в API; секреты — никогда.
 PUBLIC_KEYS = (
     "default_currency_view", "family_block_visible", "freeze_account",
     "rate_markup_rub_per_aed_e6", "tax_rate_default_bp", "remind_enabled", "hidden_accounts",
-    "account_checks",
+    "account_checks", "kopilka_rule",
 )
 SECRET_KEYS = ("mashreq_pdf_password",)
 

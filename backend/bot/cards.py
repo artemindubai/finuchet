@@ -367,8 +367,21 @@ def _card_income(result: dict) -> list[str]:
         got = int(tax["amount"]["amount"])
         pct = f"{round(got * 100 / base, 2):g}".replace(".", ",") if base else ""
         lines.append(f"Налог НПД{(' ' + pct + ' %') if pct else ''}: {format_amount(tax['amount'])} начислено")
+    lines.append(_kopilka_line(result))
     lines.append(_balance_line(acc))
     return lines
+
+
+def _kopilka_line(result: dict) -> str:
+    """01.10 Артём: с каждого поступления 10 % в копилку — в ответе сразу, сколько отложить."""
+    kop = result.get("kopilka")
+    if not kop or not int((kop.get("accrued") or {}).get("amount") or 0):
+        return ""
+    line = f"+{format_amount(kop['accrued'])} в копилку"
+    due = kop.get("due") or {}
+    if int(due.get("amount") or 0) > 0:
+        line += f", всего перевести {format_amount(due)}"
+    return line
 
 
 def _card_transfer(result: dict) -> list[str]:
@@ -629,6 +642,10 @@ def card_for_batch(results: list[dict]) -> str:
         lines.append(f"{i}. {head} {_title_amount(result)}"
                      + (f" — {title}" if title else "")
                      + (f", {acc['name']}" if acc else ""))
+    for result in results:
+        line = _kopilka_line(result)
+        if line:
+            lines.append(line)
     last = results[-1]
     acc = _money_account(last, "credit") or _money_account(last, "debit")
     if acc:

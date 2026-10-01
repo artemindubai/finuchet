@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { BarChart3, ChevronDown, ChevronUp, Eye, EyeOff, List, Plus, Snowflake } from 'lucide-react';
+import { BarChart3, ChevronDown, ChevronRight, ChevronUp, Eye, EyeOff, List, PiggyBank, Plus, Snowflake } from 'lucide-react';
 import { api } from '../lib/api';
 import { useResource } from '../app/data';
 import { haptic } from '../app/telegram';
@@ -104,6 +104,20 @@ export function Home({ onAdd }: { onAdd?: () => void }) {
           <div className="nums mt-1 text-[15px] font-medium leading-5 text-danger">
             Дирхамов меньше, чем заблокировано, на {moneyWhole(data.shortfall_aed, 'none')}
           </div>
+        ) : null}
+        {/* 01.10 Артём: с каждого поступления 10 % в копилку — «чтобы я знал, сколько туда перевести». */}
+        {data.kopilka && data.kopilka.due.amount > 0 ? (
+          <button
+            type="button"
+            className="nums mt-3 flex w-full items-center gap-1.5 text-left text-[15px] font-medium leading-5"
+            onClick={() => openAccount(data.kopilka!.account.id)}
+          >
+            <PiggyBank size={16} className="shrink-0 text-blue" />
+            <span>
+              В копилку перевести: {moneyWhole(data.kopilka.due, 'none')} (≈ {moneyWhole(data.kopilka.due_rub, 'none')})
+            </span>
+            <ChevronRight size={16} className="shrink-0 text-hint" />
+          </button>
         ) : null}
       </div>
 

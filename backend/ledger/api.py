@@ -434,6 +434,9 @@ def _result(conn: sqlite3.Connection, written: dict, *, currency_view: str = "RU
                                           tranche=written.get("tranche"),
                                           released=written.get("released"),
                                           unlocked=written.get("unlocked"))
+    if out.get("kind") == "income":
+        from backend.ledger.kopilka import for_entry as kopilka_for_entry
+        out["kopilka"] = kopilka_for_entry(conn, int(written["entry_id"]))
     return out
 
 
